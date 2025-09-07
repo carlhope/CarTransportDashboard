@@ -1,0 +1,17 @@
+# Normalize line endings
+* text=auto
+
+# Treat C# files as text and enable syntax-aware diff
+*.cs diff=csharp
+
+# Treat solution and project files as text (or binary if you prefer strict merges)
+*.sln text
+*.csproj text
+
+# Optional: force LF endings for shell scripts
+*.sh text eol=lf
+
+# Treat images and binaries as binary
+*.png binary
+*.jpg binary
+*.dll binary
