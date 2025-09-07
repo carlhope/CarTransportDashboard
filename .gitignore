@@ -416,3 +416,33 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Angular project
+
+# Node modules
+node_modules/
+
+# Angular build output
+dist/
+out-tsc/
+
+# IDE/editor settings
+.vscode/
+.idea/
+
+# Environment files
+*.env
+*.local.env
+
+# Angular cache
+.angular/
+
+# npm logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional: OS-specific
+.DS_Store
+Thumbs.db
+
