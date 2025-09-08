@@ -1,4 +1,5 @@
 using CarTransportDashboard.Models;
+using CarTransportDashboard.Models.Dtos.TransportJob;
 using CarTransportDashboard.Services.Interfaces;
 namespace CarTransportDashboard.Services
 {
@@ -19,17 +20,27 @@ namespace CarTransportDashboard.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<TransportJob>> GetAvailableJobsAsync()
+        public Task<TransportJobReadDto> CreateJobAsync(TransportJobWriteDto dto)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TransportJob?> GetJobAsync(Guid id)
+        public Task<IEnumerable<TransportJobReadDto>> GetAvailableJobsAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<TransportJob>> GetJobsAsync()
+        public Task<TransportJobReadDto?> GetJobAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<TransportJobReadDto>> GetJobsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateJobAsync(Guid jobId, TransportJobWriteDto dto)
         {
             throw new NotImplementedException();
         }

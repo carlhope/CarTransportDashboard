@@ -1,10 +1,11 @@
 using CarTransportDashboard.Models;
+using CarTransportDashboard.Models.Dtos.Vehicle;
 using CarTransportDashboard.Services.Interfaces;
 namespace CarTransportDashboard.Services
 {
     public class VehicleService : IVehicleService
     {
-        public Task CreateVehicleAsync(Vehicle vehicle)
+        public Task<VehicleReadDto> CreateVehicleAsync(VehicleWriteDto dto)
         {
             throw new NotImplementedException();
         }
@@ -14,17 +15,17 @@ namespace CarTransportDashboard.Services
             throw new NotImplementedException();
         }
 
-        public Task<Vehicle?> GetVehicleAsync(Guid id)
+        public Task<VehicleReadDto?> GetVehicleAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Vehicle>> GetVehiclesAsync()
+        public Task<IEnumerable<VehicleReadDto>> GetVehiclesAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateVehicleAsync(Vehicle vehicle)
+        public Task UpdateVehicleAsync(Guid id, VehicleWriteDto dto)
         {
             throw new NotImplementedException();
         }
