@@ -22,14 +22,19 @@ namespace CarTransportDashboard.Services
             await _vehicleRepository.DeleteAsync(id);
         }
 
-        public Task<VehicleReadDto?> GetVehicleAsync(Guid id)
+        public async Task<VehicleReadDto?> GetVehicleAsync(Guid id)
         {
-            throw new NotImplementedException();
+            Vehicle? vehicle = await _vehicleRepository.GetByIdAsync(id);
+            if (vehicle == null) return null;
+            VehicleReadDto vehicleDto = new VehicleReadDto(vehicle);
+            return vehicleDto;
         }
 
-        public Task<IEnumerable<VehicleReadDto>> GetVehiclesAsync()
+        public async Task<IEnumerable<VehicleReadDto>> GetVehiclesAsync()
         {
-            throw new NotImplementedException();
+            IEnumerable<Vehicle> vehicles = await _vehicleRepository.GetAllAsync();
+            return vehicles.Select(v => new VehicleReadDto(v));
+            
         }
 
         public async Task UpdateVehicleAsync(Guid id, VehicleWriteDto dto)
