@@ -11,5 +11,12 @@ namespace CarTransportDashboard.Models.Dtos.Vehicle
 
         // Navigation
         public ICollection<TransportJobReadDto>? AssignedJobs { get; set; }
+
+        public VehicleReadDto(Models.Vehicle vehicle)
+        {
+            Make = vehicle.Make;
+            Model = vehicle.Model;
+            RegistrationNumber = vehicle.RegistrationNumber;
+        }
     }
 }

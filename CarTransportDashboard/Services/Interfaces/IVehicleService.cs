@@ -5,7 +5,7 @@ namespace CarTransportDashboard.Services.Interfaces
     {
         Task<VehicleReadDto?> GetVehicleAsync(Guid id);
         Task<IEnumerable<VehicleReadDto>> GetVehiclesAsync();
-        Task<VehicleReadDto> CreateVehicleAsync(VehicleWriteDto dto);
+        Task CreateVehicleAsync(VehicleWriteDto dto);
         Task UpdateVehicleAsync(Guid id, VehicleWriteDto dto);
         Task DeleteVehicleAsync(Guid id);
     }

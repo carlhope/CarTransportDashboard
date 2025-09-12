@@ -1,18 +1,25 @@
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.Vehicle;
+using CarTransportDashboard.Repository.Interfaces;
 using CarTransportDashboard.Services.Interfaces;
 namespace CarTransportDashboard.Services
 {
     public class VehicleService : IVehicleService
     {
-        public Task<VehicleReadDto> CreateVehicleAsync(VehicleWriteDto dto)
+        private readonly IVehicleRepository _vehicleRepository;
+        public VehicleService(IVehicleRepository vehicleRepository)
         {
-            throw new NotImplementedException();
+         _vehicleRepository = vehicleRepository;   
+        }
+        public async Task CreateVehicleAsync(VehicleWriteDto dto)
+        {
+            Vehicle vehicle = new Vehicle(dto);
+            await _vehicleRepository.AddAsync(vehicle);
         }
 
-        public Task DeleteVehicleAsync(Guid id)
+        public async Task DeleteVehicleAsync(Guid id)
         {
-            throw new NotImplementedException();
+            await _vehicleRepository.DeleteAsync(id);
         }
 
         public Task<VehicleReadDto?> GetVehicleAsync(Guid id)
@@ -25,9 +32,18 @@ namespace CarTransportDashboard.Services
             throw new NotImplementedException();
         }
 
-        public Task UpdateVehicleAsync(Guid id, VehicleWriteDto dto)
+        public async Task UpdateVehicleAsync(Guid id, VehicleWriteDto dto)
         {
-            throw new NotImplementedException();
+            var existingVehicle = await _vehicleRepository.GetByIdAsync(id);
+            if (existingVehicle == null)
+                throw new KeyNotFoundException($"Vehicle with ID {id} not found.");
+            
+            existingVehicle.Make = dto.Make;
+            existingVehicle.Model = dto.Model;
+            existingVehicle.RegistrationNumber = dto.RegistrationNumber;
+
+            await _vehicleRepository.UpdateAsync(existingVehicle);
         }
+
     }
 }
