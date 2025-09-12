@@ -11,18 +11,5 @@ namespace CarTransportDashboard.Models
 
         // Navigation
         public ICollection<TransportJob>? AssignedJobs { get; set; }
-
-        public Vehicle()
-        {
-            
-        }
-
-        public Vehicle(VehicleWriteDto dto)
-        {
-            Make = dto.Make;
-            Model = dto.Model;
-            RegistrationNumber = dto.RegistrationNumber;
-            //AssignedJobs = dto.AssignedJobs;
-        }
     }
 }
