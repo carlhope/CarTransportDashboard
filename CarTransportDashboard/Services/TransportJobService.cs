@@ -1,53 +1,100 @@
+using CarTransportDashboard.Mappers;
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.TransportJob;
+using CarTransportDashboard.Repository.Interfaces;
 using CarTransportDashboard.Services.Interfaces;
 namespace CarTransportDashboard.Services
 {
     public class TransportJobService : ITransportJobService
     {
-        public Task AcceptJobAsync(Guid jobId, string driverId)
+        private readonly ITransportJobRepository _jobRepo;
+        private readonly IVehicleRepository _vehicleRepo;
+        private readonly IDriverRepository _driverRepo;
+
+        public TransportJobService(
+            ITransportJobRepository jobRepo,
+            IVehicleRepository vehicleRepo,
+            IDriverRepository driverRepo)
         {
-            throw new NotImplementedException();
+            _jobRepo = jobRepo;
+            _vehicleRepo = vehicleRepo;
+            _driverRepo = driverRepo;
         }
 
-        public Task AssignDriverToJobAsync(Guid jobId, Guid driverId)
+        public async Task<TransportJobReadDto?> GetJobAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var job = await _jobRepo.GetByIdAsync(id);
+            return job == null ? null : TransportJobMapper.ToDto(job);
         }
 
-        public Task AssignVehicleToJobAsync(Guid jobId, Guid vehicleId)
+        public async Task<IEnumerable<TransportJobReadDto>> GetJobsAsync()
         {
-            throw new NotImplementedException();
+            var jobs = await _jobRepo.GetAllAsync();
+            return jobs.Select(TransportJobMapper.ToDto);
         }
 
-        public Task<TransportJobReadDto> CreateJobAsync(TransportJobWriteDto dto)
+        public async Task<IEnumerable<TransportJobReadDto>> GetAvailableJobsAsync()
         {
-            throw new NotImplementedException();
+            var jobs = await _jobRepo.GetAvailableJobsAsync(); // Filtered by status or unassigned
+            return jobs.Select(TransportJobMapper.ToDto);
         }
 
-        public Task<IEnumerable<TransportJobReadDto>> GetAvailableJobsAsync()
+        public async Task AcceptJobAsync(Guid jobId, string driverId)
         {
-            throw new NotImplementedException();
+            var job = await _jobRepo.GetByIdAsync(jobId);
+            if (job == null) throw new KeyNotFoundException("Job not found");
+
+            job.AssignedDriverId = driverId;
+            job.Status = JobStatus.InProgress;
+            await _jobRepo.UpdateAsync(job);
         }
 
-        public Task<TransportJobReadDto?> GetJobAsync(Guid id)
+        public async Task UpdateJobStatusAsync(Guid jobId, JobStatus status)
         {
-            throw new NotImplementedException();
+            var job = await _jobRepo.GetByIdAsync(jobId);
+            if (job == null) throw new KeyNotFoundException("Job not found");
+
+            job.Status = status;
+            await _jobRepo.UpdateAsync(job);
         }
 
-        public Task<IEnumerable<TransportJobReadDto>> GetJobsAsync()
+        public async Task AssignVehicleToJobAsync(Guid jobId, Guid vehicleId)
         {
-            throw new NotImplementedException();
+            var job = await _jobRepo.GetByIdAsync(jobId);
+            var vehicle = await _vehicleRepo.GetByIdAsync(vehicleId);
+            if (job == null || vehicle == null) throw new KeyNotFoundException("Job or vehicle not found");
+            job.AssignedVehicleId = vehicleId;
+            await _jobRepo.UpdateAsync(job);
         }
 
-        public Task UpdateJobAsync(Guid jobId, TransportJobWriteDto dto)
+        public async Task AssignDriverToJobAsync(Guid jobId, Guid driverId)
         {
-            throw new NotImplementedException();
+            var jobTask = _jobRepo.GetByIdAsync(jobId);
+            var isDriverTask = _driverRepo.IsInDriverRoleAsync(driverId.ToString());
+            await Task.WhenAll(jobTask, isDriverTask);
+            var job = await jobTask;
+            var isDriver = await isDriverTask;
+
+            if (job == null || !isDriver)
+                throw new KeyNotFoundException("Job not found or user is not a driver.");
+
+            job.AssignedDriverId = driverId.ToString();
+            await _jobRepo.UpdateAsync(job);
         }
 
-        public Task UpdateJobStatusAsync(Guid jobId, JobStatus status)
+        public async Task<TransportJobReadDto> CreateJobAsync(TransportJobWriteDto dto)
         {
-            throw new NotImplementedException();
+            var job = TransportJobMapper.ToModel(dto);
+            await _jobRepo.AddAsync(job);
+            return TransportJobMapper.ToDto(job);
+        }
+
+        public async Task UpdateJobAsync(Guid jobId, TransportJobWriteDto dto)
+        {
+            var job = await _jobRepo.GetByIdAsync(jobId);
+            if (job == null) throw new KeyNotFoundException("Job not found");
+            TransportJobMapper.UpdateModel(job, dto);
+            await _jobRepo.UpdateAsync(job);
         }
     }
 }
