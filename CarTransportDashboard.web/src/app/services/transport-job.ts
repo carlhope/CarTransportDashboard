@@ -10,7 +10,7 @@ import {ModelMapperService} from './model-mapper';
   providedIn: 'root'
 })
 export class TransportJobService {
-  private apiUrl = 'https://your-api.com/api/transport-jobs';
+  private apiUrl = 'http://localhost:5176/api/transportjobs';
 
   constructor(private http: HttpClient, private mapper: ModelMapperService) {}
 
