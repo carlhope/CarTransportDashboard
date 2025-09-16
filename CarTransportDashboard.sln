@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11010.61 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarTransportDashboard", "CarTransportDashboard\CarTransportDashboard.csproj", "{43C2E87A-5D29-408A-8B78-5DBD34A78DBA}"
 EndProject
@@ -26,6 +26,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "CarTransportDashboard.web",
 		SlnRelativePath = "CarTransportDashboard.web\"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarTransportDashboard.Tests", "CarTransportDashboard.Tests\CarTransportDashboard.Tests.csproj", "{F4C0796E-B672-4E25-A3D5-C1374D6EDD16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{5315E19F-8AC7-31E3-A782-1719BB19DEDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5315E19F-8AC7-31E3-A782-1719BB19DEDB}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{5315E19F-8AC7-31E3-A782-1719BB19DEDB}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{F4C0796E-B672-4E25-A3D5-C1374D6EDD16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4C0796E-B672-4E25-A3D5-C1374D6EDD16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4C0796E-B672-4E25-A3D5-C1374D6EDD16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4C0796E-B672-4E25-A3D5-C1374D6EDD16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
