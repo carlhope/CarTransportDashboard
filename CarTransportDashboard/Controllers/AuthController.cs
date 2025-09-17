@@ -3,6 +3,7 @@ using CarTransportDashboard.Models.Dtos.Auth;
 using CarTransportDashboard.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace CarTransportDashboard.Controllers;
 
 [ApiController]
@@ -10,10 +11,12 @@ namespace CarTransportDashboard.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly IWebHostEnvironment _env;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, IWebHostEnvironment env)
     {
         _authService = authService;
+        _env = env;
     }
 
     [HttpPost("register")]
@@ -29,13 +32,7 @@ public class AuthController : ControllerBase
         var user = await _authService.LoginAsync(dto.Email, dto.Password);
         if (user == null) return Unauthorized();
 
-        Response.Cookies.Append("refreshToken", user.RefreshToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true, // set to true in production
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTime.UtcNow.AddDays(7)
-        });
+        Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
 
         user.RefreshToken = null; // Don't send to frontend
         return Ok(user);
@@ -57,15 +54,7 @@ public class AuthController : ControllerBase
         var user = await _authService.RefreshTokenAsync(refreshToken);
         if (user == null) return Unauthorized();
 
-        Response.Cookies.Append("refreshToken", user.RefreshToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.None, // needs to be accessible from angular frontend
-            Expires = DateTime.UtcNow.AddDays(7),
-            IsEssential = true,
-            Path = "/api/auth"
-        });
+        Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
 
         user.RefreshToken = null;
         return Ok(user);
@@ -76,5 +65,17 @@ public class AuthController : ControllerBase
     {
         Response.Cookies.Delete("refreshToken");
         return NoContent();
+    }
+    private CookieOptions GetRefreshCookieOptions()
+    {
+        return new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = _env.EnvironmentName != "Development",
+            SameSite = SameSiteMode.None,
+            Expires = DateTime.UtcNow.AddDays(7),
+            IsEssential = true,
+            Path = "/api/auth"
+        };
     }
 }
