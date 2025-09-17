@@ -5,7 +5,7 @@ using CarTransportDashboard.Repository;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using Xunit;
-
+namespace CarTransportDashboard.Tests.Repository;
 public class DriverRepositoryTests
 {
     [Fact]

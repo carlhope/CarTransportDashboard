@@ -7,7 +7,7 @@ using CarTransportDashboard.Models;
 using CarTransportDashboard.Repository;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
-
+namespace CarTransportDashboard.Tests.Repository;
 public class TransportJobRepositoryTests
 {
     private ApplicationDbContext GetDbContext()

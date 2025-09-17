@@ -3,6 +3,8 @@ using CarTransportDashboard.Models.Dtos.Auth;
 using CarTransportDashboard.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
+namespace CarTransportDashboard.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase

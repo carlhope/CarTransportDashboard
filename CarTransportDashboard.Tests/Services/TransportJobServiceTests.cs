@@ -8,7 +8,7 @@ using CarTransportDashboard.Repository.Interfaces;
 using CarTransportDashboard.Services;
 using Moq;
 using Xunit;
-
+namespace CarTransportDashboard.Tests.Services;
 public class TransportJobServiceTests
 {
     private readonly Mock<ITransportJobRepository> _jobRepoMock = new();
