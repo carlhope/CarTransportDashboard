@@ -33,6 +33,8 @@ builder.Services.AddScoped<ITransportJobRepository, TransportJobRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 builder.Services.AddScoped<ITransportJobService, TransportJobService>();
+builder.Services.AddScoped<IVehicleService, VehicleService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddCors(options =>
 {
@@ -40,7 +42,8 @@ builder.Services.AddCors(options =>
     {
         builder.WithOrigins("http://localhost:4200")
                .AllowAnyHeader()
-               .AllowAnyMethod();
+               .AllowAnyMethod()
+               .AllowCredentials();
     });
 });
 

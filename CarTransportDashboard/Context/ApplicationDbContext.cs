@@ -14,6 +14,7 @@ namespace CarTransportDashboard.Context
 
         public DbSet<Vehicle> Vehicles => Set<Vehicle>();
         public DbSet<TransportJob> TransportJobs => Set<TransportJob>();
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
