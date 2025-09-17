@@ -5,6 +5,7 @@ using CarTransportDashboard.Repository.Interfaces;
 using CarTransportDashboard.Services.Interfaces;
 using CarTransportDashboard.Repository;
 using CarTransportDashboard.Services;
+using CarTransportDashboard.Models;
 
 
 
@@ -62,5 +63,64 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    // Ensure database is created
+    context.Database.EnsureCreated();
+
+    // Seed only if empty
+    if (!context.TransportJobs.Any())
+    {
+        var vehicle1 = new Vehicle
+        {
+            Id = Guid.NewGuid(),
+            Make = "Ford",
+            Model = "Transit",
+            RegistrationNumber = "AB12 XYZ"
+        };
+
+        var vehicle2 = new Vehicle
+        {
+            Id = Guid.NewGuid(),
+            Make = "Mercedes",
+            Model = "Sprinter",
+            RegistrationNumber = "CD34 LMN"
+        };
+
+        context.Vehicles.AddRange(vehicle1, vehicle2);
+
+        context.TransportJobs.AddRange(
+            new TransportJob
+            {
+                Id = Guid.NewGuid(),
+                Title = "Pickup from Manchester",
+                Description = "Collect vehicle from Manchester depot",
+                Status = JobStatus.Available,
+                PickupLocation = "Manchester",
+                DropoffLocation = "Liverpool",
+                ScheduledDate = DateTime.Today.AddDays(2),
+                AssignedVehicleId = vehicle1.Id
+            },
+            new TransportJob
+            {
+                Id = Guid.NewGuid(),
+                Title = "Delivery to Birmingham",
+                Description = "Deliver vehicle to Birmingham client",
+                Status = JobStatus.InProgress,
+                PickupLocation = "Leeds",
+                DropoffLocation = "Birmingham",
+                ScheduledDate = DateTime.Today.AddDays(1),
+                AssignedVehicleId = vehicle2.Id
+            }
+        );
+
+        context.SaveChanges();
+    }
+}
+
 
 app.Run();
+
+
