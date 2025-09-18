@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { Vehicle } from '../models/vehicle';
-import { ModelMapperService } from './model-mapper';
+import { Vehicle } from '../../models/vehicle';
+import { ModelMapperService } from '../model-mapper/model-mapper';
 
 @Injectable({
   providedIn: 'root'

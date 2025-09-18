@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Vehicle } from '../models/vehicle';
-import { MinimalUser } from '../models/minimal-user';
-import { TransportJob } from '../models/transport-job';
+import { Vehicle } from '../../models/vehicle';
+import { MinimalUser } from '../../models/minimal-user';
+import { TransportJob } from '../../models/transport-job';
 
 @Injectable({
   providedIn: 'root'

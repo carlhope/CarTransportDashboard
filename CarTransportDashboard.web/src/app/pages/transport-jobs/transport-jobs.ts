@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { TransportJobService } from '../../services/transport-job';
+import { TransportJobService } from '../../services/transport-job/transport-job';
 import { TransportJob } from '../../models/transport-job';
 import {NgFor, NgIf} from '@angular/common';
 

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import{TransportJob, JobStatus} from '../models/transport-job';
+import{TransportJob, JobStatus} from '../../models/transport-job';
 import {HttpClient} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
-import {Vehicle} from '../models/vehicle';
-import {MinimalUser} from '../models/minimal-user';
-import {ModelMapperService} from './model-mapper';
+import {Vehicle} from '../../models/vehicle';
+import {MinimalUser} from '../../models/minimal-user';
+import {ModelMapperService} from '../model-mapper/model-mapper';
 
 @Injectable({
   providedIn: 'root'
