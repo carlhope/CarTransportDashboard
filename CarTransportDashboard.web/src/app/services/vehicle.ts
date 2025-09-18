@@ -24,4 +24,15 @@ export class VehicleService {
       map(data => this.mapper.toVehicle(data))
     );
   }
+  create(vehicle: Vehicle): Observable<Vehicle> {
+    return this.http.post<Vehicle>(this.apiUrl, vehicle);
+  }
+
+  update(id: string, vehicle: Vehicle): Observable<Vehicle> {
+    return this.http.put<Vehicle>(`${this.apiUrl}/${id}`, vehicle);
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }
