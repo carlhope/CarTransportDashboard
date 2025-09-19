@@ -28,9 +28,10 @@ export class TransportJobService {
       map(data => this.mapper.toTransportJob(data))
     );
   }
-  create(job: TransportJob): Observable<TransportJob> {
-    return this.http.post<TransportJob>(this.apiUrl, job);
+  create(payload: { dto: TransportJob }): Observable<TransportJob> {
+    return this.http.post<TransportJob>(this.apiUrl, payload);
   }
+
 
   update(id: string, job: TransportJob): Observable<TransportJob> {
     return this.http.put<TransportJob>(`${this.apiUrl}/${id}`, job);

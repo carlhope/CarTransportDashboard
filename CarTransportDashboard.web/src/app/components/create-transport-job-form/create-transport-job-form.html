@@ -1,0 +1,51 @@
+<p class="text-lg font-semibold mb-4 text-gray-700">Create Transport Job</p>
+
+<form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="space-y-6 bg-white p-6 rounded-lg shadow-md max-w-xl mx-auto">
+  <div>
+    <label class="block text-sm font-medium text-gray-700">Title</label>
+    <input formControlName="title" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700">Description</label>
+    <textarea formControlName="description" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"></textarea>
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-grey-700">Status</label>
+    <select formControlName="status">
+      <option [value]="0">Available</option>
+      <option [value]="1">InProgress</option>
+      <option [value]="2">Completed</option>
+    </select>
+
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700">Pickup Location</label>
+    <input formControlName="pickupLocation" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700">Dropoff Location</label>
+    <input formControlName="dropoffLocation" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700">Scheduled Date</label>
+    <input type="date" formControlName="scheduledDate" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700">Assigned Vehicle ID</label>
+    <input formControlName="assignedVehicleId" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700">Assigned Driver ID</label>
+    <input formControlName="assignedDriverId" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+  </div>
+
+  <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">Create Job</button>
+</form>
+
