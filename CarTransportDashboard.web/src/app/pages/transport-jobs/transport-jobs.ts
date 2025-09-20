@@ -17,6 +17,8 @@ export class TransportJobs implements OnInit {
   ngOnInit(): void {
     this.jobService.getJobs().subscribe(jobs => {
       this.jobs = jobs;
+      debugger;
+      console.log(this.jobs);
     });
   }
 }

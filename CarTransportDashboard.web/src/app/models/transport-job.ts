@@ -1,7 +1,8 @@
 import { Vehicle } from './vehicle';
 import {MinimalUser} from './minimal-user';
+import { JobStatus } from './job-status';
 
-export type JobStatus = 'Available' | 'InProgress' | 'Completed';
+ 
 
 export interface TransportJob {
   id?: string;

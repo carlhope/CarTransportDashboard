@@ -22,7 +22,7 @@ export class CreateTransportJobForm implements OnInit {
     this.jobForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
-      status: [JobStatus.IsAvailable, Validators.required],
+      status: [JobStatus.Available, Validators.required],
       pickupLocation: ['', Validators.required],
       dropoffLocation: ['', Validators.required],
       scheduledDate: ['', Validators.required],
@@ -32,7 +32,7 @@ export class CreateTransportJobForm implements OnInit {
   }
 
   ngOnInit() {
-    debugger;
+    //debugger;
     console.log('CreateTransportJobForm initialized');
   }
 
@@ -41,10 +41,11 @@ export class CreateTransportJobForm implements OnInit {
     if (this.jobForm.valid) {
       const job: TransportJob = {
         ...this.jobForm.value,
-        scheduledDate: new Date(this.jobForm.value.scheduledDate),
+        scheduledDate: new Date(this.jobForm.value.scheduledDate).toISOString(),
         id: '00000000-0000-0000-0000-000000000000' // Temporary ID, should be removed when integrated with backend
 
       };
+      //debugger;
       this.submitJob.emit(job);
     }
   }

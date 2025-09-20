@@ -16,7 +16,9 @@ export class CreateTransportJob{
   }
 
   handleSubmit($event: TransportJob) {
-    const payload = { dto: $event }; // wrap in 'dto'
+    const payload = $event;
+    console.log('Submitting job:', payload);
+    //debugger;
     this.jobService.create(payload).subscribe({
       next: created => console.log('Created job:', created),
       error: err => console.error('Error creating job:', err)

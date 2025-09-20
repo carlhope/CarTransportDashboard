@@ -4,6 +4,7 @@ import { TransportJobService } from '../../../services/transport-job/transport-j
 import { TransportJob } from '../../../models/transport-job';
 import { CreateTransportJobForm } from '../../../components/create-transport-job-form/create-transport-job-form';
 import { of, throwError } from 'rxjs';
+import { JobStatus } from '../../../models/job-status';
 
 
 describe('CreateTransportJob', () => {
@@ -35,7 +36,7 @@ describe('CreateTransportJob', () => {
     const mockJob: TransportJob = {
       title: 'Test Job',
       description: 'Test Description',
-      status: 'Available',
+      status: JobStatus.Available,
       pickupLocation: 'Depot A',
       dropoffLocation: 'Warehouse B',
       scheduledDate: new Date().toISOString()
@@ -52,7 +53,7 @@ describe('CreateTransportJob', () => {
     const mockJob: TransportJob = {
       title: 'Failing Job',
       description: 'Should fail',
-      status: 'Available',
+      status: JobStatus.Available,
       pickupLocation: 'X',
       dropoffLocation: 'Y',
       scheduledDate: new Date().toISOString()

@@ -11,6 +11,7 @@ namespace CarTransportDashboard.Mappers
             {
                 Id = job.Id,
                 Title = job.Title,
+                Description = job.Description,
                 PickupLocation = job.PickupLocation,
                 DropoffLocation = job.DropoffLocation,
                 ScheduledDate = job.ScheduledDate,
@@ -26,6 +27,7 @@ namespace CarTransportDashboard.Mappers
             {
                 Id = dto.Id,
                 Title = dto.Title,
+                Description = dto.Description,
                 PickupLocation = dto.PickupLocation,
                 DropoffLocation = dto.DropoffLocation,
                 ScheduledDate = dto.ScheduledDate,
@@ -38,6 +40,7 @@ namespace CarTransportDashboard.Mappers
         public static void UpdateModel(TransportJob job, TransportJobWriteDto dto)
         {
             job.Title = dto.Title;
+            job.Description = dto.Description;
             job.PickupLocation = dto.PickupLocation;
             job.DropoffLocation = dto.DropoffLocation;
             job.ScheduledDate = dto.ScheduledDate;

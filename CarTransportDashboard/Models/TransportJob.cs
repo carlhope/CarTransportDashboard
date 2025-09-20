@@ -9,7 +9,7 @@ namespace CarTransportDashboard.Models
         public JobStatus Status { get; set; }
         public string PickupLocation { get; set; } = string.Empty;
         public string DropoffLocation { get; set; } = string.Empty;
-        public DateTime ScheduledDate { get; set; }
+        public DateTime? ScheduledDate { get; set; }
 
         // Foreign Keys
         public Guid? AssignedVehicleId { get; set; }

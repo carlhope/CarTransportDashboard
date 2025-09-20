@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TransportJobService } from './transport-job';
 import { ModelMapperService } from '../model-mapper/model-mapper';
-import { JobStatus, TransportJob } from '../../models/transport-job';
+import {TransportJob } from '../../models/transport-job';
+import { JobStatus } from '../../models/job-status';
 
 describe('TransportJobService', () => {
   let service: TransportJobService;
@@ -41,7 +42,7 @@ describe('TransportJobService', () => {
       pickupLocation: 'Warehouse A',
       dropoffLocation: 'Clinic B',
       scheduledDate: new Date('2025-09-19T10:00:00').toISOString(),
-      status: 'Available' as JobStatus
+      status: JobStatus.Available
     };
 
     mapperSpy.toTransportJob.and.returnValue(mappedJob);

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import{TransportJob, JobStatus} from '../../models/transport-job';
+import{TransportJob} from '../../models/transport-job';
+import { JobStatus } from '../../models/job-status';
 import {HttpClient} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
+import { tap } from 'rxjs/operators';
 import {Vehicle} from '../../models/vehicle';
 import {MinimalUser} from '../../models/minimal-user';
 import {ModelMapperService} from '../model-mapper/model-mapper';
@@ -10,15 +12,20 @@ import {ModelMapperService} from '../model-mapper/model-mapper';
   providedIn: 'root'
 })
 export class TransportJobService {
-  private apiUrl = 'http://localhost:5176/api/transportjobs';
+  private apiUrl = 'https://localhost:7286/api/transportjobs';
 
   constructor(private http: HttpClient, private mapper: ModelMapperService) {}
 
-  getJobs(): Observable<TransportJob[]> {
-    return this.http.get<any[]>(this.apiUrl).pipe(
-      map(jobs => jobs.map(job => this.mapper.toTransportJob(job)))
-    );
-  }
+getJobs(): Observable<TransportJob[]> {
+  return this.http.get<any[]>(this.apiUrl).pipe(
+    tap(raw => console.log('Raw API response:', raw)),
+    map(jobs => {
+      const mapped = jobs.map(job => this.mapper.toTransportJob(job));
+      console.log('Mapped jobs:', mapped);
+      return mapped;
+    })
+  );
+}
   getAvailableJobs(): Observable<TransportJob[]> {
   return this.http.get<TransportJob[]>(`${this.apiUrl}/available`);
 }
@@ -28,7 +35,9 @@ export class TransportJobService {
       map(data => this.mapper.toTransportJob(data))
     );
   }
-  create(payload: { dto: TransportJob }): Observable<TransportJob> {
+  create(payload:  TransportJob ): Observable<TransportJob> {
+    console.log('Creating job with payload:', payload);
+    //debugger;
     return this.http.post<TransportJob>(this.apiUrl, payload);
   }
 
