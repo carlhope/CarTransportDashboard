@@ -67,7 +67,7 @@ namespace CarTransportDashboard.Services
             await _jobRepo.UpdateAsync(job);
         }
 
-        public async Task AssignDriverToJobAsync(Guid jobId, Guid driverId)
+        public async Task AssignDriverToJobAsync(Guid jobId, string driverId)
         {
             var jobTask = _jobRepo.GetByIdAsync(jobId);
             var isDriverTask = _driverRepo.IsInDriverRoleAsync(driverId.ToString());
@@ -78,7 +78,7 @@ namespace CarTransportDashboard.Services
             if (job == null || !isDriver)
                 throw new KeyNotFoundException("Job not found or user is not a driver.");
 
-            job.AssignedDriverId = driverId.ToString();
+            job.AssignedDriverId = driverId;
             await _jobRepo.UpdateAsync(job);
         }
 

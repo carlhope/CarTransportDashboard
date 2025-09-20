@@ -10,6 +10,6 @@ namespace CarTransportDashboard.Repository.Interfaces
         Task AddAsync(TransportJob job);
         Task UpdateAsync(TransportJob job);
         Task AssignVehicleAsync(Guid jobId, Guid vehicleId);
-        Task AssignDriverAsync(Guid jobId, Guid driverId);
+        Task AssignDriverAsync(Guid jobId, string driverId);
     }
 }

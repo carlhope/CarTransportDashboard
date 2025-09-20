@@ -103,7 +103,7 @@ public class TransportJobsController : ControllerBase
 
     // POST: api/transportjobs/{id}/assign-driver
     [HttpPost("{id}/assign-driver")]
-    public async Task<ActionResult> AssignDriver(Guid id, [FromBody] Guid driverId)
+    public async Task<ActionResult> AssignDriver(Guid id, [FromBody] string driverId)
     {
         var existing = await _jobService.GetJobAsync(id);
         if (existing == null)

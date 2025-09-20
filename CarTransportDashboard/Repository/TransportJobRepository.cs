@@ -45,12 +45,12 @@ namespace CarTransportDashboard.Repository{
         }
     }
 
-    public async Task AssignDriverAsync(Guid jobId, Guid driverId)
+    public async Task AssignDriverAsync(Guid jobId, string driverId)
     {
         var job = await GetByIdAsync(jobId);
         if (job != null)
         {
-            job.AssignedDriverId = driverId.ToString();
+            job.AssignedDriverId = driverId;
             await UpdateAsync(job);
         }
     }

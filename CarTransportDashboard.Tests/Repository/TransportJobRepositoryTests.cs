@@ -71,7 +71,7 @@ public class TransportJobRepositoryTests
         var context = GetDbContext();
         var job1 = new TransportJob { Id = Guid.NewGuid(), Title = "A", AssignedVehicleId = Guid.NewGuid(), AssignedDriverId = null };
         var job2 = new TransportJob { Id = Guid.NewGuid(), Title = "B", AssignedVehicleId = null, AssignedDriverId = null };
-        var job3 = new TransportJob { Id = Guid.NewGuid(), Title = "C", AssignedVehicleId = Guid.NewGuid(), AssignedDriverId = "driver" };
+        var job3 = new TransportJob { Id = Guid.NewGuid(), Title = "C", AssignedVehicleId = Guid.NewGuid(), AssignedDriverId = Guid.NewGuid().ToString() };
         context.TransportJobs.AddRange(job1, job2, job3);
         await context.SaveChangesAsync();
 
@@ -147,11 +147,11 @@ public class TransportJobRepositoryTests
         await context.SaveChangesAsync();
 
         var repo = GetRepository(context);
-        var driverId = Guid.NewGuid();
+        var driverId = Guid.NewGuid().ToString();
         await repo.AssignDriverAsync(job.Id, driverId);
 
         var updated = context.TransportJobs.Find(job.Id);
-        Assert.Equal(driverId.ToString(), updated.AssignedDriverId);
+        Assert.Equal(driverId, updated.AssignedDriverId);
     }
 
     [Fact]
@@ -160,7 +160,7 @@ public class TransportJobRepositoryTests
         var context = GetDbContext();
         var repo = GetRepository(context);
 
-        await repo.AssignDriverAsync(Guid.NewGuid(), Guid.NewGuid());
+        await repo.AssignDriverAsync(Guid.NewGuid(), Guid.NewGuid().ToString());
 
         Assert.Empty(context.TransportJobs);
     }

@@ -83,9 +83,10 @@ public class TransportJobServiceTests
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);
 
         var service = CreateService();
-        await service.AcceptJobAsync(jobId, "driver1");
+        var driver = Guid.NewGuid().ToString();
+        await service.AcceptJobAsync(jobId, driver);
 
-        Assert.Equal("driver1", job.AssignedDriverId);
+        Assert.Equal(driver, job.AssignedDriverId);
         Assert.Equal(JobStatus.InProgress, job.Status);
         _jobRepoMock.Verify(r => r.UpdateAsync(job), Times.Once);
     }
@@ -97,7 +98,7 @@ public class TransportJobServiceTests
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync((TransportJob)null);
 
         var service = CreateService();
-        await Assert.ThrowsAsync<KeyNotFoundException>(() => service.AcceptJobAsync(jobId, "driver1"));
+        await Assert.ThrowsAsync<KeyNotFoundException>(() => service.AcceptJobAsync(jobId, Guid.NewGuid().ToString()));
     }
 
     [Fact]
@@ -147,7 +148,7 @@ public class TransportJobServiceTests
     public async Task AssignDriverToJobAsync_UpdatesDriver_WhenJobExistsAndIsDriver()
     {
         var jobId = Guid.NewGuid();
-        var driverId = Guid.NewGuid();
+        var driverId = Guid.NewGuid().ToString();
         var job = new TransportJob { Id = jobId };
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);
         _driverRepoMock.Setup(r => r.IsInDriverRoleAsync(driverId.ToString())).ReturnsAsync(true);
@@ -155,7 +156,7 @@ public class TransportJobServiceTests
         var service = CreateService();
         await service.AssignDriverToJobAsync(jobId, driverId);
 
-        Assert.Equal(driverId.ToString(), job.AssignedDriverId);
+        Assert.Equal(driverId, job.AssignedDriverId);
         _jobRepoMock.Verify(r => r.UpdateAsync(job), Times.Once);
     }
 
@@ -163,7 +164,7 @@ public class TransportJobServiceTests
     public async Task AssignDriverToJobAsync_Throws_WhenJobNotFoundOrNotDriver()
     {
         var jobId = Guid.NewGuid();
-        var driverId = Guid.NewGuid();
+        var driverId = Guid.NewGuid().ToString();
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync((TransportJob)null);
         _driverRepoMock.Setup(r => r.IsInDriverRoleAsync(driverId.ToString())).ReturnsAsync(false);
 
