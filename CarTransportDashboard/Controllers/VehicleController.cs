@@ -41,19 +41,23 @@ public class VehicleController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> CreateVehicle([FromBody] VehicleWriteDto dto)
     {
-        await _vehicleService.CreateVehicleAsync(dto);
-        return CreatedAtAction(nameof(GetVehicle), new { id = dto.Id }, null);
+        var result = await _vehicleService.CreateVehicleAsync(dto);
+
+        if (!result.Success || result.Data is null)
+            return BadRequest(result.Message);
+
+        return CreatedAtAction(nameof(GetVehicle), new { id = result.Data.Id }, result.Data);
     }
 
     // PUT: api/vehicles/{id}
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateVehicle(Guid id, [FromBody] VehicleWriteDto dto)
     {
-        var existing = await _vehicleService.GetVehicleAsync(id);
-        if (existing == null)
-            return NotFound();
+        var result = await _vehicleService.UpdateVehicleAsync(id, dto);
 
-        await _vehicleService.UpdateVehicleAsync(id, dto);
+        if (!result.Success)
+            return NotFound(result.Message);
+
         return NoContent();
     }
 
@@ -61,11 +65,11 @@ public class VehicleController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteVehicle(Guid id)
     {
-        var existing = await _vehicleService.GetVehicleAsync(id);
-        if (existing == null)
-            return NotFound();
+        var result = await _vehicleService.DeleteVehicleAsync(id);
 
-        await _vehicleService.DeleteVehicleAsync(id);
+        if (!result.Success)
+            return NotFound(result.Message);
+
         return NoContent();
     }
 }

@@ -1,11 +1,14 @@
+using CarTransportDashboard.Context;
+using CarTransportDashboard.Models;
+using CarTransportDashboard.Repository;
+using Castle.Core.Logging;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CarTransportDashboard.Context;
-using CarTransportDashboard.Models;
-using CarTransportDashboard.Repository;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 namespace CarTransportDashboard.Tests.Repository;
 public class TransportJobRepositoryTests
@@ -17,10 +20,12 @@ public class TransportJobRepositoryTests
             .Options;
         return new ApplicationDbContext(options);
     }
+    
 
     private TransportJobRepository GetRepository(ApplicationDbContext context)
     {
-        return new TransportJobRepository(context);
+        var logger = new Mock<ILogger<TransportJobRepository>>().Object;
+        return new TransportJobRepository(context, logger);
     }
 
     [Fact]

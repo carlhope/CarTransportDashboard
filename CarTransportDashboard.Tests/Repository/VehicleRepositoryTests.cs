@@ -1,11 +1,14 @@
+using CarTransportDashboard.Context;
+using CarTransportDashboard.Models;
+using CarTransportDashboard.Repository;
+using CarTransportDashboard.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CarTransportDashboard.Context;
-using CarTransportDashboard.Models;
-using CarTransportDashboard.Repository;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 namespace CarTransportDashboard.Tests.Repository;
 public class VehicleRepositoryTests
@@ -20,7 +23,8 @@ public class VehicleRepositoryTests
 
     private VehicleRepository GetRepository(ApplicationDbContext context)
     {
-        return new VehicleRepository(context);
+        var logger = new Mock<ILogger<VehicleRepository>>().Object;
+        return new VehicleRepository(context, logger);
     }
 
     [Fact]
@@ -72,10 +76,12 @@ public class VehicleRepositoryTests
         var repo = GetRepository(context);
         var vehicle = new Vehicle { Id = Guid.NewGuid(), Make = "Honda", Model = "Civic", RegistrationNumber = "DEF456" };
 
-        await repo.AddAsync(vehicle);
+        var result = await repo.AddAsync(vehicle);
 
+        Assert.True(result.Success);
+        Assert.NotNull(result.Data);
+        Assert.Equal(vehicle.Id, result.Data.Id);
         Assert.Equal(1, context.Vehicles.Count());
-        Assert.Equal(vehicle.Id, context.Vehicles.First().Id);
     }
 
     [Fact]
@@ -88,9 +94,11 @@ public class VehicleRepositoryTests
 
         var repo = GetRepository(context);
         vehicle.Model = "6";
-        await repo.UpdateAsync(vehicle);
-
+        var result = await repo.UpdateAsync(vehicle);
         var updated = context.Vehicles.Find(vehicle.Id);
+
+        Assert.True(result.Success);
+        Assert.Equal("6", result.Data.Model);
         Assert.Equal("6", updated.Model);
     }
 
@@ -103,8 +111,10 @@ public class VehicleRepositoryTests
         await context.SaveChangesAsync();
 
         var repo = GetRepository(context);
-        await repo.DeleteAsync(vehicle.Id);
+        var result = await repo.DeleteAsync(vehicle.Id);
 
+        Assert.True(result.Success);
+        Assert.Equal(vehicle.Id, result.Data.Id);
         Assert.Empty(context.Vehicles);
     }
 
@@ -114,8 +124,10 @@ public class VehicleRepositoryTests
         var context = GetDbContext();
         var repo = GetRepository(context);
 
-        await repo.DeleteAsync(Guid.NewGuid());
+        var result = await repo.DeleteAsync(Guid.NewGuid());
 
+        Assert.False(result.Success);
+        Assert.Equal("Vehicle not found.", result.Message);
         Assert.Empty(context.Vehicles);
     }
 

@@ -1,3 +1,4 @@
+using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.Vehicle;
 namespace CarTransportDashboard.Services.Interfaces
 {
@@ -5,9 +6,9 @@ namespace CarTransportDashboard.Services.Interfaces
     {
         Task<VehicleReadDto?> GetVehicleAsync(Guid id);
         Task<IEnumerable<VehicleReadDto>> GetVehiclesAsync();
-        Task CreateVehicleAsync(VehicleWriteDto dto);
-        Task UpdateVehicleAsync(Guid id, VehicleWriteDto dto);
-        Task DeleteVehicleAsync(Guid id);
+        Task<OperationResult<VehicleReadDto>> UpdateVehicleAsync(Guid id, VehicleWriteDto dto);
+        Task<OperationResult<VehicleReadDto>> DeleteVehicleAsync(Guid id);
+        Task<OperationResult<VehicleReadDto>> CreateVehicleAsync(VehicleWriteDto dto);
     }
 
 }

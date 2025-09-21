@@ -1,7 +1,9 @@
 using CarTransportDashboard.Models;
-using Microsoft.AspNetCore.Mvc;
 using CarTransportDashboard.Models.Dtos.TransportJob;
 using CarTransportDashboard.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CarTransportDashboard.Controllers;
 
@@ -49,67 +51,77 @@ public class TransportJobsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TransportJobReadDto>> CreateJob([FromBody] TransportJobWriteDto dto)
     {
-        var createdJob = await _jobService.CreateJobAsync(dto);
-        return CreatedAtAction(nameof(GetJob), new { id = createdJob.Id }, createdJob);
+        var result = await _jobService.CreateJobAsync(dto);
+
+        if (!result.Success || result.Data is null)
+            return BadRequest(result.Message);
+
+        return CreatedAtAction(nameof(GetJob), new { id = result.Data.Id }, result.Data);
     }
 
     // PUT: api/transportjobs/{id}
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateJob(Guid id, [FromBody] TransportJobWriteDto dto)
     {
-        var existing = await _jobService.GetJobAsync(id);
-        if (existing == null)
-            return NotFound();
+        var result = await _jobService.UpdateJobAsync(id, dto);
 
-        await _jobService.UpdateJobAsync(id, dto);
-        return NoContent();
+        if (!result.Success)
+            return NotFound(result.Message);
+
+        return Ok(result.Data);
     }
 
     // PATCH: api/transportjobs/{id}/status
     [HttpPatch("{id}/status")]
     public async Task<ActionResult> UpdateJobStatus(Guid id, [FromBody] JobStatus status)
     {
-        var existing = await _jobService.GetJobAsync(id);
-        if (existing == null)
-            return NotFound();
+        var result = await _jobService.UpdateJobStatusAsync(id, status);
 
-        await _jobService.UpdateJobStatusAsync(id, status);
-        return NoContent();
+        if (!result.Success)
+            return NotFound(result.Message);
+
+        return Ok(result.Data);
     }
 
     // POST: api/transportjobs/{id}/accept
     [HttpPost("{id}/accept")]
-    public async Task<ActionResult> AcceptJob(Guid id, [FromBody] string driverId)
+    [Authorize(Roles = "Driver")] // Optional: restrict to drivers
+    public async Task<ActionResult> AcceptJob(Guid id)
     {
-        var existing = await _jobService.GetJobAsync(id);
-        if (existing == null)
-            return NotFound();
+        var driverId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(driverId))
+            return Unauthorized("User identity not found.");
 
-        await _jobService.AcceptJobAsync(id, driverId);
-        return NoContent();
+        var result = await _jobService.AcceptJobAsync(id, driverId);
+
+        if (!result.Success)
+            return NotFound(result.Message);
+
+        return Ok(result.Data);
     }
 
     // POST: api/transportjobs/{id}/assign-vehicle
     [HttpPost("{id}/assign-vehicle")]
     public async Task<ActionResult> AssignVehicle(Guid id, [FromBody] Guid vehicleId)
     {
-        var existing = await _jobService.GetJobAsync(id);
-        if (existing == null)
-            return NotFound();
+        var result = await _jobService.AssignVehicleToJobAsync(id, vehicleId);
 
-        await _jobService.AssignVehicleToJobAsync(id, vehicleId);
-        return NoContent();
+        if (!result.Success)
+            return NotFound(result.Message);
+
+        return Ok(result.Data);
     }
 
     // POST: api/transportjobs/{id}/assign-driver
     [HttpPost("{id}/assign-driver")]
+    [Authorize(Roles = "Admin,Dispatcher")] // restrict to admins/dispatchers
     public async Task<ActionResult> AssignDriver(Guid id, [FromBody] string driverId)
     {
-        var existing = await _jobService.GetJobAsync(id);
-        if (existing == null)
-            return NotFound();
+        var result = await _jobService.AssignDriverToJobAsync(id, driverId);
 
-        await _jobService.AssignDriverToJobAsync(id, driverId);
-        return NoContent();
+        if (!result.Success)
+            return NotFound(result.Message);
+        
+        return Ok(result.Data);
     }
 }

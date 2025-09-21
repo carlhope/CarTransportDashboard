@@ -29,11 +29,18 @@ public class VehicleServiceTests
 
         Vehicle? addedVehicle = null;
         _vehicleRepoMock.Setup(r => r.AddAsync(It.IsAny<Vehicle>()))
-            .Callback<Vehicle>(v => addedVehicle = v)
-            .Returns(Task.CompletedTask);
+       .ReturnsAsync((Vehicle v) =>
+       {
+           addedVehicle = v;
+           return OperationResult<Vehicle>.CreateSuccess(v);
+       });
 
         var service = CreateService();
-        await service.CreateVehicleAsync(dto);
+        var result = await service.CreateVehicleAsync(dto);
+
+        Assert.True(result.Success);
+        Assert.NotNull(result.Data);
+        Assert.Equal(dto.Id, result.Data.Id);
 
         Assert.NotNull(addedVehicle);
         Assert.Equal(dto.Id, addedVehicle.Id);
@@ -47,12 +54,17 @@ public class VehicleServiceTests
     public async Task DeleteVehicleAsync_CallsDeleteAsync()
     {
         var id = Guid.NewGuid();
-        _vehicleRepoMock.Setup(r => r.DeleteAsync(id)).Returns(Task.CompletedTask);
+        _vehicleRepoMock.Setup(r => r.DeleteAsync(id))
+            .ReturnsAsync(OperationResult<Vehicle>.CreateSuccess(new Vehicle { Id = id }));
+
 
         var service = CreateService();
-        await service.DeleteVehicleAsync(id);
+        var result = await service.DeleteVehicleAsync(id);
 
         _vehicleRepoMock.Verify(r => r.DeleteAsync(id), Times.Once);
+        Assert.True(result.Success);
+        Assert.Equal(id, result.Data.Id);
+
     }
 
     [Fact]
@@ -127,13 +139,18 @@ public class VehicleServiceTests
             RegistrationNumber = "CCC333"
         };
         _vehicleRepoMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(existingVehicle);
-        _vehicleRepoMock.Setup(r => r.UpdateAsync(existingVehicle)).Returns(Task.CompletedTask);
+        _vehicleRepoMock.Setup(r => r.UpdateAsync(existingVehicle))
+            .ReturnsAsync(OperationResult<Vehicle>.CreateSuccess(existingVehicle));
+
 
         var service = CreateService();
-        await service.UpdateVehicleAsync(id, dto);
+        var result = await service.UpdateVehicleAsync(id, dto);
 
         Assert.Equal("6", existingVehicle.Model);
         _vehicleRepoMock.Verify(r => r.UpdateAsync(existingVehicle), Times.Once);
+        Assert.True(result.Success);
+        Assert.Equal("6", result.Data.Model);
+
     }
 
     [Fact]
@@ -150,6 +167,9 @@ public class VehicleServiceTests
         _vehicleRepoMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync((Vehicle)null);
 
         var service = CreateService();
-        await Assert.ThrowsAsync<KeyNotFoundException>(() => service.UpdateVehicleAsync(id, dto));
+        var result = await service.UpdateVehicleAsync(id, dto);
+
+        Assert.False(result.Success);
+        Assert.Equal($"Vehicle with ID {id} not found.", result.Message);
     }
 }

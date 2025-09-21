@@ -7,13 +7,12 @@ namespace CarTransportDashboard.Services.Interfaces
         Task<TransportJobReadDto?> GetJobAsync(Guid id);
         Task<IEnumerable<TransportJobReadDto>> GetJobsAsync();
         Task<IEnumerable<TransportJobReadDto>> GetAvailableJobsAsync();
-        Task AcceptJobAsync(Guid jobId, string driverId);
-        Task UpdateJobStatusAsync(Guid jobId, JobStatus status);
-        Task AssignVehicleToJobAsync(Guid jobId, Guid vehicleId);
-        Task AssignDriverToJobAsync(Guid jobId, string driverId);
-        // For create/update, add methods using WriteDto if needed
-        Task<TransportJobReadDto> CreateJobAsync(TransportJobWriteDto dto);
-        Task UpdateJobAsync(Guid jobId, TransportJobWriteDto dto);
+        Task<OperationResult<TransportJobReadDto>> CreateJobAsync(TransportJobWriteDto dto);
+        Task<OperationResult<TransportJob>> AssignDriverToJobAsync(Guid jobId, string driverId);
+        Task<OperationResult<TransportJob>> AssignVehicleToJobAsync(Guid jobId, Guid vehicleId);
+        Task<OperationResult<TransportJob>> UpdateJobStatusAsync(Guid jobId, JobStatus status);
+        Task<OperationResult<TransportJob>> AcceptJobAsync(Guid jobId, string driverId);
+        Task<OperationResult<TransportJobReadDto>> UpdateJobAsync(Guid jobId, TransportJobWriteDto dto);
     }
 
 }

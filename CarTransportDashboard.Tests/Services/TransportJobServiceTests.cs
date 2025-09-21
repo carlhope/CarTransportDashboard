@@ -95,10 +95,13 @@ public class TransportJobServiceTests
     public async Task AcceptJobAsync_Throws_WhenJobNotFound()
     {
         var jobId = Guid.NewGuid();
+        var driverId = Guid.NewGuid().ToString();
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync((TransportJob)null);
 
         var service = CreateService();
-        await Assert.ThrowsAsync<KeyNotFoundException>(() => service.AcceptJobAsync(jobId, Guid.NewGuid().ToString()));
+        var result = await service.AcceptJobAsync(jobId, driverId);
+        Assert.False(result.Success);
+        Assert.Equal("Transport job not found.", result.Message);
     }
 
     [Fact]
@@ -141,7 +144,9 @@ public class TransportJobServiceTests
         _vehicleRepoMock.Setup(r => r.GetByIdAsync(vehicleId)).ReturnsAsync((Vehicle)null);
 
         var service = CreateService();
-        await Assert.ThrowsAsync<KeyNotFoundException>(() => service.AssignVehicleToJobAsync(jobId, vehicleId));
+        var result = await service.AssignVehicleToJobAsync(jobId, vehicleId);
+        Assert.False(result.Success);
+        Assert.Equal("Job or vehicle not found.", result.Message);
     }
 
     [Fact]
@@ -169,7 +174,9 @@ public class TransportJobServiceTests
         _driverRepoMock.Setup(r => r.IsInDriverRoleAsync(driverId.ToString())).ReturnsAsync(false);
 
         var service = CreateService();
-        await Assert.ThrowsAsync<KeyNotFoundException>(() => service.AssignDriverToJobAsync(jobId, driverId));
+        var result = await service.AssignDriverToJobAsync(jobId, driverId);
+        Assert.False(result.Success);
+        Assert.Equal("Job not found or user is not a driver.", result.Message);
     }
 
     [Fact]
@@ -178,16 +185,19 @@ public class TransportJobServiceTests
         var dto = new TransportJobWriteDto { Id = Guid.NewGuid(), Title = "New Job", Status = JobStatus.Available };
         TransportJob? addedJob = null;
         _jobRepoMock.Setup(r => r.AddAsync(It.IsAny<TransportJob>()))
-            .Callback<TransportJob>(j => addedJob = j)
-            .Returns(Task.CompletedTask);
+             .ReturnsAsync((TransportJob j) =>
+             {
+                 addedJob = j;
+                 return OperationResult<TransportJob>.CreateSuccess(j);
+             });
 
         var service = CreateService();
         var result = await service.CreateJobAsync(dto);
 
         Assert.NotNull(result);
-        Assert.Equal(dto.Title, result.Title);
-        Assert.Equal(dto.Status, result.Status);
-        Assert.Equal(dto.Id, result.Id);
+        Assert.Equal(dto.Title, result.Data.Title);
+        Assert.Equal(dto.Status, result.Data.Status);
+        Assert.Equal(dto.Id, result.Data.Id);
         Assert.NotNull(addedJob);
     }
 
@@ -197,13 +207,18 @@ public class TransportJobServiceTests
         var jobId = Guid.NewGuid();
         var job = new TransportJob { Id = jobId, Title = "Old", Status = JobStatus.Available };
         var dto = new TransportJobWriteDto { Id = jobId, Title = "Updated", Status = JobStatus.InProgress };
+
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);
+        _jobRepoMock.Setup(r => r.UpdateAsync(It.IsAny<TransportJob>()))
+            .ReturnsAsync((TransportJob updatedJob) => OperationResult<TransportJob>.CreateSuccess(updatedJob));
 
         var service = CreateService();
-        await service.UpdateJobAsync(jobId, dto);
+        var result = await service.UpdateJobAsync(jobId, dto);
 
-        Assert.Equal("Updated", job.Title);
-        Assert.Equal(JobStatus.InProgress, job.Status);
+        Assert.True(result.Success);
+        Assert.NotNull(result.Data);
+        Assert.Equal("Updated", result.Data.Title);
+        Assert.Equal(JobStatus.InProgress, result.Data.Status);
         _jobRepoMock.Verify(r => r.UpdateAsync(job), Times.Once);
     }
 
@@ -215,6 +230,8 @@ public class TransportJobServiceTests
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync((TransportJob)null);
 
         var service = CreateService();
-        await Assert.ThrowsAsync<KeyNotFoundException>(() => service.UpdateJobAsync(jobId, dto));
+        var result = await service.UpdateJobAsync(jobId, dto);
+        Assert.False(result.Success);
+        Assert.Equal("Transport job not found.", result.Message);
     }
 }

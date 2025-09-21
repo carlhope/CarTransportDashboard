@@ -5,10 +5,10 @@ namespace CarTransportDashboard.Repository.Interfaces
 {
     Task<Vehicle?> GetByIdAsync(Guid id);
     Task<IEnumerable<Vehicle>> GetAllAsync();
-    Task AddAsync(Vehicle vehicle);
-    Task UpdateAsync(Vehicle vehicle);
-    Task DeleteAsync(Guid id);
     Task<bool> IsAssignedToActiveJobAsync(Guid vehicleId);
+    Task<OperationResult<Vehicle>> AddAsync(Vehicle vehicle);
+    Task<OperationResult<Vehicle>> UpdateAsync(Vehicle vehicle);
+    Task<OperationResult<Vehicle>> DeleteAsync(Guid id);
 }
 
 
