@@ -1,0 +1,11 @@
+<!-- job-item.component.html -->
+<div class="job-item">
+  <strong>title: {{ job.title }}</strong><br>
+  <mat-icon aria-hidden="true">assignment</mat-icon>
+  Status: {{jobStatusDisplay[job.status] }}<br>
+  <mat-icon aria-hidden="true">location_on</mat-icon>
+  Pickup: {{ job.pickupLocation }}<br>
+  <mat-icon aria-hidden="true">flag</mat-icon>
+  Dropoff: {{ job.dropoffLocation }}
+</div>
+

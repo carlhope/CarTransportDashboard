@@ -1,14 +1,11 @@
 <p>transport-jobs works!</p>
 <h2>Transport Jobs</h2>
 
-<ul *ngIf="jobs.length > 0; else noJobs">
-  <li *ngFor="let job of jobs">
-    <strong>{{ job.title }}</strong><br>
-    Status: {{ job.status }}<br>
-    Pickup: {{ job.pickupLocation }}<br>
-    Dropoff: {{ job.dropoffLocation }}
-  </li>
-</ul>
+<mat-list *ngIf="jobs.length > 0; else noJobs">
+  <app-transport-job-list-item *ngFor="let job of jobs" [job]="job"/>
+</mat-list>
+
+
 
 <ng-template #noJobs>
   <p>No jobs available.</p>
