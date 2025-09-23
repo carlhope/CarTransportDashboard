@@ -36,15 +36,47 @@
     <input type="date" formControlName="scheduledDate" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
   </div>
 
+  <!-- Vehicle Selection Toggle -->
   <div>
-    <label class="block text-sm font-medium text-gray-700">Assigned Vehicle ID</label>
-    <input formControlName="assignedVehicleId" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+    <label class="inline-flex items-center">
+      <input type="checkbox" formControlName="useNewVehicle" class="mr-2">
+      <span class="text-sm text-gray-700">Create New Vehicle</span>
+    </label>
   </div>
 
+  <!-- Existing Vehicle Dropdown -->
+  @if(!jobForm.get('useNewVehicle')?.value){
   <div>
-    <label class="block text-sm font-medium text-gray-700">Assigned Driver ID</label>
-    <input formControlName="assignedDriverId" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+    <label class="block text-sm font-medium text-gray-700">Assigned Vehicle</label>
+    <select formControlName="assignedVehicleId" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+      <option value="">Select a vehicle</option>
+      @for(vehicle of vehicles; track vehicle.id){
+      <option [value]="vehicle.id">
+        {{ vehicle.registrationNumber }} – {{ vehicle.make }} {{ vehicle.model }}
+      </option>
+      }
+    </select>
   </div>
+  }
+  @else{
+    <!-- New Vehicle Fields -->
+    <div formGroupName="assignedVehicle" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Vehicle Make</label>
+        <input formControlName="make" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Vehicle Model</label>
+        <input formControlName="model" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Registration Number</label>
+        <input formControlName="registrationNumber" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+      </div>
+    </div>
+  }
 
   <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">Create Job</button>
 </form>
