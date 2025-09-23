@@ -12,16 +12,6 @@
   </div>
 
   <div>
-    <label class="block text-sm font-medium text-grey-700">Status</label>
-    <select formControlName="status">
-      <option [value]="0">Available</option>
-      <option [value]="1">InProgress</option>
-      <option [value]="2">Completed</option>
-    </select>
-
-  </div>
-
-  <div>
     <label class="block text-sm font-medium text-gray-700">Pickup Location</label>
     <input formControlName="pickupLocation" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
   </div>
@@ -46,17 +36,31 @@
 
   <!-- Existing Vehicle Dropdown -->
   @if(!jobForm.get('useNewVehicle')?.value){
-  <div>
-    <label class="block text-sm font-medium text-gray-700">Assigned Vehicle</label>
-    <select formControlName="assignedVehicleId" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
-      <option value="">Select a vehicle</option>
-      @for(vehicle of vehicles; track vehicle.id){
-      <option [value]="vehicle.id">
-        {{ vehicle.registrationNumber }} – {{ vehicle.make }} {{ vehicle.model }}
-      </option>
-      }
-    </select>
-  </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Vehicle Registration</label>
+      <input [formControl]="registrationSearch" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+      <button type="button" (click)="lookupVehicle()" class="mt-2 bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600">
+        Find Vehicle
+      </button>
+    </div>
+
+    <!-- Vehicle Search Result -->
+    @if(matchedVehicle){
+      <div class="bg-green-50 p-4 rounded-md border border-green-300 mt-4">
+      <p class="text-sm text-green-700 font-medium">Vehicle Found:</p>
+      <p class="text-sm text-green-700">Make: {{ matchedVehicle.make }}</p>
+      <p class="text-sm text-green-700">Model: {{ matchedVehicle.model }}</p>
+      <p class="text-sm text-green-700">Registration: {{ matchedVehicle.registrationNumber }}</p>
+    </div>
+    }
+   @else{
+     <div class="bg-red-50 p-4 rounded-md border border-red-300 mt-4">
+       <p class="text-sm text-red-700 font-medium">No matches found for that registration.</p>
+     </div>
+   }
+
+
+
   }
   @else{
     <!-- New Vehicle Fields -->

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import{TransportJob} from '../../models/transport-job';
 import { JobStatus } from '../../models/job-status';
 import {HttpClient} from '@angular/common/http';
-import {map, Observable} from 'rxjs';
+import {map, of, Observable} from 'rxjs';
 import { tap } from 'rxjs/operators';
 import {Vehicle} from '../../models/vehicle';
 import {MinimalUser} from '../../models/minimal-user';

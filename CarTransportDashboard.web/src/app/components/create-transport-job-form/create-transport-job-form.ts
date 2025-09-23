@@ -1,8 +1,9 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {TransportJob} from '../../models/transport-job';
-import {TransportJobService} from '../../services/transport-job/transport-job';
+import {VehicleService} from '../../services/vehicle/vehicle';
 import {JobStatus} from '../../models/job-status';
+import {Vehicle} from '../../models/vehicle';
 
 @Component({
   selector: 'app-create-transport-job-form',
@@ -19,13 +20,18 @@ export class CreateTransportJobForm implements OnInit {
     { id: '1', make: 'Toyota', model: 'Camry', registrationNumber: 'ABC123' },
     { id: '2', make: 'Honda', model: 'Civic', registrationNumber: 'XYZ789' }
   ];
+  matchedVehicle: Vehicle | null = null;
+  vehicleSearchFailed = false;
+  registrationSearch: FormControl;
+
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private vehicleService: VehicleService
   ) {
+    this.registrationSearch = this.fb.control('');
     this.jobForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
-      status: [JobStatus.Available, Validators.required],
       pickupLocation: ['', Validators.required],
       dropoffLocation: ['', Validators.required],
       scheduledDate: ['', Validators.required],
@@ -50,8 +56,9 @@ export class CreateTransportJobForm implements OnInit {
 
       const job: TransportJob = {
         ...this.jobForm.value,
+        status: JobStatus.Available,
         scheduledDate: new Date(this.jobForm.value.scheduledDate).toISOString(),
-        id: '00000000-0000-0000-0000-000000000000' // Temporary ID, should be removed when integrated with backend
+        id: '00000000-0000-0000-0000-000000000000' // Temporary ID should be removed when integrated with backend
 
       };
       if (!this.jobForm.value.useNewVehicle) {
@@ -69,6 +76,28 @@ export class CreateTransportJobForm implements OnInit {
 
     }
   }
+  lookupVehicle() {
+    const reg = this.registrationSearch.value?.trim();
+    if (!reg) return;
+
+    this.vehicleService.getVehicleByRegistration(reg).subscribe({
+      next: (vehicle) => {
+        if (vehicle) {
+          this.matchedVehicle = vehicle;
+          this.vehicleSearchFailed = false;
+          this.jobForm.patchValue({ assignedVehicleId: vehicle.id });
+        } else {
+          this.matchedVehicle = null;
+          this.vehicleSearchFailed = true;
+        }
+      },
+      error: () => {
+        this.matchedVehicle = null;
+        this.vehicleSearchFailed = true;
+      }
+    });
+  }
+
 
 
 }

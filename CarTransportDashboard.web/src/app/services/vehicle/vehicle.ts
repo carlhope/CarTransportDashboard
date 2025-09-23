@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, of, map } from 'rxjs';
 import { Vehicle } from '../../models/vehicle';
 import { ModelMapperService } from '../model-mapper/model-mapper';
 
@@ -34,5 +34,14 @@ export class VehicleService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+  getVehicleByRegistration(reg: string): Observable<Vehicle> {
+    const tempVehicle: Vehicle = {
+      id: '00000000-0000-0000-0000-000000000000',
+      make: 'Toyota',
+      model: 'Corolla',
+      registrationNumber: reg
+    };
+    return of(tempVehicle); // ✅ returns an Observable
   }
 }
