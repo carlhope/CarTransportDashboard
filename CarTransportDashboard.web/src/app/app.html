@@ -1,10 +1,54 @@
-<nav>
-  <a routerLink="/dashboard">Dashboard</a><br>
-  <a routerLink="/vehicles">Vehicles</a><br>
-  <a routerLink="/transport-jobs">Jobs</a><br>
-  <a routerLink="/drivers">Drivers</a><br>
-  <a routerLink="/reports">Reports</a><br>
-</nav>
+<div class="flex flex-col min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-gray-800 text-white p-4 flex justify-between items-center">
+    <h1 class="text-lg font-semibold">Car Transport Dashboard</h1>
+
+    <!-- Mobile menu toggle -->
+    <button class="md:hidden" (click)="toggleMobileMenu()">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+           viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+  </header>
+
+  <!-- Mobile dropdown menu -->
+  @if(mobileMenuOpen){
+    <nav class="md:hidden bg-gray-700 text-white p-4 space-y-2">
+      <a routerLink="/dashboard" class="block hover:underline">Dashboard</a>
+      <a routerLink="/vehicles" class="block hover:underline">Vehicles</a>
+      <a routerLink="/transport-jobs" class="block hover:underline">Jobs</a>
+      <a routerLink="/drivers" class="block hover:underline">Drivers</a>
+      <a routerLink="/reports" class="block hover:underline">Reports</a>
+    </nav>
+  }
 
 
-<router-outlet />
+  <!-- Main layout -->
+  <div class="flex flex-1">
+    <!-- Sidebar nav (desktop only) -->
+    <aside class="w-64 bg-gray-100 p-4 hidden md:block">
+      <nav class="space-y-2">
+        <a routerLink="/dashboard" class="block p-2 hover:bg-gray-200 rounded">Dashboard</a>
+        <a routerLink="/vehicles" class="block p-2 hover:bg-gray-200 rounded">Vehicles</a>
+        <a routerLink="/transport-jobs" class="block p-2 hover:bg-gray-200 rounded">Jobs</a>
+        <a routerLink="/drivers" class="block p-2 hover:bg-gray-200 rounded">Drivers</a>
+        <a routerLink="/reports" class="block p-2 hover:bg-gray-200 rounded">Reports</a>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="flex-1 p-6 bg-white">
+      <router-outlet/>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white text-center p-4">
+    &copy; 2025 Car Transport Dashboard. All rights reserved.
+  </footer>
+</div>
+
+

@@ -9,4 +9,9 @@ import { RouterOutlet, RouterLink } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('CarTransportDashboard.web');
+  mobileMenuOpen = false;
+
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
 }
