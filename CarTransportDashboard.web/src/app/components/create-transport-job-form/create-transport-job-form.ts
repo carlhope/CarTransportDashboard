@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors} from "@angular/forms";
 import {TransportJob} from '../../models/transport-job';
 import {VehicleService} from '../../services/vehicle/vehicle';
 import {JobStatus} from '../../models/job-status';
@@ -21,6 +21,7 @@ export class CreateTransportJobForm implements OnInit {
     { id: '2', make: 'Honda', model: 'Civic', registrationNumber: 'XYZ789' }
   ];
   matchedVehicle: Vehicle | null = null;
+  hasSearchedRegistration = false;
   vehicleSearchFailed = false;
   registrationSearch: FormControl;
 
@@ -39,10 +40,13 @@ export class CreateTransportJobForm implements OnInit {
       assignedVehicleId: [''],
       assignedVehicle: this.fb.group({
         make: ['', Validators.required],
-        model: [''],
+        model: ['', Validators.required],
         registrationNumber: ['', Validators.required]
       })
-    });
+
+    }
+      )
+
   }
 
   ngOnInit() {
@@ -75,8 +79,13 @@ export class CreateTransportJobForm implements OnInit {
       });
 
     }
+    else{
+      this.jobForm.markAllAsTouched();
+      return;
+    }
   }
   lookupVehicle() {
+    this.hasSearchedRegistration = true;
     const reg = this.registrationSearch.value?.trim();
     if (!reg) return;
 
@@ -97,7 +106,6 @@ export class CreateTransportJobForm implements OnInit {
       }
     });
   }
-
 
 
 }

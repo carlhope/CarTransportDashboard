@@ -4,27 +4,41 @@
   <div>
     <label class="block text-sm font-medium text-gray-700">Title</label>
     <input formControlName="title" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+    @if (jobForm.get('title')?.invalid && jobForm.get('title')?.touched) {
+      <p class="text-red-600 text-sm mt-1">Title is required.</p>
+    }
   </div>
 
   <div>
     <label class="block text-sm font-medium text-gray-700">Description</label>
     <textarea formControlName="description" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"></textarea>
+    @if (jobForm.get('description')?.invalid && jobForm.get('description')?.touched) {
+      <p class="text-red-600 text-sm mt-1">Description is required.</p>
+    }
   </div>
 
   <div>
     <label class="block text-sm font-medium text-gray-700">Pickup Location</label>
     <input formControlName="pickupLocation" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+    @if (jobForm.get('pickupLocation')?.invalid && jobForm.get('pickupLocation')?.touched) {
+      <p class="text-red-600 text-sm mt-1">Pickup location is required.</p>
+    }
   </div>
 
   <div>
     <label class="block text-sm font-medium text-gray-700">Dropoff Location</label>
     <input formControlName="dropoffLocation" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+    @if (jobForm.get('dropoffLocation')?.invalid && jobForm.get('dropoffLocation')?.touched) {
+      <p class="text-red-600 text-sm mt-1">Dropoff location is required.</p>
+    }
   </div>
 
   <div>
     <label class="block text-sm font-medium text-gray-700">Scheduled Date</label>
     <input type="date" formControlName="scheduledDate" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
   </div>
+<div>
+  <!--Vehicle Assignment-->
 
   <!-- Vehicle Selection Toggle -->
   <div>
@@ -44,22 +58,26 @@
       </button>
     </div>
 
-    <!-- Vehicle Search Result -->
-    @if(matchedVehicle){
-      <div class="bg-green-50 p-4 rounded-md border border-green-300 mt-4">
-      <p class="text-sm text-green-700 font-medium">Vehicle Found:</p>
-      <p class="text-sm text-green-700">Make: {{ matchedVehicle.make }}</p>
-      <p class="text-sm text-green-700">Model: {{ matchedVehicle.model }}</p>
-      <p class="text-sm text-green-700">Registration: {{ matchedVehicle.registrationNumber }}</p>
-    </div>
-    }
-   @else{
-     <div class="bg-red-50 p-4 rounded-md border border-red-300 mt-4">
-       <p class="text-sm text-red-700 font-medium">No matches found for that registration.</p>
-     </div>
-   }
-
-
+            <!-- Vehicle Search Result -->
+            @if(matchedVehicle){
+              <div class="bg-green-50 p-4 rounded-md border border-green-300 mt-4">
+              <p class="text-sm text-green-700 font-medium">Vehicle Found:</p>
+              <p class="text-sm text-green-700">Make: {{ matchedVehicle.make }}</p>
+              <p class="text-sm text-green-700">Model: {{ matchedVehicle.model }}</p>
+              <p class="text-sm text-green-700">Registration: {{ matchedVehicle.registrationNumber }}</p>
+            </div>
+            }
+           @else if(hasSearchedRegistration){
+             <div class="bg-red-50 p-4 rounded-md border border-red-300 mt-4">
+               <p class="text-sm text-red-700 font-medium">No matches found for that registration.</p>
+               <p class="text-sm text-yellow-700 font-medium">Please enter another registration number and click "Find Vehicle".</p>
+             </div>
+           }
+            @else{
+              <div class="bg-yellow-50 p-4 rounded-md border border-yellow-300 mt-4">
+                <p class="text-sm text-yellow-700 font-medium">Please enter a registration number and click "Find Vehicle".</p>
+              </div>
+            }
 
   }
   @else{
@@ -81,6 +99,8 @@
       </div>
     </div>
   }
+
+</div>
 
   <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">Create Job</button>
 </form>
