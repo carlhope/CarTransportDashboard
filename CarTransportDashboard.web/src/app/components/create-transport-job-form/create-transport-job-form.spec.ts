@@ -20,20 +20,26 @@ describe('CreateTransportJobForm', () => {
 
   it('should create the form with default values', () => {
     expect(component.jobForm).toBeTruthy();
-    expect(component.jobForm.get('status')?.value).toBe('Available');
+    expect(component.jobForm.get('useNewVehicle')?.value).toBeFalse();
+
   });
 
   it('should mark form as invalid when required fields are empty', () => {
     component.jobForm.setValue({
       title: '',
       description: '',
-      status: '',
       pickupLocation: '',
       dropoffLocation: '',
       scheduledDate: '',
+      useNewVehicle: false,
       assignedVehicleId: '',
-      assignedDriverId: ''
+      assignedVehicle: {
+        make: '',
+        model: '',
+        registrationNumber: ''
+      }
     });
+
 
     expect(component.jobForm.valid).toBeFalse();
   });
@@ -44,13 +50,18 @@ describe('CreateTransportJobForm', () => {
     component.jobForm.setValue({
       title: 'Test Job',
       description: 'Test Description',
-      status: 'Available',
       pickupLocation: 'Location A',
       dropoffLocation: 'Location B',
       scheduledDate: '2025-09-20',
+      useNewVehicle: false,
       assignedVehicleId: 'v1',
-      assignedDriverId: 'u1'
+      assignedVehicle: {
+        make: '',
+        model: '',
+        registrationNumber: ''
+      }
     });
+
 
     component.onSubmit();
 

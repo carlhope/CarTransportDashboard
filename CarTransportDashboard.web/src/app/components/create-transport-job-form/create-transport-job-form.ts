@@ -4,11 +4,13 @@ import {TransportJob} from '../../models/transport-job';
 import {VehicleService} from '../../services/vehicle/vehicle';
 import {JobStatus} from '../../models/job-status';
 import {Vehicle} from '../../models/vehicle';
+import {HttpClientModule} from '@angular/common/http';
 
 @Component({
   selector: 'app-create-transport-job-form',
     imports: [
-        ReactiveFormsModule
+        ReactiveFormsModule,
+      HttpClientModule
     ],
   templateUrl: './create-transport-job-form.html',
   styleUrl: './create-transport-job-form.scss'
@@ -36,16 +38,15 @@ export class CreateTransportJobForm implements OnInit {
       pickupLocation: ['', Validators.required],
       dropoffLocation: ['', Validators.required],
       scheduledDate: ['', Validators.required],
-      useNewVehicle: false, // toggle
+      useNewVehicle: false,
       assignedVehicleId: [''],
       assignedVehicle: this.fb.group({
-        make: ['', Validators.required],
-        model: ['', Validators.required],
-        registrationNumber: ['', Validators.required]
+        make: [''],
+        model: [''],
+        registrationNumber: ['']
       })
+    }, { validators: this.vehicleAssignmentValidator.bind(this) });
 
-    }
-      )
 
   }
 
@@ -101,8 +102,6 @@ export class CreateTransportJobForm implements OnInit {
       next: (vehicle) => {
         if (vehicle) {
           this.matchedVehicle = vehicle;
-          // TODO: Replace with form-level validator to avoid temporary patching
-          this.jobForm.patchValue({assignedVehicle: vehicle});
           this.vehicleSearchFailed = false;
           this.jobForm.patchValue({ assignedVehicleId: vehicle.id });
         } else {
@@ -115,6 +114,24 @@ export class CreateTransportJobForm implements OnInit {
         this.vehicleSearchFailed = true;
       }
     });
+  }
+  private vehicleAssignmentValidator(form: AbstractControl): ValidationErrors | null {
+    const group = form as FormGroup;
+    const useNew = group.get('useNewVehicle')?.value;
+    const assignedVehicle = group.get('assignedVehicle')?.value;
+    const assignedVehicleId = group.get('assignedVehicleId')?.value;
+
+    if (useNew) {
+      if (!assignedVehicle?.make || !assignedVehicle?.model || !assignedVehicle?.registrationNumber) {
+        return { vehicleRequired: true };
+      }
+    } else {
+      if (!assignedVehicleId) {
+        return { vehicleIdRequired: true };
+      }
+    }
+
+    return null;
   }
 
 

@@ -53,7 +53,7 @@ describe('TransportJobService', () => {
       expect(mapperSpy.toTransportJob).toHaveBeenCalledWith(mockRawJobs[0]);
     });
 
-    const req = httpMock.expectOne('http://localhost:5176/api/transportjobs');
+    const req = httpMock.expectOne('https://localhost:7286/api/transportjobs');
     expect(req.request.method).toBe('GET');
     req.flush(mockRawJobs);
   });

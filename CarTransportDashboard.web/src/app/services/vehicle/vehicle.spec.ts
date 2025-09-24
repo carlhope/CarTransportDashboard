@@ -48,8 +48,7 @@ describe('VehicleService', () => {
         expect(vehicles[0]).toEqual(mappedVehicle);
         expect(mapperSpy.toVehicle).toHaveBeenCalledWith(mockRawVehicles[0]);
       });
-
-      const req = httpMock.expectOne('http://localhost:5176/api/vehicles');
+      const req = httpMock.expectOne('https://localhost:7286/api/vehicle');
       expect(req.request.method).toBe('GET');
       req.flush(mockRawVehicles);
     });
@@ -75,7 +74,7 @@ describe('VehicleService', () => {
         expect(mapperSpy.toVehicle).toHaveBeenCalledWith(mockRawVehicle);
       });
 
-      const req = httpMock.expectOne('http://localhost:5176/api/vehicles/v2');
+      const req = httpMock.expectOne('https://localhost:7286/api/vehicle/v2');
       expect(req.request.method).toBe('GET');
       req.flush(mockRawVehicle);
     });
@@ -95,7 +94,7 @@ describe('VehicleService', () => {
         expect(response).toEqual(newVehicle);
       });
 
-      const req = httpMock.expectOne('http://localhost:5176/api/vehicles');
+      const req = httpMock.expectOne('https://localhost:7286/api/vehicle');
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(newVehicle);
       req.flush(newVehicle);
@@ -116,7 +115,7 @@ describe('VehicleService', () => {
         expect(response).toEqual(updatedVehicle);
       });
 
-      const req = httpMock.expectOne('http://localhost:5176/api/vehicles/v4');
+      const req = httpMock.expectOne('https://localhost:7286/api/vehicle/v4');
       expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual(updatedVehicle);
       req.flush(updatedVehicle);
@@ -129,7 +128,7 @@ describe('VehicleService', () => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('http://localhost:5176/api/vehicles/v5');
+      const req = httpMock.expectOne('https://localhost:7286/api/vehicle/v5');
       expect(req.request.method).toBe('DELETE');
       req.flush(null);
     });
