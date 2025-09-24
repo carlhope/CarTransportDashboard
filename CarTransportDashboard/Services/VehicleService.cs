@@ -20,6 +20,11 @@ namespace CarTransportDashboard.Services
             VehicleReadDto vehicleDto = VehicleMapper.ToDto(vehicle);
             return vehicleDto;
         }
+        public async Task<Vehicle?> GetVehicleByRegistrationNumberAsync(string registrationNumber)
+        {
+            registrationNumber = NormalizeRegistration(registrationNumber);
+            return await _vehicleRepository.GetByRegistrationNumberAsync(registrationNumber);
+        }
 
         public async Task<IEnumerable<VehicleReadDto>> GetVehiclesAsync()
         {
@@ -30,6 +35,8 @@ namespace CarTransportDashboard.Services
         public async Task<OperationResult<VehicleReadDto>> CreateVehicleAsync(VehicleWriteDto dto)
         {
             var vehicle = VehicleMapper.ToModel(dto);
+            vehicle.RegistrationNumber = NormalizeRegistration(vehicle.RegistrationNumber);
+
             var result = await _vehicleRepository.AddAsync(vehicle);
 
             if (!result.Success || result.Data is null)
@@ -57,6 +64,7 @@ namespace CarTransportDashboard.Services
                 return OperationResult<VehicleReadDto>.CreateFailure($"Vehicle with ID {id} not found.");
 
             VehicleMapper.UpdateModel(existingVehicle, dto);
+            existingVehicle.RegistrationNumber = NormalizeRegistration(existingVehicle.RegistrationNumber);
             var result = await _vehicleRepository.UpdateAsync(existingVehicle);
 
             if (!result.Success || result.Data is null)
@@ -65,6 +73,14 @@ namespace CarTransportDashboard.Services
             var readDto = VehicleMapper.ToDto(result.Data);
             return OperationResult<VehicleReadDto>.CreateSuccess(readDto, "Vehicle updated successfully.");
         }
+        private static string NormalizeRegistration(string input) //ensures consistent format
+        {
+            return new string(input
+                .Where(char.IsLetterOrDigit)
+                .ToArray())
+                .ToUpperInvariant();
+        }
+
 
     }
 }

@@ -56,7 +56,11 @@ export class CreateTransportJobForm implements OnInit {
 
 
   onSubmit() {
+    console.log('CreateTransportJobForm submitted');
+    console.log(this.jobForm);
     if (this.jobForm.valid) {
+      console.log("form valid");
+      console.log(this.jobForm.value);
 
       const job: TransportJob = {
         ...this.jobForm.value,
@@ -67,9 +71,13 @@ export class CreateTransportJobForm implements OnInit {
       };
       if (!this.jobForm.value.useNewVehicle) {
         job.assignedVehicle = undefined;
+        console.log(job.assignedVehicleId);
       } else {
         job.assignedVehicleId = undefined;
+        console.log(job.assignedVehicle);
       }
+
+
 
       //debugger;
       this.submitJob.emit(job);
@@ -93,6 +101,8 @@ export class CreateTransportJobForm implements OnInit {
       next: (vehicle) => {
         if (vehicle) {
           this.matchedVehicle = vehicle;
+          // TODO: Replace with form-level validator to avoid temporary patching
+          this.jobForm.patchValue({assignedVehicle: vehicle});
           this.vehicleSearchFailed = false;
           this.jobForm.patchValue({ assignedVehicleId: vehicle.id });
         } else {

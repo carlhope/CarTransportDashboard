@@ -36,6 +36,17 @@ public class VehicleController : ControllerBase
 
         return Ok(vehicle);
     }
+    //GET: api/vehicle/registration/{registrationNumber}
+    [HttpGet("registration/{registrationNumber}")]
+    public async Task<ActionResult<VehicleReadDto>> GetVehicleByRegistrationNumber(string registrationNumber)
+    {
+        if (string.IsNullOrWhiteSpace(registrationNumber))
+            return BadRequest("Registration number must be provided.");
+        var vehicle = await _vehicleService.GetVehicleByRegistrationNumberAsync(registrationNumber);
+        if (vehicle == null)
+            return NotFound();
+        return Ok(vehicle);
+    }
 
     // POST: api/vehicles
     [HttpPost]

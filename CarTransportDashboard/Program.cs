@@ -78,7 +78,7 @@ using (var scope = app.Services.CreateScope())
             Id = Guid.NewGuid(),
             Make = "Ford",
             Model = "Transit",
-            RegistrationNumber = "AB12 XYZ"
+            RegistrationNumber = "AB12XYZ"
         };
 
         var vehicle2 = new Vehicle
@@ -86,7 +86,7 @@ using (var scope = app.Services.CreateScope())
             Id = Guid.NewGuid(),
             Make = "Mercedes",
             Model = "Sprinter",
-            RegistrationNumber = "CD34 LMN"
+            RegistrationNumber = "CD34LMN"
         };
 
         context.Vehicles.AddRange(vehicle1, vehicle2);

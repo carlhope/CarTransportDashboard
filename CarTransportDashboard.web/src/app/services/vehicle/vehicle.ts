@@ -8,7 +8,8 @@ import { ModelMapperService } from '../model-mapper/model-mapper';
   providedIn: 'root'
 })
 export class VehicleService {
-  private apiUrl = 'http://localhost:5176/api/vehicles';
+  private apiUrl = 'https://localhost:7286/api/vehicle';
+  //private apiUrl = 'http://localhost:5176/api/vehicle';
 
   constructor(private http: HttpClient, private mapper: ModelMapperService) {}
 
@@ -36,12 +37,11 @@ export class VehicleService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
   getVehicleByRegistration(reg: string): Observable<Vehicle> {
-    const tempVehicle: Vehicle = {
-      id: '00000000-0000-0000-0000-000000000000',
-      make: 'Toyota',
-      model: 'Corolla',
-      registrationNumber: reg
-    };
-    return of(tempVehicle); // ✅ returns an Observable
+    const normalizedReg = reg.replace(/\s+/g, '').toUpperCase();
+    //debugger;
+    console.log(normalizedReg);
+    console.log(this.apiUrl+"/registration/"+normalizedReg);
+    return this.http.get<Vehicle>(`${this.apiUrl}/registration/${normalizedReg}`);
+
   }
 }

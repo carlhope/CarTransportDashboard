@@ -30,50 +30,6 @@ namespace CarTransportDashboard.Context
                 .HasOne(j => j.AssignedDriver)
                 .WithMany(u => u.AssignedJobs)
                 .HasForeignKey(j => j.AssignedDriverId);
-                // Seed Vehicles
-    var vehicle1 = new Vehicle
-    {
-        Id = Guid.NewGuid(),
-        Make = "Ford",
-        Model = "Transit",
-        RegistrationNumber = "AB12 XYZ"
-    };
-
-    var vehicle2 = new Vehicle
-    {
-        Id = Guid.NewGuid(),
-        Make = "Mercedes",
-        Model = "Sprinter",
-        RegistrationNumber = "CD34 LMN"
-    };
-
-    builder.Entity<Vehicle>().HasData(vehicle1, vehicle2);
-
-    // Seed TransportJobs
-    builder.Entity<TransportJob>().HasData(
-        new TransportJob
-        {
-            Id = Guid.NewGuid(),
-            Title = "Pickup from Manchester",
-            Description = "Collect vehicle from Manchester depot",
-            Status = JobStatus.Available,
-            PickupLocation = "Manchester",
-            DropoffLocation = "Liverpool",
-            ScheduledDate = DateTime.Today.AddDays(2),
-            AssignedVehicleId = vehicle1.Id
-        },
-        new TransportJob
-        {
-            Id = Guid.NewGuid(),
-            Title = "Delivery to Birmingham",
-            Description = "Deliver vehicle to Birmingham client",
-            Status = JobStatus.InProgress,
-            PickupLocation = "Leeds",
-            DropoffLocation = "Birmingham",
-            ScheduledDate = DateTime.Today.AddDays(1),
-            AssignedVehicleId = vehicle2.Id
-        }
-    );
         }
 
     }

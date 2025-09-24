@@ -19,7 +19,11 @@ namespace CarTransportDashboard.Repository
         public async Task<Vehicle?> GetByIdAsync(Guid id) =>
         await _context.Vehicles.FindAsync(id);
 
-    public async Task<IEnumerable<Vehicle>> GetAllAsync() =>
+        public async Task<Vehicle?> GetByRegistrationNumberAsync(string registrationNumber) =>
+            await _context.Vehicles
+            .FirstOrDefaultAsync(v => v.RegistrationNumber == registrationNumber);
+
+        public async Task<IEnumerable<Vehicle>> GetAllAsync() =>
         await _context.Vehicles.ToListAsync();
 
         public async Task<OperationResult<Vehicle>> AddAsync(Vehicle vehicle)
