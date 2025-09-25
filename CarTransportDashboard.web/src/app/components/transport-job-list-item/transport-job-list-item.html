@@ -1,11 +1,74 @@
-<!-- job-item.component.html -->
-<div class="job-item">
-  <strong>title: {{ job.title }}</strong><br>
-  <mat-icon aria-hidden="true">assignment</mat-icon>
-  Status: {{jobStatusDisplay[job.status] }}<br>
-  <mat-icon aria-hidden="true">location_on</mat-icon>
-  Pickup: {{ job.pickupLocation }}<br>
-  <mat-icon aria-hidden="true">flag</mat-icon>
-  Dropoff: {{ job.dropoffLocation }}
+<div class="job-item space-y-2 p-4 border rounded-md shadow-sm bg-white">
+  <!-- Title -->
+  <div class="text-lg font-semibold">
+    {{ job.title }}
+  </div>
+
+  <!-- Status -->
+  <div class="flex items-center text-sm text-gray-700">
+    <mat-icon aria-hidden="true" class="mr-1">assignment</mat-icon>
+    Status: {{ jobStatusDisplay[job.status] }}
+  </div>
+
+  <!-- Scheduled Date -->
+  <div class="flex items-center text-sm text-gray-700">
+    <mat-icon aria-hidden="true" class="mr-1">event</mat-icon>
+    Scheduled: {{ job.scheduledDate | date:'mediumDate' }}
+  </div>
+
+  <!-- Pickup Location -->
+  <div class="flex items-center text-sm text-gray-700">
+    <mat-icon aria-hidden="true" class="mr-1">location_on</mat-icon>
+    Pickup: {{ job.pickupLocation }}
+  </div>
+
+  <!-- Dropoff Location -->
+  <div class="flex items-center text-sm text-gray-700">
+    <mat-icon aria-hidden="true" class="mr-1">flag</mat-icon>
+    Dropoff: {{ job.dropoffLocation }}
+  </div>
+
+  <!-- Assigned Vehicle -->
+  <div class="mt-4 border-t pt-4 text-sm text-gray-700">
+    <div class="font-medium mb-2">Assigned Vehicle</div>
+
+    @if (job.assignedVehicle) {
+      <div class="flex items-center">
+        <mat-icon aria-hidden="true" class="mr-1">directions_car</mat-icon>
+        {{ job.assignedVehicle.make }} {{ job.assignedVehicle.model }}
+      </div>
+
+      <div class="flex items-center">
+        <mat-icon aria-hidden="true" class="mr-1">confirmation_number</mat-icon>
+        Reg: {{ job.assignedVehicle.registrationNumber }}
+      </div>
+
+      <div class="flex items-center">
+        <mat-icon aria-hidden="true" class="mr-1">local_gas_station</mat-icon>
+        Fuel: {{ job.assignedVehicle.fuelType }}
+      </div>
+    } @else {
+      <div class="text-gray-500 italic">
+        No vehicle assigned
+      </div>
+    }
+  </div>
+
+  <!-- Assigned Driver -->
+  <div class="mt-4 border-t pt-4 text-sm text-gray-700">
+    <div class="font-medium mb-2">Assigned Driver</div>
+
+    @if (job.assignedDriver) {
+      <div class="flex items-center">
+        <mat-icon aria-hidden="true" class="mr-1">person</mat-icon>
+        {{ job.assignedDriver.fullName }}
+      </div>
+    } @else {
+      <div class="text-gray-500 italic">
+        No driver assigned
+      </div>
+    }
+  </div>
 </div>
+
 

@@ -13,6 +13,7 @@ export class ModelMapperService {
       make: data.make,
       model: data.model,
       registrationNumber: data.registrationNumber,
+      fuelType: data.fuelType,
       assignedJobs: Array.isArray(data.assignedJobs)
         ? data.assignedJobs.map((job: any) => this.toTransportJob(job))
         : undefined

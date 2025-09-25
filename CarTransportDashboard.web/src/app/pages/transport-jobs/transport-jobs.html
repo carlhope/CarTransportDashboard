@@ -1,17 +1,26 @@
-<p>transport-jobs works!</p>
-<h2>Transport Jobs</h2>
-@if(jobs.length > 0){
-  <mat-list>
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-2xl font-semibold">Transport Jobs</h2>
+  <button
+    routerLink="create"
+    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm"
+  >
+    Create Job
+  </button>
+</div>
 
-    @for(job of jobs; track job.id){
-    <app-transport-job-list-item [job]="job"/>
+<p>transport-jobs works!</p>
+
+@if (jobs.length > 0) {
+  <mat-list>
+    @for (job of jobs; track job.id) {
+      <app-transport-job-list-item [job]="job" />
     }
   </mat-list>
+} @else {
+  <p>No jobs available.</p>
 }
-@else{
-    <p>No jobs available.</p>
+<router-outlet></router-outlet>
 
-}
 
 
 

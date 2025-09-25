@@ -43,7 +43,8 @@ export class CreateTransportJobForm implements OnInit {
       assignedVehicle: this.fb.group({
         make: [''],
         model: [''],
-        registrationNumber: ['']
+        registrationNumber: [''],
+        fuelType: ['']
       })
     }, { validators: this.vehicleAssignmentValidator.bind(this) });
 
@@ -122,7 +123,7 @@ export class CreateTransportJobForm implements OnInit {
     const assignedVehicleId = group.get('assignedVehicleId')?.value;
 
     if (useNew) {
-      if (!assignedVehicle?.make || !assignedVehicle?.model || !assignedVehicle?.registrationNumber) {
+      if (!assignedVehicle?.make || !assignedVehicle?.model || !assignedVehicle?.registrationNumber || !assignedVehicle?.fuelType) {
         return { vehicleRequired: true };
       }
     } else {
