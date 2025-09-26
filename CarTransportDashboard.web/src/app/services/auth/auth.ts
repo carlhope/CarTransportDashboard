@@ -1,44 +1,35 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {RegisterModel, LoginModel, UserModel, JwtPayload} from '../../models/user';
-import { Observable } from 'rxjs';
-import {jwtDecode} from 'jwt-decode';
+import { RegisterModel, LoginModel, UserModel } from '../../models/user';
+import { Observable, tap } from 'rxjs';
+import { UserStoreService } from './user-store-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly baseUrl = 'http://localhost:5000/api/auth'; // adjust if needed
+  private readonly baseUrl = 'http://localhost:5000/api/auth';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private userStore: UserStoreService) {}
 
   register(dto: RegisterModel): Observable<UserModel> {
-    return this.http.post<UserModel>(`${this.baseUrl}/register`, dto, { withCredentials: true });
+    return this.http.post<UserModel>(`${this.baseUrl}/register`, dto, { withCredentials: true })
+      .pipe(tap(user => this.userStore.setUser(user)));
   }
 
   login(dto: LoginModel): Observable<UserModel> {
-    return this.http.post<UserModel>(`${this.baseUrl}/login`, dto, { withCredentials: true });
+    return this.http.post<UserModel>(`${this.baseUrl}/login`, dto, { withCredentials: true })
+      .pipe(tap(user => this.userStore.setUser(user)));
   }
 
   refresh(): Observable<UserModel> {
-    return this.http.post<UserModel>(`${this.baseUrl}/refresh`, {}, { withCredentials: true });
+    return this.http.post<UserModel>(`${this.baseUrl}/refresh`, {}, { withCredentials: true })
+      .pipe(tap(user => this.userStore.setUser(user)));
   }
 
   logout(): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/logout`, {}, { withCredentials: true });
+    return this.http.post<void>(`${this.baseUrl}/logout`, {}, { withCredentials: true })
+      .pipe(tap(() => this.userStore.clearUser()));
   }
-
-  getUserRoles(): string[] {
-    const token = localStorage.getItem('accessToken');
-    if (!token) return [];
-
-    const decoded = jwtDecode<JwtPayload>(token);
-    return Array.isArray(decoded.roles) ? decoded.roles : [decoded.roles];
-  }
-
-  hasRole(role: string): boolean {
-    return this.getUserRoles().includes(role);
-  }
-
 }
 

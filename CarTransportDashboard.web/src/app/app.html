@@ -22,6 +22,13 @@
       <a routerLink="/transport-jobs" class="block hover:underline">Jobs</a>
       <a routerLink="/drivers" class="block hover:underline">Drivers</a>
       <a routerLink="/reports" class="block hover:underline">Reports</a>
+      <app-session-action
+        [user]="userStore.user$ | async"
+        (onLogout)="handleLogout()"
+      ></app-session-action>
+
+
+
     </nav>
   }
 
@@ -36,6 +43,12 @@
         <a routerLink="/transport-jobs" class="block p-2 hover:bg-gray-200 rounded">Jobs</a>
         <a routerLink="/drivers" class="block p-2 hover:bg-gray-200 rounded">Drivers</a>
         <a routerLink="/reports" class="block p-2 hover:bg-gray-200 rounded">Reports</a>
+        <app-session-action
+          [user]="userStore.user$ | async"
+          (onLogout)="handleLogout()"
+        ></app-session-action>
+
+
       </nav>
     </aside>
 
