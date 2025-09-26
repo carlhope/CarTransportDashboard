@@ -1,7 +1,7 @@
 import {TransportJob} from './transport-job';
 
 export interface RegisterModel {
-  email: string;
+  email: string|null|undefined;
   password: string;
   fullName: string;
 }
