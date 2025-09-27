@@ -8,6 +8,7 @@ namespace CarTransportDashboard.Models
         public string Make { get; set; } = string.Empty;
         public string Model { get; set; } = string.Empty;
         public string RegistrationNumber { get; set; } = string.Empty;
+        public FuelType FuelType { get; set; }
 
         // Navigation
         public ICollection<TransportJob>? AssignedJobs { get; set; }

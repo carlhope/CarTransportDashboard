@@ -30,7 +30,6 @@ export class Login implements OnInit {
     const dto: LoginModel = this.form.value;
     this.auth.login(dto).subscribe({
       next: user => {
-        localStorage.setItem('accessToken', user.refreshToken ?? '');
         console.log('Logged in:', user);
       },
       error: err => {

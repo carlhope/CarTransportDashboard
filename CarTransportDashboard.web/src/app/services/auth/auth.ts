@@ -8,7 +8,7 @@ import { UserStoreService } from './user-store-service';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly baseUrl = 'http://localhost:5000/api/auth';
+  private readonly baseUrl = 'https://localhost:7286/api/auth';
 
   constructor(private http: HttpClient, private userStore: UserStoreService) {}
 

@@ -1,7 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { TransportJobListItem } from './transport-job-list-item';
+import {TransportJobListItem} from './transport-job-list-item';
 import {JobStatus} from '../../models/job-status';
+import {fuelType} from '../../models/fuel-type';
 
 describe('TransportJobListItem', () => {
   let component: TransportJobListItem;
@@ -27,7 +28,8 @@ describe('TransportJobListItem', () => {
       assignedVehicle: {
         make: 'Toyota',
         model: 'Camry',
-        registrationNumber: 'ABC123'
+        registrationNumber: 'ABC123',
+        fuelType: fuelType.Diesel
       }
     };
     fixture.detectChanges();

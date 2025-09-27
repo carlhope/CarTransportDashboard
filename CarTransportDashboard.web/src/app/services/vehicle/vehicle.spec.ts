@@ -1,8 +1,9 @@
-import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { VehicleService } from './vehicle';
-import { ModelMapperService } from '../model-mapper/model-mapper';
-import { Vehicle } from '../../models/vehicle';
+import {TestBed} from '@angular/core/testing';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {VehicleService} from './vehicle';
+import {ModelMapperService} from '../model-mapper/model-mapper';
+import {Vehicle} from '../../models/vehicle';
+import {fuelType} from '../../models/fuel-type';
 
 describe('VehicleService', () => {
   let service: VehicleService;
@@ -37,7 +38,8 @@ describe('VehicleService', () => {
         make: 'Ford',
         model: 'Transit',
         registrationNumber: 'ABC123',
-        assignedJobs: []
+        assignedJobs: [],
+        fuelType: fuelType.Diesel
       };
       mapperSpy.toVehicle.and.returnValue(mappedVehicle);
 
@@ -63,7 +65,8 @@ describe('VehicleService', () => {
         make: 'Toyota',
         model: 'Hiace',
         registrationNumber: 'XYZ789',
-        assignedJobs: []
+        assignedJobs: [],
+        fuelType: fuelType.Diesel
       };
       mapperSpy.toVehicle.and.returnValue(mappedVehicle);
 
@@ -87,7 +90,8 @@ describe('VehicleService', () => {
         make: 'Nissan',
         model: 'NV200',
         registrationNumber: 'LMN456',
-        assignedJobs: []
+        assignedJobs: [],
+        fuelType: fuelType.Diesel
       };
 
       service.create(newVehicle).subscribe(response => {
@@ -108,7 +112,8 @@ describe('VehicleService', () => {
         make: 'Renault',
         model: 'Kangoo',
         registrationNumber: 'DEF789',
-        assignedJobs: []
+        assignedJobs: [],
+        fuelType: fuelType.Diesel
       };
 
       service.update('v4', updatedVehicle).subscribe(response => {

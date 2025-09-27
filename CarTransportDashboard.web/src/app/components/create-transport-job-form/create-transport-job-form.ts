@@ -10,7 +10,7 @@ import {HttpClientModule} from '@angular/common/http';
   selector: 'app-create-transport-job-form',
     imports: [
         ReactiveFormsModule,
-      HttpClientModule
+      HttpClientModule,
     ],
   templateUrl: './create-transport-job-form.html',
   styleUrl: './create-transport-job-form.scss'

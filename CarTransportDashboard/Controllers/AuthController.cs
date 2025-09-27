@@ -20,11 +20,18 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto dto)
+    public async Task<ActionResult<UserDto>> Register(RegisterDto dto)
     {
         var user = await _authService.RegisterAsync(dto);
+        if (user == null) return BadRequest("Registration failed");
+
+        // Set refresh token cookie
+        Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
+
+        user.RefreshToken = null;
         return Ok(user);
     }
+
 
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto dto)
@@ -63,7 +70,16 @@ public class AuthController : ControllerBase
     [HttpPost("logout")]
     public IActionResult Logout()
     {
-        Response.Cookies.Delete("refreshToken");
+        Response.Cookies.Delete("refreshToken", new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Expires = DateTime.UtcNow.AddDays(7),
+            IsEssential = true,
+            Path = "/"
+        });
+
         return NoContent();
     }
     private CookieOptions GetRefreshCookieOptions()
@@ -71,11 +87,11 @@ public class AuthController : ControllerBase
         return new CookieOptions
         {
             HttpOnly = true,
-            Secure = _env.EnvironmentName != "Development",
+            Secure = true,
             SameSite = SameSiteMode.None,
             Expires = DateTime.UtcNow.AddDays(7),
             IsEssential = true,
-            Path = "/api/auth"
+            Path = "/"
         };
     }
 }

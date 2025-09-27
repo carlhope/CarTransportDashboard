@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideRouter } from '@angular/router';
 import { SessionAction } from './session-action';
 
 describe('SessionAction', () => {
@@ -8,7 +8,8 @@ describe('SessionAction', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SessionAction]
+      imports: [SessionAction],
+      providers:[provideRouter([])]
     })
     .compileComponents();
 

@@ -12,7 +12,9 @@ export class UserStoreService {
 
   setUser(user: UserModel) {
     this.userSubject.next(user);
-    localStorage.setItem('accessToken', user.refreshToken ?? '');
+    console.log("setting user", user);
+    localStorage.setItem('accessToken', user.accessToken ?? 'no user');
+    console.log('Stored token:', localStorage.getItem('accessToken'));
   }
 
   clearUser() {

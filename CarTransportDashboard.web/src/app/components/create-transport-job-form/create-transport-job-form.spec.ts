@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateTransportJobForm } from './create-transport-job-form';
 import {ReactiveFormsModule} from '@angular/forms';
+
 import { TransportJob } from '../../models/transport-job';
+import {fuelType} from '../../models/fuel-type';
 
 describe('CreateTransportJobForm', () => {
   let component: CreateTransportJobForm;
@@ -36,7 +38,8 @@ describe('CreateTransportJobForm', () => {
       assignedVehicle: {
         make: '',
         model: '',
-        registrationNumber: ''
+        registrationNumber: '',
+        fuelType: fuelType.Diesel
       }
     });
 
@@ -58,7 +61,8 @@ describe('CreateTransportJobForm', () => {
       assignedVehicle: {
         make: '',
         model: '',
-        registrationNumber: ''
+        registrationNumber: '',
+        fuelType: fuelType.Diesel
       }
     });
 
