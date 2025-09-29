@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarTransportDashboard.Services
@@ -17,12 +18,14 @@ namespace CarTransportDashboard.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _config;
         private readonly ApplicationDbContext _db;
 
-        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration config, ApplicationDbContext db)
+        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration config, ApplicationDbContext db, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _config = config;
             _db = db;
         }
@@ -39,6 +42,10 @@ namespace CarTransportDashboard.Services
 
             if (!result.Succeeded)
                 throw new Exception(string.Join("; ", result.Errors.Select(e => e.Description)));
+            // Assign default role
+            var roleResult = await _userManager.AddToRoleAsync(user, UserRoles.Driver.ToString());
+            if (!roleResult.Succeeded)
+                throw new Exception("Failed to assign role: " + string.Join("; ", roleResult.Errors.Select(e => e.Description)));
 
             var accessToken = GenerateJwtToken(user);
             var refreshToken = GenerateRefreshToken();
@@ -89,7 +96,6 @@ namespace CarTransportDashboard.Services
                 RefreshToken = newRefreshToken
             };
         }
-
         public async Task LogoutAsync(string refreshToken)
         {
             var tokenEntity = await _db.RefreshTokens
@@ -102,6 +108,42 @@ namespace CarTransportDashboard.Services
                 await _db.SaveChangesAsync();
             }
         }
+        public async Task<OperationResult<ApplicationUser>> AddUserToRoleAsync(string userId, UserRoles role)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return new OperationResult<ApplicationUser>(false, "User not found", null);
+            if (!await _roleManager.RoleExistsAsync(role.ToString()))
+                return new OperationResult<ApplicationUser>(false, $"Role '{role}' does not exist", null);
+
+
+            var result = await _userManager.AddToRoleAsync(user, role.ToString());
+            if (!result.Succeeded)
+            {
+                var errorMessage = string.Join("; ", result.Errors.Select(e => e.Description));
+                return new OperationResult<ApplicationUser>(false, errorMessage, null);
+            }
+
+            OperationResult<ApplicationUser> operationResult = new(true, "success",user);
+            return operationResult;
+        }
+
+        public async Task<OperationResult<ApplicationUser>> RemoveUserFromRoleAsync(string userId, UserRoles role)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return new OperationResult<ApplicationUser>(false, "User not found", null);
+
+            var result = await _userManager.RemoveFromRoleAsync(user, role.ToString());
+            if (!result.Succeeded)
+            {
+                var errorMessage = string.Join("; ", result.Errors.Select(e => e.Description));
+                return new OperationResult<ApplicationUser>(false, errorMessage, null);
+            }
+
+            OperationResult<ApplicationUser> operationResult = new(true, "success",user);
+            return operationResult;
+
+        }
+
 
         private async Task SaveRefreshTokenAsync(string userId, string refreshToken)
         {

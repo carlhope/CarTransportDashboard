@@ -14,9 +14,41 @@ namespace CarTransportDashboard.Tests.Services;
     public class AuthServiceTests
     {
         private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
+        private readonly Mock<RoleManager<IdentityRole>> _roleManagerMock;
         private readonly Mock<IConfiguration> _configMock;
         private readonly ApplicationDbContext _dbContext;
         private readonly AuthService _authService;
+        private Mock<RoleManager<IdentityRole>> CreateRoleManagerMock()
+        {
+            var roleStoreMock = new Mock<IRoleStore<IdentityRole>>();
+
+            var roleManagerMock = new Mock<RoleManager<IdentityRole>>(
+                roleStoreMock.Object,
+                null, // IRoleValidator<IdentityRole>
+                null, // ILookupNormalizer
+                null, // IdentityErrorDescriber
+                null  // ILogger<RoleManager<IdentityRole>>
+            );
+
+            roleManagerMock
+                .Setup(rm => rm.RoleExistsAsync(It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+
+            return roleManagerMock;
+        }
+        private static Mock<UserManager<ApplicationUser>> MockUserManager()
+        {
+            var store = new Mock<IUserStore<ApplicationUser>>();
+            var _userManagerMock = new Mock<UserManager<ApplicationUser>>(
+                store.Object, null, null, null, null, null, null, null, null);
+            _userManagerMock
+                .Setup(m => m.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+            return _userManagerMock;
+
+        }
+
 
         public AuthServiceTests()
         {
@@ -33,15 +65,12 @@ namespace CarTransportDashboard.Tests.Services;
             _configMock.Setup(c => c["Jwt:Issuer"]).Returns("TestIssuer");
             _configMock.Setup(c => c["Jwt:Audience"]).Returns("TestAudience");
 
-            _authService = new AuthService(_userManagerMock.Object, _configMock.Object, _dbContext);
+
+            _roleManagerMock = CreateRoleManagerMock();
+            _authService = new AuthService(_userManagerMock.Object, _configMock.Object, _dbContext, _roleManagerMock.Object );
         }
 
-        private static Mock<UserManager<ApplicationUser>> MockUserManager()
-        {
-            var store = new Mock<IUserStore<ApplicationUser>>();
-            return new Mock<UserManager<ApplicationUser>>(
-                store.Object, null, null, null, null, null, null, null, null);
-        }
+
 
         [Fact]
         public async Task RegisterAsync_ValidInput_ReturnsUserDto()
