@@ -1,5 +1,6 @@
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.TransportJob;
+using CarTransportDashboard.Models.Users;
 using CarTransportDashboard.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ namespace CarTransportDashboard.Controllers;
 
 
 [ApiController]
+[Authorize] // Require authentication for all endpoints
 [Route("api/[controller]")]
 public class TransportJobsController : ControllerBase
 {
@@ -101,6 +103,7 @@ public class TransportJobsController : ControllerBase
     }
 
     // POST: api/transportjobs/{id}/assign-vehicle
+    [Authorize(Roles = RoleConstants.Admin + "," + RoleConstants.Dispatcher)]// restrict to admins/dispatchers
     [HttpPost("{id}/assign-vehicle")]
     public async Task<ActionResult> AssignVehicle(Guid id, [FromBody] Guid vehicleId)
     {
@@ -114,7 +117,7 @@ public class TransportJobsController : ControllerBase
 
     // POST: api/transportjobs/{id}/assign-driver
     [HttpPost("{id}/assign-driver")]
-    [Authorize(Roles = "Admin,Dispatcher")] // restrict to admins/dispatchers
+    [Authorize(Roles = RoleConstants.Admin + "," + RoleConstants.Dispatcher)] // restrict to admins/dispatchers
     public async Task<ActionResult> AssignDriver(Guid id, [FromBody] string driverId)
     {
         var result = await _jobService.AssignDriverToJobAsync(id, driverId);

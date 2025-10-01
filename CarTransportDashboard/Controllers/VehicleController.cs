@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CarTransportDashboard.Models.Dtos.Vehicle;
 using CarTransportDashboard.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using CarTransportDashboard.Models.Users;
 
 namespace CarTransportDashboard.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize] // Require authentication for all endpoints
 public class VehicleController : ControllerBase
 {
     private readonly IVehicleService _vehicleService;
@@ -50,6 +53,7 @@ public class VehicleController : ControllerBase
 
     // POST: api/vehicles
     [HttpPost]
+    [Authorize(Roles = RoleConstants.Admin+","+ RoleConstants.Dispatcher )] // Only Admins can create vehicles
     public async Task<ActionResult> CreateVehicle([FromBody] VehicleWriteDto dto)
     {
         var result = await _vehicleService.CreateVehicleAsync(dto);
@@ -62,6 +66,7 @@ public class VehicleController : ControllerBase
 
     // PUT: api/vehicles/{id}
     [HttpPut("{id}")]
+    [Authorize(Roles = RoleConstants.Admin + "," + RoleConstants.Dispatcher)]
     public async Task<ActionResult> UpdateVehicle(Guid id, [FromBody] VehicleWriteDto dto)
     {
         var result = await _vehicleService.UpdateVehicleAsync(id, dto);
@@ -74,6 +79,7 @@ public class VehicleController : ControllerBase
 
     // DELETE: api/vehicles/{id}
     [HttpDelete("{id}")]
+    [Authorize(Roles = RoleConstants.Admin + "," + RoleConstants.Dispatcher)]
     public async Task<ActionResult> DeleteVehicle(Guid id)
     {
         var result = await _vehicleService.DeleteVehicleAsync(id);

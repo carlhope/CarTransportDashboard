@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using CarTransportDashboard.Models.Users;
 
 namespace CarTransportDashboard.Services
 {

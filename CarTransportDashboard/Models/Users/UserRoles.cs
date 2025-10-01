@@ -1,4 +1,4 @@
-namespace CarTransportDashboard.Models;
+namespace CarTransportDashboard.Models.Users;
 
 public enum UserRoles
 {

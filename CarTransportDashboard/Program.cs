@@ -37,13 +37,13 @@ builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 builder.Services.AddScoped<ITransportJobService, TransportJobService>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-
+builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularOrigins", builder =>
     {
         builder.WithOrigins("http://localhost:4200")
-               .AllowAnyHeader()
+               .AllowAnyHeader()    
                .AllowAnyMethod()
                .AllowCredentials();
     });

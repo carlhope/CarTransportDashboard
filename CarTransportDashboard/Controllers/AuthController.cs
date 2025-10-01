@@ -1,6 +1,7 @@
 using CarTransportDashboard.Models.Dtos;
 using CarTransportDashboard.Models.Dtos.Auth;
 using CarTransportDashboard.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -66,7 +67,7 @@ public class AuthController : ControllerBase
         user.RefreshToken = null;
         return Ok(user);
     }
-
+    [Authorize]
     [HttpPost("logout")]
     public IActionResult Logout()
     {
