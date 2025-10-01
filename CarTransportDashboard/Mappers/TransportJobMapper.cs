@@ -20,6 +20,10 @@ namespace CarTransportDashboard.Mappers
                 AssignedVehicleId = job.AssignedVehicleId
             };
         }
+        public static List<TransportJobReadDto> ToReadDtoList(IEnumerable<TransportJob> jobs)
+        {
+            return jobs.Select(j => ToDto(j)).ToList()?? new List<TransportJobReadDto>();
+        }
 
         public static TransportJob ToModel(TransportJobWriteDto dto)
         {

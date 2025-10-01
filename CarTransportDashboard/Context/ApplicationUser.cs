@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Users;
+using CarTransportDashboard.Models.Dtos.Users;
 
 namespace CarTransportDashboard.Context
 {

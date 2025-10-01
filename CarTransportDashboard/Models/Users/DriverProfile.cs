@@ -1,9 +1,10 @@
 ﻿using CarTransportDashboard.Context;
+using CarTransportDashboard.Models.Dtos.Users;
 using System.ComponentModel.DataAnnotations;
 
 namespace CarTransportDashboard.Models.Users
 {
-    public class DriverProfile
+    public class DriverProfile: IHasApplicationUser
     {
         [Key]
         public string UserId { get; set; }
