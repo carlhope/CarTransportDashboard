@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace CarTransportDashboard.Tests.Controllers
+namespace CarTransportDashboard.Tests.Controller.Auth
 {
     public class AuthControllerTests
     {
@@ -92,7 +92,7 @@ namespace CarTransportDashboard.Tests.Controllers
             cookieFeatureMock.Setup(f => f.Cookies).Returns(cookieCollectionMock.Object);
 
             var context = new DefaultHttpContext();
-            context.Features.Set<IRequestCookiesFeature>(cookieFeatureMock.Object);
+            context.Features.Set(cookieFeatureMock.Object);
 
             _controller.ControllerContext = new ControllerContext { HttpContext = context };
 
@@ -123,7 +123,7 @@ namespace CarTransportDashboard.Tests.Controllers
             cookieFeatureMock.Setup(f => f.Cookies).Returns(cookieCollectionMock.Object);
 
             var context = new DefaultHttpContext();
-            context.Features.Set<IRequestCookiesFeature>(cookieFeatureMock.Object);
+            context.Features.Set(cookieFeatureMock.Object);
 
             _controller.ControllerContext = new ControllerContext { HttpContext = context };
 

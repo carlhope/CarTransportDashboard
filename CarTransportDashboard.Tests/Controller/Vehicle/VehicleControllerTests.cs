@@ -16,7 +16,7 @@ using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Users;
 using CarTransportDashboard.Models.Dtos;
 
-namespace CarTransportDashboard.Tests.Controller
+namespace CarTransportDashboard.Tests.Controller.Vehicle
 {
   
 

@@ -8,10 +8,10 @@ namespace CarTransportDashboard.Services.Interfaces
         Task<IEnumerable<TransportJobReadDto>> GetJobsAsync();
         Task<IEnumerable<TransportJobReadDto>> GetAvailableJobsAsync();
         Task<OperationResult<TransportJobReadDto>> CreateJobAsync(TransportJobWriteDto dto);
-        Task<OperationResult<TransportJob>> AssignDriverToJobAsync(Guid jobId, string driverId);
-        Task<OperationResult<TransportJob>> AssignVehicleToJobAsync(Guid jobId, Guid vehicleId);
-        Task<OperationResult<TransportJob>> UpdateJobStatusAsync(Guid jobId, JobStatus status);
-        Task<OperationResult<TransportJob>> AcceptJobAsync(Guid jobId, string driverId);
+        Task<OperationResult<TransportJobReadDto>> AssignDriverToJobAsync(Guid jobId, string driverId);
+        Task<OperationResult<TransportJobReadDto>> AssignVehicleToJobAsync(Guid jobId, Guid vehicleId);
+        Task<OperationResult<TransportJobReadDto>> UpdateJobStatusAsync(Guid jobId, JobStatus status);
+        Task<OperationResult<TransportJobReadDto>> AcceptJobAsync(Guid jobId, string driverId);
         Task<OperationResult<TransportJobReadDto>> UpdateJobAsync(Guid jobId, TransportJobWriteDto dto);
     }
 

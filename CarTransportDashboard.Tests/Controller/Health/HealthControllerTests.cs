@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace CarTransportDashboard.Tests.Controller
+namespace CarTransportDashboard.Tests.Controller.Health
 {
   
 
