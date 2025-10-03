@@ -1,3 +1,4 @@
+using CarTransportDashboard.Models.Dtos.Health;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -14,6 +15,6 @@ public class HealthController : ControllerBase
     public IActionResult Status()
     {
         // TODO: Add more detailed health checks as needed
-        return Ok(new { status = "Healthy", timestamp = DateTime.UtcNow });
+        return Ok(new HealthStatusDto { Status = "Healthy", Timestamp = DateTime.UtcNow });
     }
 }

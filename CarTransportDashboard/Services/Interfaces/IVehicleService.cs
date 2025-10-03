@@ -9,7 +9,7 @@ namespace CarTransportDashboard.Services.Interfaces
         Task<OperationResult<VehicleReadDto>> UpdateVehicleAsync(Guid id, VehicleWriteDto dto);
         Task<OperationResult<VehicleReadDto>> DeleteVehicleAsync(Guid id);
         Task<OperationResult<VehicleReadDto>> CreateVehicleAsync(VehicleWriteDto dto);
-        Task<Vehicle?> GetVehicleByRegistrationNumberAsync(string registrationNumber);
+        Task<VehicleReadDto?> GetVehicleByRegistrationNumberAsync(string registrationNumber);
     }
 
 }

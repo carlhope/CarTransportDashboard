@@ -20,10 +20,11 @@ namespace CarTransportDashboard.Services
             VehicleReadDto vehicleDto = VehicleMapper.ToDto(vehicle);
             return vehicleDto;
         }
-        public async Task<Vehicle?> GetVehicleByRegistrationNumberAsync(string registrationNumber)
+        public async Task<VehicleReadDto?> GetVehicleByRegistrationNumberAsync(string registrationNumber)
         {
             registrationNumber = NormalizeRegistration(registrationNumber);
-            return await _vehicleRepository.GetByRegistrationNumberAsync(registrationNumber);
+            var vehicle = await _vehicleRepository.GetByRegistrationNumberAsync(registrationNumber);
+            return VehicleMapper.ToDto(vehicle);
         }
 
         public async Task<IEnumerable<VehicleReadDto>> GetVehiclesAsync()
