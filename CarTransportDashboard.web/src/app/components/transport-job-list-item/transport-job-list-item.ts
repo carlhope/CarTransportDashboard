@@ -14,7 +14,6 @@ export class TransportJobListItem implements OnInit {
   @Input() job!: TransportJob;
   jobStatusDisplay = JobStatusDisplay;
   ngOnInit():void {
-  console.log('job: ', this.job);
   }
 }
 

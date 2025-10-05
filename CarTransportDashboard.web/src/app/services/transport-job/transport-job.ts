@@ -18,11 +18,10 @@ export class TransportJobService {
   constructor(private http: HttpClient, private mapper: ModelMapperService) {}
 
 getJobs(): Observable<TransportJob[]> {
-  return this.http.get<any[]>(this.apiUrl).pipe(
+  return this.http.get<any[]>(this.apiUrl, {withCredentials:true}).pipe(
     tap(raw => console.log('Raw API response:', raw)),
     map(jobs => {
       const mapped = jobs.map(job => this.mapper.toTransportJob(job));
-      console.log('Mapped jobs:', mapped);
       return mapped;
     })
   );
@@ -37,8 +36,6 @@ getJobs(): Observable<TransportJob[]> {
     );
   }
   create(payload:  TransportJob ): Observable<TransportJob> {
-    console.log('Creating job with payload:', payload);
-    //debugger;
     return this.http.post<TransportJob>(this.apiUrl, payload);
   }
 
