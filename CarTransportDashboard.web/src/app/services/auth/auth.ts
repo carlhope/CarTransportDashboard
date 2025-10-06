@@ -31,5 +31,6 @@ export class AuthService {
     return this.http.post<void>(`${this.baseUrl}/logout`, {}, { withCredentials: true })
       .pipe(tap(() => this.userStore.clearUser()));
   }
+
 }
 

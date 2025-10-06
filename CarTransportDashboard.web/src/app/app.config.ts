@@ -9,6 +9,7 @@ import {AuthService} from './services/auth/auth';
 import {UserStoreService} from './services/auth/user-store-service';
 import {catchError, of, tap} from 'rxjs';
 import {SessionReadyService} from './services/auth/session-ready';
+import {initializeSession} from './app.initializer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,24 +17,6 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideAppInitializer(() => {
-      const auth = inject(AuthService);
-      const userStore = inject(UserStoreService);
-      const sessionReady = inject(SessionReadyService);
-
-      return auth.refresh().pipe(
-        tap(user => {
-          if (user) userStore.setUser(user);
-          sessionReady.markReady();
-        }),
-        catchError(() => {
-          userStore.clearUser();
-          sessionReady.markReady();
-          return of(null);
-        })
-      );
-    })
-
-
+    provideAppInitializer(initializeSession)
   ]
 };
