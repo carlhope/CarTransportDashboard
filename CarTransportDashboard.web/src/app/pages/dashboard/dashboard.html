@@ -1,10 +1,10 @@
-<p>dashboard works!</p>
+
 @if(isDriver){
-  <p>User is driver. TODO: Create DriverDashboard component</p>
+  <app-driver-dashboard/>
 }
 @else if(isAdmin){
-  <p>User is admin. TODO: Create AdminDashboard component</p>
+  <app-admin-dashboard/>
 }
 @else{
-  <p>User is regular user. TODO: Create UserDashboard component</p>
+  <app-guest-dashboard/>
 }

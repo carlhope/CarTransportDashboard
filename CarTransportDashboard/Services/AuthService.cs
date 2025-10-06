@@ -52,8 +52,9 @@ namespace CarTransportDashboard.Services
             var refreshToken = GenerateRefreshToken();
 
             await SaveRefreshTokenAsync(user.Id, refreshToken);
+            var roles = await _userManager.GetRolesAsync(user);
 
-            return new UserDto { Id = user.Id, Email = user.Email!, AccessToken = accessToken, RefreshToken = refreshToken };
+            return new UserDto { Id = user.Id, Email = user.Email!, AccessToken = accessToken, RefreshToken = refreshToken, Roles = roles.ToList()};
         }
 
         public async Task<UserDto?> LoginAsync(string email, string password)
@@ -66,8 +67,9 @@ namespace CarTransportDashboard.Services
             var refreshToken = GenerateRefreshToken();
 
             await SaveRefreshTokenAsync(user.Id, refreshToken);
+            var roles = await _userManager.GetRolesAsync(user);
 
-            return new UserDto { Id = user.Id, Email = user.Email!, AccessToken = accessToken, RefreshToken = refreshToken };
+            return new UserDto { Id = user.Id, Email = user.Email!, AccessToken = accessToken, RefreshToken = refreshToken, Roles = roles.ToList() };
         }
 
         public async Task<UserDto?> RefreshTokenAsync(string refreshToken)
@@ -88,13 +90,16 @@ namespace CarTransportDashboard.Services
             await SaveRefreshTokenAsync(tokenEntity.User.Id, newRefreshToken);
 
             await _db.SaveChangesAsync();
+            var roles = await _userManager.GetRolesAsync(tokenEntity.User);
 
             return new UserDto
             {
                 Id = tokenEntity.User.Id,
                 Email = tokenEntity.User.Email!,
                 AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken
+                RefreshToken = newRefreshToken,
+                Roles = roles.ToList()
+
             };
         }
         public async Task LogoutAsync(string refreshToken)
