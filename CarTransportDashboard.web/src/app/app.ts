@@ -1,14 +1,16 @@
 import {Component, OnInit, signal} from '@angular/core';
-import {RouterOutlet, RouterLink, Router} from '@angular/router';
+import {RouterOutlet, Router} from '@angular/router';
 import { AuthService } from './services/auth/auth';
 import { UserStoreService } from './services/auth/user-store-service';
-import {SessionAction} from './components/session-actions/session-action/session-action';
-import {AsyncPipe} from '@angular/common';
 import {NAV_ITEMS, NavItem} from './models/nav-items';
+import {Header} from './components/layout/header/header';
+import {MobileNavMenu} from './components/layout/mobile-nav-menu/mobile-nav-menu';
+import {NavMenu} from './components/layout/nav-menu/nav-menu';
+import {Footer} from './components/layout/footer/footer';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, SessionAction, AsyncPipe],
+  imports: [RouterOutlet, Header, MobileNavMenu, NavMenu, Footer],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -40,7 +42,4 @@ export class App  {
       error: () => this.router.navigate(['/account/login'])
     });
   }
-
-
-
 }

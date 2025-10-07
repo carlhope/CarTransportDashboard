@@ -1,0 +1,13 @@
+<nav class="space-y-2">
+  @for (item of visibleNavItems; track item.label) {
+    <a [routerLink]="item.route" class="block p-2 hover:bg-gray-200 rounded">
+      {{ item.label }}
+    </a>
+  }
+  <app-session-action
+    [user]="userStore.user$ | async"
+    (onLogout)="handleLogout()"
+  ></app-session-action>
+
+
+</nav>
