@@ -24,6 +24,8 @@ export class ModelMapperService {
     return {
       id: data.id,
       fullName: data.fullName,
+      firstName: data.firstName,
+      lastName: data.lastName,
       email: data.email,
     };
   }

@@ -37,6 +37,8 @@ namespace CarTransportDashboard.Services
             {
                 UserName = dto.Email,
                 Email = dto.Email,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
                 // Add more mappings as needed
             };
             var result = await _userManager.CreateAsync(user, dto.Password);
@@ -54,7 +56,7 @@ namespace CarTransportDashboard.Services
             await SaveRefreshTokenAsync(user.Id, refreshToken);
             var roles = await _userManager.GetRolesAsync(user);
 
-            return new UserDto { Id = user.Id, Email = user.Email!, AccessToken = accessToken, RefreshToken = refreshToken, Roles = roles.ToList()};
+            return new UserDto { Id = user.Id,FirstName = user.FirstName, LastName = user.LastName, Email = user.Email!, AccessToken = accessToken, RefreshToken = refreshToken, Roles = roles.ToList()};
         }
 
         public async Task<UserDto?> LoginAsync(string email, string password)
@@ -69,7 +71,7 @@ namespace CarTransportDashboard.Services
             await SaveRefreshTokenAsync(user.Id, refreshToken);
             var roles = await _userManager.GetRolesAsync(user);
 
-            return new UserDto { Id = user.Id, Email = user.Email!, AccessToken = accessToken, RefreshToken = refreshToken, Roles = roles.ToList() };
+            return new UserDto { Id = user.Id, FirstName = user.FirstName, LastName = user.LastName, Email = user.Email!, AccessToken = accessToken, RefreshToken = refreshToken, Roles = roles.ToList() };
         }
 
         public async Task<UserDto?> RefreshTokenAsync(string refreshToken)
@@ -96,6 +98,8 @@ namespace CarTransportDashboard.Services
             {
                 Id = tokenEntity.User.Id,
                 Email = tokenEntity.User.Email!,
+                FirstName = tokenEntity.User.FirstName,
+                LastName = tokenEntity.User.LastName,
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken,
                 Roles = roles.ToList()

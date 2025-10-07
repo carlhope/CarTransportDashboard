@@ -14,7 +14,9 @@ export interface LoginModel {
 export interface UserModel {
   id: string;
   email: string;
-  fullName: string;
+  //fullName: string;
+  firstName: string;
+  lastName: string;
   roles: string[];
   refreshToken?: string; // will be null after login
   accessToken?: string;
