@@ -17,20 +17,18 @@
   <!-- Mobile dropdown menu -->
   @if(mobileMenuOpen){
     <nav class="md:hidden bg-gray-700 text-white p-4 space-y-2">
-      <a routerLink="/dashboard" class="block hover:underline">Dashboard</a>
-      <a routerLink="/vehicles" class="block hover:underline">Vehicles</a>
-      <a routerLink="/transport-jobs" class="block hover:underline">Jobs</a>
-      <a routerLink="/drivers" class="block hover:underline">Drivers</a>
-      <a routerLink="/reports" class="block hover:underline">Reports</a>
+      @for (item of visibleNavItems; track item.label) {
+        <a [routerLink]="item.route" class="block hover:underline">
+          {{ item.label }}
+        </a>
+      }
       <app-session-action
         [user]="userStore.user$ | async"
         (onLogout)="handleLogout()"
       ></app-session-action>
-
-
-
     </nav>
   }
+
 
 
   <!-- Main layout -->
@@ -38,11 +36,11 @@
     <!-- Sidebar nav (desktop only) -->
     <aside class="w-64 bg-gray-100 p-4 hidden md:block">
       <nav class="space-y-2">
-        <a routerLink="/dashboard" class="block p-2 hover:bg-gray-200 rounded">Dashboard</a>
-        <a routerLink="/vehicles" class="block p-2 hover:bg-gray-200 rounded">Vehicles</a>
-        <a routerLink="/transport-jobs" class="block p-2 hover:bg-gray-200 rounded">Jobs</a>
-        <a routerLink="/drivers" class="block p-2 hover:bg-gray-200 rounded">Drivers</a>
-        <a routerLink="/reports" class="block p-2 hover:bg-gray-200 rounded">Reports</a>
+        @for (item of visibleNavItems; track item.label) {
+          <a [routerLink]="item.route" class="block p-2 hover:bg-gray-200 rounded">
+            {{ item.label }}
+          </a>
+        }
         <app-session-action
           [user]="userStore.user$ | async"
           (onLogout)="handleLogout()"
