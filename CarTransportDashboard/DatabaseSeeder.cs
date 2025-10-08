@@ -89,7 +89,9 @@ public static class DatabaseSeeder
                     {
                         UserName = adminEmail,
                         Email = adminEmail,
-                        EmailConfirmed = true
+                        EmailConfirmed = true,
+                        FirstName = "Admin",
+                        LastName = "User"
                     };
 
                     var result = await userManager.CreateAsync(adminUser, "Password123!");

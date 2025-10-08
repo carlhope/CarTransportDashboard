@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CarTransportDashboard.Models.Users
 {
-    public class AdminProfile
+    public class AdminProfile:IHasUserId
     {
         [Key]
-        public string UserId { get; set; }
+        public required string UserId { get; set; }
 
-        public ApplicationUser User { get; set; }
+
     }
 }

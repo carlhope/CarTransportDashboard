@@ -89,12 +89,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 await DatabaseSeeder.SeedData(app.Services);
-//temporary to confirm roles seeded
-app.MapGet("/api/debug/roles", async (RoleManager<IdentityRole> roleManager) =>
-{
-    var roles = roleManager.Roles.Select(r => r.Name).ToList();
-    return Results.Ok(roles);
-});
 app.Run();
 public partial class Program { }
 

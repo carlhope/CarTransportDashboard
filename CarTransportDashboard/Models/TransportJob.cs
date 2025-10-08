@@ -17,7 +17,7 @@ namespace CarTransportDashboard.Models
         public Vehicle? AssignedVehicle { get; set; }
 
         public string? AssignedDriverId { get; set; }
-        public DriverProfile? AssignedDriver { get; set; }
+        public ApplicationUser? AssignedDriver { get; set; }
     }
 
 }

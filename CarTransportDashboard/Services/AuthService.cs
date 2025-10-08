@@ -12,6 +12,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using CarTransportDashboard.Models.Users;
+using System.Security.Authentication;
 
 namespace CarTransportDashboard.Services
 {
@@ -41,6 +42,7 @@ namespace CarTransportDashboard.Services
                 LastName = dto.LastName,
                 // Add more mappings as needed
             };
+
             var result = await _userManager.CreateAsync(user, dto.Password);
 
             if (!result.Succeeded)
@@ -55,8 +57,7 @@ namespace CarTransportDashboard.Services
 
             await SaveRefreshTokenAsync(user.Id, refreshToken);
             var roles = await _userManager.GetRolesAsync(user);
-
-            return new UserDto { Id = user.Id,FirstName = user.FirstName, LastName = user.LastName, Email = user.Email!, AccessToken = accessToken, RefreshToken = refreshToken, Roles = roles.ToList()};
+            return MapToUserDto(user, accessToken, refreshToken, roles);
         }
 
         public async Task<UserDto?> LoginAsync(string email, string password)
@@ -70,9 +71,9 @@ namespace CarTransportDashboard.Services
 
             await SaveRefreshTokenAsync(user.Id, refreshToken);
             var roles = await _userManager.GetRolesAsync(user);
-
-            return new UserDto { Id = user.Id, FirstName = user.FirstName, LastName = user.LastName, Email = user.Email!, AccessToken = accessToken, RefreshToken = refreshToken, Roles = roles.ToList() };
+            return MapToUserDto(user, accessToken, refreshToken, roles);
         }
+
 
         public async Task<UserDto?> RefreshTokenAsync(string refreshToken)
         {
@@ -93,18 +94,8 @@ namespace CarTransportDashboard.Services
 
             await _db.SaveChangesAsync();
             var roles = await _userManager.GetRolesAsync(tokenEntity.User);
+            return MapToUserDto(tokenEntity.User, newAccessToken, newRefreshToken, roles);
 
-            return new UserDto
-            {
-                Id = tokenEntity.User.Id,
-                Email = tokenEntity.User.Email!,
-                FirstName = tokenEntity.User.FirstName,
-                LastName = tokenEntity.User.LastName,
-                AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken,
-                Roles = roles.ToList()
-
-            };
         }
         public async Task LogoutAsync(string refreshToken)
         {
@@ -176,12 +167,27 @@ namespace CarTransportDashboard.Services
             new Claim(ClaimTypes.Name, user.UserName ?? "")
         };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var jwtKey = _config["Jwt:Key"];
+            if (string.IsNullOrWhiteSpace(jwtKey))
+            {
+                throw new AuthenticationException("JWT Key is not configured. Check 'Jwt:Key' in appsettings.json or environment variables.");
+
+
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var issuer = _config["Jwt:Issuer"];
+            var audience = _config["Jwt:Audience"];
+
+            if (string.IsNullOrWhiteSpace(issuer) || string.IsNullOrWhiteSpace(audience))
+                throw new AuthenticationException("JWT Issuer or Audience is not configured.");
+
 
             var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
+                issuer: issuer,
+                audience: audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(15),
                 signingCredentials: creds);
@@ -192,6 +198,20 @@ namespace CarTransportDashboard.Services
         private string GenerateRefreshToken()
         {
             return Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+        }
+
+        private UserDto MapToUserDto(ApplicationUser user, string accessToken, string refreshToken, IList<string> roles)
+        {
+            return new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email!,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                Roles = roles.ToList()
+            };
         }
     }
 }

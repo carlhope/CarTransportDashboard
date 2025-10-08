@@ -1,5 +1,6 @@
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.TransportJob;
+
 namespace CarTransportDashboard.Services.Interfaces
 {
     public interface ITransportJobService
@@ -13,6 +14,7 @@ namespace CarTransportDashboard.Services.Interfaces
         Task<OperationResult<TransportJobReadDto>> UpdateJobStatusAsync(Guid jobId, JobStatus status);
         Task<OperationResult<TransportJobReadDto>> AcceptJobAsync(Guid jobId, string driverId);
         Task<OperationResult<TransportJobReadDto>> UpdateJobAsync(Guid jobId, TransportJobWriteDto dto);
+        Task<IEnumerable<TransportJobReadDto>> GetJobsByDriverIdAsync(List<string> id, string? status);
     }
 
 }

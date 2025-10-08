@@ -4,9 +4,7 @@ namespace CarTransportDashboard.Models.Dtos.Users
 {
     public class BaseProfileDto
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string DisplayName { get; set; }
+        public required string Id { get; set; }
     }
 
 }

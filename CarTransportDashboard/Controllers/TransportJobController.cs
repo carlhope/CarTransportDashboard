@@ -29,6 +29,17 @@ public class TransportJobsController : ControllerBase
         var jobs = await _jobService.GetJobsAsync();
         return Ok(jobs);
     }
+    // GET: api/transportjobs/myjobs?status=pending
+    [HttpGet("myjobs")]
+    public async Task<ActionResult<IEnumerable<TransportJobReadDto>>> GetJobsByUserId([FromQuery]string status)
+    {
+      var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        List<string> users = new List<string>() {userId };
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized("User ID claim missing or invalid.");
+        var jobs = await _jobService.GetJobsByDriverIdAsync(users, status!);
+        return Ok(jobs);
+    }
 
     // GET: api/transportjobs/available
     [HttpGet("available")]

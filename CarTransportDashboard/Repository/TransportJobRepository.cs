@@ -22,7 +22,23 @@ namespace CarTransportDashboard.Repository{
     public async Task<IEnumerable<TransportJob>> GetAllAsync() =>
         await _context.TransportJobs.ToListAsync();
 
-    public async Task<IEnumerable<TransportJob>> GetAvailableJobsAsync() =>
+        public async Task<IEnumerable<TransportJob>> GetAllByDriverIdsAsync(IEnumerable<string> driverIds, string? status)
+        {
+            var query = _context.TransportJobs.AsQueryable();
+
+            query = query.Where(j => driverIds.Contains(j.AssignedDriverId));
+
+            if (!string.IsNullOrWhiteSpace(status) &&
+                Enum.TryParse<JobStatus>(status, true, out var parsedStatus))
+            {
+                query = query.Where(j => j.Status == parsedStatus);
+            }
+
+            return await query.ToListAsync();
+        }
+
+
+        public async Task<IEnumerable<TransportJob>> GetAvailableJobsAsync() =>
         await _context.TransportJobs
             .Where(j => j.AssignedVehicleId != null && j.AssignedDriverId == null)
             .ToListAsync();

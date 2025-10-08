@@ -53,7 +53,7 @@ namespace CarTransportDashboard.Tests.Controller.Auth
         }
 
         [Fact]
-        public async Task Login_ValidCredentials_ReturnsOkAndNullsRefreshToken()
+        public async Task Login_ValidCredentials_ReturnsOkAndResetsRefreshToken()
         {
             var dto = new LoginDto { Email = "user@example.com", Password = "securepass" };
             var expected = new UserDto { Id = "user123", Email = dto.Email, RefreshToken = "token123" };
@@ -65,7 +65,7 @@ namespace CarTransportDashboard.Tests.Controller.Auth
             var ok = Assert.IsType<OkObjectResult>(result.Result);
             var user = Assert.IsType<UserDto>(ok.Value);
             Assert.Equal(dto.Email, user.Email);
-            Assert.Null(user.RefreshToken);
+            Assert.Equal("0", user.RefreshToken);
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace CarTransportDashboard.Tests.Controller.Auth
         }
 
         [Fact]
-        public async Task Refresh_ValidToken_ReturnsOkAndNullsRefreshToken()
+        public async Task Refresh_ValidToken_ReturnsOkAndResetsRefreshToken()
         {
             var expected = new UserDto { Id = "user123", Email = "refresh@example.com", RefreshToken = "newtoken123" };
 
@@ -103,7 +103,7 @@ namespace CarTransportDashboard.Tests.Controller.Auth
             var ok = Assert.IsType<OkObjectResult>(result.Result);
             var user = Assert.IsType<UserDto>(ok.Value);
             Assert.Equal(expected.Email, user.Email);
-            Assert.Null(user.RefreshToken);
+            Assert.Equal("0", user.RefreshToken);
         }
 
         [Fact]

@@ -31,27 +31,6 @@ namespace CarTransportDashboard.Context
                 .WithMany(v => v.AssignedJobs)
                 .HasForeignKey(j => j.AssignedVehicleId);
 
-            builder.Entity<TransportJob>()
-              .HasOne(j => j.AssignedDriver)
-              .WithMany(dp => dp.TransportJobs)
-              .HasForeignKey(j => j.AssignedDriverId);
-
-
-            builder.Entity<DriverProfile>()
-                .HasOne(dp => dp.User)
-                .WithOne(u => u.DriverProfile)
-                .HasForeignKey<DriverProfile>(dp => dp.UserId);
-
-            builder.Entity<AdminProfile>()
-                .HasOne(dp => dp.User)
-                .WithOne(u => u.AdminProfile)
-                .HasForeignKey<AdminProfile>(dp => dp.UserId);
-
-            builder.Entity<DispatcherProfile>()
-                .HasOne(dp => dp.User)
-                .WithOne(u => u.DispatcherProfile)
-                .HasForeignKey<DispatcherProfile>(dp => dp.UserId);
-
 
         }
 

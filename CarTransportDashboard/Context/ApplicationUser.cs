@@ -9,8 +9,8 @@ namespace CarTransportDashboard.Context
     public class ApplicationUser : IdentityUser
     {
         // Optional: Add custom fields
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
+        public required string FirstName { get; set; }
+        public required string LastName { get; set; }
         public string? PreferredName { get; set; }
 
         // Navigation

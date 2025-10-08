@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
         // Set refresh token cookie
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
 
-        user.RefreshToken = null;
+        user.RefreshToken = "0";
         return Ok(user);
     }
 
@@ -42,7 +42,7 @@ public class AuthController : ControllerBase
 
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
 
-        user.RefreshToken = null; // Don't send to frontend
+        user.RefreshToken = "0"; // Don't send to frontend
         return Ok(user);
     }
 
@@ -64,7 +64,7 @@ public class AuthController : ControllerBase
 
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
 
-        user.RefreshToken = null;
+        user.RefreshToken = "0";
         return Ok(user);
     }
     [Authorize]

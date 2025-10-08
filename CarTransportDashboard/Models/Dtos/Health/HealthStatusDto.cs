@@ -2,7 +2,7 @@
 {
     public class HealthStatusDto
     {
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime Timestamp { get; set; }
 
     }

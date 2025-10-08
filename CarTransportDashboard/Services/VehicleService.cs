@@ -23,7 +23,8 @@ namespace CarTransportDashboard.Services
         public async Task<VehicleReadDto?> GetVehicleByRegistrationNumberAsync(string registrationNumber)
         {
             registrationNumber = NormalizeRegistration(registrationNumber);
-            var vehicle = await _vehicleRepository.GetByRegistrationNumberAsync(registrationNumber);
+            Vehicle? vehicle = await _vehicleRepository.GetByRegistrationNumberAsync(registrationNumber);
+            if (vehicle == null) return null;
             return VehicleMapper.ToDto(vehicle);
         }
 

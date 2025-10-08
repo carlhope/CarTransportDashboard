@@ -24,10 +24,10 @@ namespace CarTransportDashboard.Tests.Services;
 
             var roleManagerMock = new Mock<RoleManager<IdentityRole>>(
                 roleStoreMock.Object,
-                null, // IRoleValidator<IdentityRole>
-                null, // ILookupNormalizer
-                null, // IdentityErrorDescriber
-                null  // ILogger<RoleManager<IdentityRole>>
+                null!, // IRoleValidator<IdentityRole>
+                null!, // ILookupNormalizer
+                null!, // IdentityErrorDescriber
+                null!  // ILogger<RoleManager<IdentityRole>>
             );
 
             roleManagerMock
@@ -41,7 +41,7 @@ namespace CarTransportDashboard.Tests.Services;
         {
             var store = new Mock<IUserStore<ApplicationUser>>();
             var _userManagerMock = new Mock<UserManager<ApplicationUser>>(
-                store.Object, null, null, null, null, null, null, null, null);
+                store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
             _userManagerMock
                 .Setup(m => m.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Success);
@@ -79,8 +79,14 @@ namespace CarTransportDashboard.Tests.Services;
 
             _userManagerMock.Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), dto.Password))
                 .ReturnsAsync(IdentityResult.Success);
+            _userManagerMock.Setup(m => m.GetRolesAsync(It.IsAny<ApplicationUser>()))
+                .ReturnsAsync(new List<string> { "User" });
 
-            var result = await _authService.RegisterAsync(dto);
+
+
+
+
+        var result = await _authService.RegisterAsync(dto);
 
             Assert.NotNull(result);
             Assert.Equal(dto.Email, result.Email);
@@ -104,12 +110,20 @@ namespace CarTransportDashboard.Tests.Services;
         [Fact]
         public async Task LoginAsync_ValidCredentials_ReturnsUserDto()
         {
-            var user = new ApplicationUser { Id = "user123", Email = "login@example.com", UserName = "login@example.com" };
+            var user = new ApplicationUser {
+                Id = "user123", 
+                Email = "login@example.com", 
+                UserName = "login@example.com",
+                FirstName = "John",
+                LastName = "Doe"
+            };
 
             _userManagerMock.Setup(m => m.FindByEmailAsync(user.Email)).ReturnsAsync(user);
             _userManagerMock.Setup(m => m.CheckPasswordAsync(user, "Password123!")).ReturnsAsync(true);
+            _userManagerMock.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
 
-            var result = await _authService.LoginAsync(user.Email, "Password123!");
+
+        var result = await _authService.LoginAsync(user.Email, "Password123!");
 
             Assert.NotNull(result);
             Assert.Equal(user.Email, result.Email);
@@ -130,7 +144,13 @@ namespace CarTransportDashboard.Tests.Services;
         [Fact]
         public async Task RefreshTokenAsync_ValidToken_ReturnsNewUserDto()
         {
-            var user = new ApplicationUser { Id = "user123", Email = "refresh@example.com", UserName = "refresh@example.com" };
+            var user = new ApplicationUser {
+                Id = "user123",
+                Email = "refresh@example.com",
+                UserName = "refresh@example.com",
+                FirstName = "Jane",
+                LastName = "Smith"
+            };
             var token = new RefreshToken
             {
                 Token = "validtoken",
@@ -139,8 +159,10 @@ namespace CarTransportDashboard.Tests.Services;
                 ExpiryDate = DateTime.UtcNow.AddMinutes(10),
                 IsRevoked = false
             };
+        _userManagerMock.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" }); //
 
-            _dbContext.RefreshTokens.Add(token);
+
+        _dbContext.RefreshTokens.Add(token);
             await _dbContext.SaveChangesAsync();
 
             var result = await _authService.RefreshTokenAsync("validtoken");

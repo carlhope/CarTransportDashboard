@@ -1,4 +1,5 @@
 using CarTransportDashboard.Models.Users;
+using CarTransportDashboard.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -15,6 +16,7 @@ public class DriverController : ControllerBase
     public DriverController(IDriverService driverService)
     {
         _driverService = driverService;
+        
     }
 
 
@@ -23,7 +25,8 @@ public class DriverController : ControllerBase
 [Authorize(Roles = RoleConstants.Driver)]
 public async Task<IActionResult> GetAssignedJobs()
 {
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //possibly redundant as method now provided in TransportJobController. Retain for now for clarity
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(userId))
             return Unauthorized("User ID claim missing or invalid.");
         var jobs = await _driverService.GetAssignedJobsAsync(userId);

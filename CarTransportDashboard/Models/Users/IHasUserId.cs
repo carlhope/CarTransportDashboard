@@ -2,8 +2,8 @@
 
 namespace CarTransportDashboard.Models.Users
 {
-    public interface IHasApplicationUser
+    public interface IHasUserId
     {
-        ApplicationUser User { get; }
-    }
+        public string UserId { get; set; }
+        }
 }

@@ -21,7 +21,6 @@ namespace CarTransportDashboard.Repository
         public async Task<DriverProfile?> GetByIdAsync(string id)
         {
             var driverProfile = await _db.DriverProfiles
-                .Include(dp => dp.TransportJobs)
                 .FirstOrDefaultAsync(dp => dp.UserId == id);
 
             return driverProfile;
@@ -36,11 +35,13 @@ namespace CarTransportDashboard.Repository
 
         public async Task<IEnumerable<TransportJob>> GetAssignedJobsAsync(string driverId)
         {
+            //Needs refactoring as removed TransportJobs from DriverProfile
             var driverProfile = await _db.DriverProfiles
-                .Include(dp => dp.TransportJobs)
+                //.Include(dp => dp.TransportJobs)
                 .FirstOrDefaultAsync(dp => dp.UserId == driverId);
 
-            return driverProfile?.TransportJobs ?? Enumerable.Empty<TransportJob>();
+            //return driverProfile?.TransportJobs ?? Enumerable.Empty<TransportJob>();
+            return Enumerable.Empty<TransportJob>();
         }
 
     }

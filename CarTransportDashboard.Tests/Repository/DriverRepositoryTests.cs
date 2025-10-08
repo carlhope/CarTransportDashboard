@@ -16,7 +16,7 @@ public class DriverRepositoryTests
     {
         // Arrange
         var userId = "user123";
-        var user = new ApplicationUser { Id = userId, UserName = "driver1" };
+        var user = new ApplicationUser { Id = userId, UserName = "driver1", FirstName="Test", LastName="Driver" };
 
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // ensures isolation
@@ -27,8 +27,6 @@ public class DriverRepositoryTests
         context.DriverProfiles.Add(new DriverProfile
         {
             UserId = userId,
-            User = user,
-            TransportJobs = new List<TransportJob>(),
             LicenseNumber = "LIC123",
         });
 
@@ -79,7 +77,7 @@ public class DriverRepositoryTests
     {
         // Arrange
         var userId = "driverId";
-        var user = new ApplicationUser { Id = userId, UserName = "driver1" };
+        var user = new ApplicationUser { Id = userId, UserName = "driver1", FirstName = "Test", LastName = "Driver" };
         var userManagerMock = new Mock<UserManager<ApplicationUser>>(
             Mock.Of<IUserStore<ApplicationUser>>(), null, null, null, null, null, null, null, null);
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -105,7 +103,7 @@ public class DriverRepositoryTests
     {
         // Arrange
         var userId = "driverId";
-        var user = new ApplicationUser { Id = userId, UserName = "driver1" };
+        var user = new ApplicationUser { Id = userId, UserName = "driver1", FirstName = "Test", LastName = "Driver" };
         var userManagerMock = new Mock<UserManager<ApplicationUser>>(
             Mock.Of<IUserStore<ApplicationUser>>(), null, null, null, null, null, null, null, null);
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
