@@ -62,5 +62,36 @@ assignVehicle(id: string, vehicleId: string): Observable<TransportJob> {
 assignDriver(id: string, driverId: string): Observable<TransportJob> {
   return this.http.put<TransportJob>(`${this.apiUrl}/assign-driver/${id}`, driverId);
 }
+  getAcceptedJobs(): Observable<TransportJob[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/myjobs?status=InProgress`,
+      { withCredentials: true }
+    ).pipe(
+      map(jobs => jobs.map(job => this.mapper.toTransportJob(job)))
+    );
+  }
+  getAvailableJobsForDriver(): Observable<TransportJob[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/myjobs?status=Available`,
+      { withCredentials: true }
+    ).pipe(
+      map(jobs => jobs.map(job => this.mapper.toTransportJob(job)))
+    );
+  }
+  getCompletedJobs(days: number = 30): Observable<TransportJob[]> {
+    const fromDate = new Date();
+    fromDate.setDate(fromDate.getDate() - days);
+    const isoDate = fromDate.toISOString();
+
+    return this.http.get<any[]>(
+      `${this.apiUrl}/myjobs?status=Completed&startDate=${isoDate}`,
+      { withCredentials: true }
+    ).pipe(
+      map(jobs => jobs.map(job => this.mapper.toTransportJob(job)))
+    );
+  }
+
+
+
 
 }

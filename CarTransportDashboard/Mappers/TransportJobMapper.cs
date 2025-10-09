@@ -17,7 +17,12 @@ namespace CarTransportDashboard.Mappers
                 ScheduledDate = job.ScheduledDate,
                 Status = job.Status,
                 AssignedDriverId = job.AssignedDriverId,
-                AssignedVehicleId = job.AssignedVehicleId
+                AssignedVehicleId = job.AssignedVehicleId,
+                CreatedAt = job.CreatedAt,
+                UpdatedAt = job.UpdatedAt,
+                AssignedAt = job.AssignedAt,
+                CompletedAt = job.CompletedAt,
+                AcceptedAt = job.AcceptedAt
             };
         }
         public static List<TransportJobReadDto> ToReadDtoList(IEnumerable<TransportJob> jobs)

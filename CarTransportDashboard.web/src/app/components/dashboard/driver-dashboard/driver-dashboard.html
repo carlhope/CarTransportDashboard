@@ -1,7 +1,7 @@
 <div class="driver-dashboard p-6 bg-gray-50 rounded-lg shadow-md">
-  @if (this.driver) {
+  @if (driver) {
     <h2 class="text-2xl font-semibold text-gray-800 mb-4">
-      Welcome, {{ this.driver.firstName }} {{ this.driver.lastName }}
+      Welcome, {{ driver.firstName }} {{ driver.lastName }}
     </h2>
   }
 
@@ -9,8 +9,28 @@
   <section class="mb-6">
     <h3 class="text-lg font-medium text-gray-700 mb-2">Accepted Jobs</h3>
     <div class="bg-white p-4 rounded border border-gray-200 space-y-2">
-      <p class="text-gray-500">No accepted jobs yet.</p>
-      <!-- TODO: Inject accepted jobs (Status == InProgress) via service -->
+      @if (acceptedJobs.length > 0) {
+        @for (job of acceptedJobs; track job.id) {
+          <div class="p-2 border rounded hover:bg-gray-50">
+            <div class="font-semibold text-gray-800">{{ job.title }}</div>
+            <div class="text-sm text-gray-600">Pickup: {{ job.pickupLocation }}</div>
+            <div class="text-sm text-gray-600">Dropoff: {{ job.dropoffLocation }}</div>
+            <div class="flex gap-2 mt-2">
+              <button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                      (click)="completeJob(job.id!)">
+                Complete
+              </button>
+              <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                      (click)="cancelJob(job.id!)">
+                Cancel
+              </button>
+            </div>
+
+          </div>
+        }
+      } @else {
+        <p class="text-gray-500">No accepted jobs yet.</p>
+      }
     </div>
   </section>
 
@@ -18,8 +38,28 @@
   <section class="mb-6">
     <h3 class="text-lg font-medium text-gray-700 mb-2">Available Jobs</h3>
     <div class="bg-white p-4 rounded border border-gray-200 space-y-2">
-      <p class="text-gray-500">No jobs available.</p>
-      <!-- TODO: Inject available jobs (Status == Allocated) via service -->
+      @if (availableJobs.length > 0) {
+        @for (job of availableJobs; track job.id) {
+          <div class="p-2 border rounded hover:bg-gray-50">
+            <div class="font-semibold text-gray-800">{{ job.title }}</div>
+            <div class="text-sm text-gray-600">Pickup: {{ job.pickupLocation }}</div>
+            <div class="text-sm text-gray-600">Dropoff: {{ job.dropoffLocation }}</div>
+            <div class="flex gap-2 mt-2">
+              <button class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                      (click)="acceptJob(job.id!)">
+                Accept
+              </button>
+              <button class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600"
+                      (click)="declineJob(job.id!)">
+                Decline
+              </button>
+            </div>
+
+          </div>
+        }
+      } @else {
+        <p class="text-gray-500">No jobs available.</p>
+      }
     </div>
   </section>
 
@@ -27,8 +67,17 @@
   <section class="mb-6">
     <h3 class="text-lg font-medium text-gray-700 mb-2">Completed Jobs</h3>
     <div class="bg-white p-4 rounded border border-gray-200 space-y-2">
-      <p class="text-gray-500">No completed jobs in the last 30 days.</p>
-      <!-- TODO: Inject completed jobs (Status == Completed) via service -->
+      @if (completedJobs.length > 0) {
+        @for (job of completedJobs; track job.id) {
+          <div class="p-2 border rounded hover:bg-gray-50">
+            <div class="font-semibold text-gray-800">{{ job.title }}</div>
+            <div class="text-sm text-gray-600">Completed: {{ job.completedAt | date:'shortDate' }}</div>
+            <div class="text-sm text-gray-600">Earnings: £{{ job.payout }}</div>
+          </div>
+        }
+      } @else {
+        <p class="text-gray-500">No completed jobs in the last 30 days.</p>
+      }
     </div>
   </section>
 
@@ -48,9 +97,9 @@
         <span>Last 30 Days</span>
         <span class="font-semibold text-gray-800">£1134.50</span>
       </div>
-      <!-- TODO: Inject earnings summary via service -->
     </div>
   </section>
 </div>
+
 
 
