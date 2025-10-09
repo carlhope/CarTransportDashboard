@@ -79,11 +79,12 @@ public class TransportJobServiceTests
     public async Task AcceptJobAsync_UpdatesJobStatusAndDriver()
     {
         var jobId = Guid.NewGuid();
-        var job = new TransportJob { Id = jobId, Status = JobStatus.Available };
-        _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);
-
         var service = CreateService();
         var driver = Guid.NewGuid().ToString();
+        var job = new TransportJob { Id = jobId, Status = JobStatus.Allocated, AssignedDriverId=driver };
+        _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);
+
+      
         await service.AcceptJobAsync(jobId, driver);
 
         Assert.Equal(driver, job.AssignedDriverId);
@@ -154,7 +155,7 @@ public class TransportJobServiceTests
     {
         var jobId = Guid.NewGuid();
         var driverId = Guid.NewGuid().ToString();
-        var job = new TransportJob { Id = jobId };
+        var job = new TransportJob { Id = jobId, Status=JobStatus.Available};
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);
         _driverRepoMock.Setup(r => r.IsInDriverRoleAsync(driverId.ToString())).ReturnsAsync(true);
 
