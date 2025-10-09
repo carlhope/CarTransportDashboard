@@ -32,10 +32,10 @@ namespace CarTransportDashboard.Services
             var jobs = await _jobRepo.GetAllAsync();
             return jobs.Select(TransportJobMapper.ToDto);
         }
-        public async Task<IEnumerable<TransportJobReadDto>> GetJobsByDriverIdAsync(List<string> id, string? status)
+        public async Task<IEnumerable<TransportJobReadDto>> GetJobsByDriverIdAsync(List<string> id, string? status, DateTime? startDate =null )
         {
             //drivers can search for their own jobs. Admin and dispatchers can pass any array of driver ids via their own api endpoints.
-            var jobs = await _jobRepo.GetAllByDriverIdsAsync(id, status!);
+            var jobs = await _jobRepo.GetAllByDriverIdsAsync(id, status!, startDate);
             return jobs.Select(TransportJobMapper.ToDto);
         }
 

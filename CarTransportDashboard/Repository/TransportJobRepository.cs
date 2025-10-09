@@ -22,7 +22,7 @@ namespace CarTransportDashboard.Repository{
     public async Task<IEnumerable<TransportJob>> GetAllAsync() =>
         await _context.TransportJobs.ToListAsync();
 
-        public async Task<IEnumerable<TransportJob>> GetAllByDriverIdsAsync(IEnumerable<string> driverIds, string? status)
+        public async Task<IEnumerable<TransportJob>> GetAllByDriverIdsAsync(IEnumerable<string> driverIds, string? status, DateTime? startDate = null)
         {
             var query = _context.TransportJobs.AsQueryable();
 
@@ -32,6 +32,11 @@ namespace CarTransportDashboard.Repository{
                 Enum.TryParse<JobStatus>(status, true, out var parsedStatus))
             {
                 query = query.Where(j => j.Status == parsedStatus);
+
+                if (parsedStatus == JobStatus.Completed && startDate.HasValue)
+                {
+                    query = query.Where(j => j.CompletedAt.HasValue && j.CompletedAt.Value >= startDate.Value);
+                }
             }
 
             return await query.ToListAsync();
