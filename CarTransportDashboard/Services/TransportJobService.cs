@@ -51,7 +51,9 @@ namespace CarTransportDashboard.Services
             if (job is null)
                 return OperationResult<TransportJobReadDto>.CreateFailure("Transport job not found.");
 
-            job.AssignedDriverId = driverId;
+            if (job.Status != JobStatus.Allocated || job.AssignedDriverId!=driverId)
+                return OperationResult<TransportJobReadDto>.CreateFailure("Job is not available for acceptance.");
+
             job.Status = JobStatus.InProgress;
 
             var jobDto = TransportJobMapper.ToDto(job);
@@ -97,12 +99,21 @@ namespace CarTransportDashboard.Services
 
             if (job is null || !isDriver)
                 return OperationResult<TransportJobReadDto>.CreateFailure("Job not found or user is not a driver.");
-
-            job.AssignedDriverId = driverId;
-            await _jobRepo.UpdateAsync(job);
-            var jobDto = TransportJobMapper.ToDto(job);
-            return OperationResult<TransportJobReadDto>.CreateSuccess(jobDto, "Driver assigned to job successfully.");
-        }
+            if(job.Status != JobStatus.Available)
+                return OperationResult<TransportJobReadDto>.CreateFailure("Job is not available for assignment.");
+            if (job.Status == JobStatus.Available)
+            {
+                job.AssignedDriverId = driverId;
+                job.Status = JobStatus.Allocated;
+                await _jobRepo.UpdateAsync(job);
+                var jobDto = TransportJobMapper.ToDto(job);
+                return OperationResult<TransportJobReadDto>.CreateSuccess(jobDto, "Driver assigned to job successfully.");
+            }
+            else
+            {
+                return OperationResult<TransportJobReadDto>.CreateFailure("Job is not available for assignment.");
+            }
+            }
 
         public async Task<OperationResult<TransportJobReadDto>> CreateJobAsync(TransportJobWriteDto dto)
         {

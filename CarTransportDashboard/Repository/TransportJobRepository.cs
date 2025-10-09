@@ -40,7 +40,7 @@ namespace CarTransportDashboard.Repository{
 
         public async Task<IEnumerable<TransportJob>> GetAvailableJobsAsync() =>
         await _context.TransportJobs
-            .Where(j => j.AssignedVehicleId != null && j.AssignedDriverId == null)
+            .Where(j=>j.Status ==JobStatus.Available)
             .ToListAsync();
 
         public async Task<OperationResult<TransportJob>> AddAsync(TransportJob job)
@@ -68,6 +68,7 @@ namespace CarTransportDashboard.Repository{
         {
             try
             {
+                job.UpdatedAt = DateTime.UtcNow;
                 _context.TransportJobs.Update(job);
                 await _context.SaveChangesAsync();
                 return OperationResult<TransportJob>.CreateSuccess(job, "Job updated successfully.");
@@ -89,7 +90,7 @@ namespace CarTransportDashboard.Repository{
             var job = await GetByIdAsync(jobId);
             if (job is null)
                 return OperationResult<TransportJob>.CreateFailure("Transport job not found.");
-
+            job.UpdatedAt = DateTime.UtcNow;
             job.AssignedVehicleId = vehicleId;
             return await UpdateAsync(job);
         }

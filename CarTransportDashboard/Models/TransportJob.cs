@@ -11,6 +11,11 @@ namespace CarTransportDashboard.Models
         public string PickupLocation { get; set; } = string.Empty;
         public string DropoffLocation { get; set; } = string.Empty;
         public DateTime? ScheduledDate { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; }
+        public DateTime? CompletedAt { get; set; }
+        public DateTime? AssignedAt { get; set; }
+        public DateTime? AcceptedAt { get; set; }
 
         // Foreign Keys
         public Guid? AssignedVehicleId { get; set; }

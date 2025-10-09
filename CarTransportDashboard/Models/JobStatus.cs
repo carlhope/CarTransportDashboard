@@ -4,6 +4,7 @@ namespace CarTransportDashboard.Models
 {
     Available,
     InProgress,
+    Allocated,
     Completed
 }
 
