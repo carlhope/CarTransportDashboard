@@ -2,12 +2,14 @@ import {Component, Input, OnInit} from '@angular/core';
 import {UserModel} from '../../../models/user';
 import { TransportJob } from '../../../models/transport-job';
 import { TransportJobService } from '../../../services/transport-job/transport-job';
-import {DatePipe} from '@angular/common';
+import {CurrencyPipe, DatePipe} from '@angular/common';
+import {EarningsSummary} from '../../../models/Earnings';
 
 @Component({
   selector: 'app-driver-dashboard',
   imports: [
-    DatePipe
+    DatePipe,
+    CurrencyPipe
   ],
   templateUrl: './driver-dashboard.html',
   styleUrl: './driver-dashboard.scss'
@@ -19,6 +21,14 @@ export class DriverDashboard implements OnInit {
   acceptedJobs: TransportJob[] = [];
   availableJobs: TransportJob[] = [];
   completedJobs: TransportJob[] = [];
+  currencyCode: string = 'GBP'; // Hardcoded for simplicity. Could be made dynamic based on locale.
+
+  earnings: EarningsSummary = {
+    //Hardcoded placeholder values for now
+    today: 45.00,
+    thisWeek: 342.25,
+    last30Days: 1134.50
+  };
 
   constructor(private jobService: TransportJobService) {}
 
@@ -28,6 +38,7 @@ export class DriverDashboard implements OnInit {
     this.loadAcceptedJobs();
     this.loadAvailableJobs();
     this.loadCompletedJobs();
+    this.loadEarnings();
   }
 
   private loadAcceptedJobs(): void {
@@ -64,6 +75,9 @@ export class DriverDashboard implements OnInit {
 
   declineJob(jobId: string): void {
     console.log(`Decline job triggered for ID: ${jobId}`);
+  }
+  private loadEarnings(): void {
+    console.log(`Load Earnings triggered for user: ${this.driver?.firstName} ${this.driver?.lastName}`);
   }
 
 }

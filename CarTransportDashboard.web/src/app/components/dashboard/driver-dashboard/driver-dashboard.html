@@ -87,18 +87,22 @@
     <div class="bg-white p-4 rounded border border-gray-200 space-y-2">
       <div class="flex justify-between text-gray-600">
         <span>Today</span>
-        <span class="font-semibold text-gray-800">£45.00</span>
+        <span class="font-semibold text-gray-800">{{ earnings.today | currency:currencyCode:'symbol':'1.2-2' }}
+</span>
       </div>
       <div class="flex justify-between text-gray-600">
         <span>This Week</span>
-        <span class="font-semibold text-gray-800">£342.25</span>
+        <span class="font-semibold text-gray-800">{{ earnings.thisWeek | currency:currencyCode:'symbol':'1.2-2' }}
+</span>
       </div>
       <div class="flex justify-between text-gray-600">
         <span>Last 30 Days</span>
-        <span class="font-semibold text-gray-800">£1134.50</span>
+        <span class="font-semibold text-gray-800">{{ earnings.last30Days | currency:currencyCode:'symbol':'1.2-2' }}
+</span>
       </div>
     </div>
   </section>
+
 </div>
 
 
