@@ -141,4 +141,61 @@ public class TransportJobsController : ControllerBase
         
         return Ok(result.Data);
     }
+
+    // POST: api/transportjobs/{id}/complete
+    [HttpPost("{id}/complete")]
+    [Authorize(Roles = RoleConstants.Driver)]
+    public IActionResult CompleteJob(Guid id)
+    {
+        throw new NotImplementedException("CompleteJob endpoint not yet implemented.");
+    }
+
+    [HttpPost("{id}/cancel")]
+    [Authorize(Roles = RoleConstants.Admin)]
+    public async Task<IActionResult> CancelJob(Guid id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userRole = User.FindFirstValue(ClaimTypes.Role);
+
+        // For now, just log who tried to cancel
+        throw new NotImplementedException($"CancelJob not implemented. Called by {userRole} ({userId})");
+    }
+
+
+    // POST: api/transportjobs/{id}/unassign
+    [HttpPost("{id}/unassign")]
+    [Authorize]
+    public async Task<IActionResult> UnassignJob(Guid id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userRole = User.FindFirstValue(ClaimTypes.Role);
+        if (!Enum.TryParse<UserRoles>(userRole, out var parsedRole))
+            return Forbid("Invalid user role.");
+        var job = await _jobService.GetJobAsync(id);
+        OperationResult<TransportJobReadDto> result;
+        if (job == null)
+            return NotFound("Job not found.");
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized("User identity not found.");
+        if (parsedRole == UserRoles.Driver)
+        {
+            if (job.AssignedDriverId == userId)
+            {
+                result = await _jobService.UnassignDriverFromJobAsync(id, userId, parsedRole);
+                if (!result.Success)
+                    return BadRequest(result.Message);
+                Console.WriteLine($"Driver {userId} unassigned themselves from job {id}");
+                return Ok(result.Data);
+            }
+            return Forbid("Drivers can only unassign themselves from jobs.");
+        }
+        result = await _jobService.UnassignDriverFromJobAsync(id, userId, parsedRole);
+        if (!result.Success)
+        {
+            return BadRequest(result.Message);
+        }
+        Console.WriteLine($"User {userRole} ({userId}) unassigned driver from job {id}");
+        return Ok(result.Data);
+    }
+
 }

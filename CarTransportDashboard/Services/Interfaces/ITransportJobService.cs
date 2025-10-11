@@ -1,5 +1,6 @@
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.TransportJob;
+using CarTransportDashboard.Models.Users;
 
 namespace CarTransportDashboard.Services.Interfaces
 {
@@ -15,6 +16,10 @@ namespace CarTransportDashboard.Services.Interfaces
         Task<OperationResult<TransportJobReadDto>> AcceptJobAsync(Guid jobId, string driverId);
         Task<OperationResult<TransportJobReadDto>> UpdateJobAsync(Guid jobId, TransportJobWriteDto dto);
         Task<IEnumerable<TransportJobReadDto>> GetJobsByDriverIdAsync(List<string> id, string? status, DateTime? startDate = null);
+        Task<OperationResult<TransportJobReadDto>> DeleteJobAsync(Guid jobId);
+        Task<OperationResult<TransportJobReadDto>> CompleteJobAsync(Guid jobId);
+        Task<OperationResult<TransportJobReadDto>> UnassignDriverFromJobAsync(Guid jobId, string actorId, UserRoles actorRole);
+        Task<OperationResult<TransportJobReadDto>> CancelJob(Guid jobId);
     }
 
 }

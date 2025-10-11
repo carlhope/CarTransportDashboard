@@ -4,6 +4,7 @@ import { TransportJob } from '../../../models/transport-job';
 import { TransportJobService } from '../../../services/transport-job/transport-job';
 import {CurrencyPipe, DatePipe} from '@angular/common';
 import {EarningsSummary} from '../../../models/Earnings';
+import {catchError, Observable, throwError} from 'rxjs';
 
 @Component({
   selector: 'app-driver-dashboard',
@@ -35,6 +36,9 @@ export class DriverDashboard implements OnInit {
   ngOnInit(): void {
     console.log("DriverDashboard initialized");
 
+  this.refreshData()
+  }
+  private refreshData(): void {
     this.loadAcceptedJobs();
     this.loadAvailableJobs();
     this.loadCompletedJobs();
@@ -61,21 +65,56 @@ export class DriverDashboard implements OnInit {
       console.log('Completed jobs:', jobs);
     });
   }
-  completeJob(jobId: string): void {
-    console.log(`Complete job triggered for ID: ${jobId}`);
-  }
-
-  cancelJob(jobId: string): void {
-    console.log(`Cancel job triggered for ID: ${jobId}`);
-  }
 
   acceptJob(jobId: string): void {
     console.log(`Accept job triggered for ID: ${jobId}`);
+    this.jobService.acceptJob(jobId).subscribe({
+      next: updatedJob => {
+        console.log('Job accepted:', updatedJob);
+        this.refreshData();
+        console.log(updatedJob);
+      },
+      error: err => {
+        console.log('Error occurred:', err);
+      }
+    });
+  }
+  completeJob(jobId: string): void {
+    this.jobService.completeJob(jobId).subscribe({
+      next: updatedJob => {
+        console.log(`Job ${jobId} marked as complete.`);
+        this.refreshData();
+      },
+      error: err => {
+        console.error(`Failed to complete job ${jobId}:`, err.message);
+      }
+    });
+  }
+
+  cancelJob(jobId: string): void {
+    this.jobService.unassignJob(jobId).subscribe({
+      next: updatedJob => {
+        console.log(`Job ${jobId} cancelled.`);
+        this.refreshData();
+      },
+      error: err => {
+        console.error(`Failed to cancel job ${jobId}:`, err.message);
+      }
+    });
   }
 
   declineJob(jobId: string): void {
-    console.log(`Decline job triggered for ID: ${jobId}`);
+    this.jobService.unassignJob(jobId).subscribe({
+      next: updatedJob => {
+        console.log(`Job ${jobId} declined.`);
+        this.refreshData();
+      },
+      error: err => {
+        console.error(`Failed to decline job ${jobId}:`, err.message);
+      }
+    });
   }
+
   private loadEarnings(): void {
     console.log(`Load Earnings triggered for user: ${this.driver?.firstName} ${this.driver?.lastName}`);
   }

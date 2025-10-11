@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import{TransportJob} from '../../models/transport-job';
 import { JobStatus } from '../../models/job-status';
 import {HttpClient} from '@angular/common/http';
-import {map, of, Observable} from 'rxjs';
+import {map, of, Observable, catchError, throwError} from 'rxjs';
 import { tap } from 'rxjs/operators';
 import {Vehicle} from '../../models/vehicle';
 import {MinimalUser} from '../../models/minimal-user';
@@ -51,10 +51,6 @@ getJobs(): Observable<TransportJob[]> {
   return this.http.put<TransportJob>(`${this.apiUrl}/status/${id}`, status);
 }
 
-acceptJob(id: string, driverId: string): Observable<TransportJob> {
-  return this.http.put<TransportJob>(`${this.apiUrl}/accept/${id}`, driverId);
-}
-
 assignVehicle(id: string, vehicleId: string): Observable<TransportJob> {
   return this.http.put<TransportJob>(`${this.apiUrl}/assign-vehicle/${id}`, vehicleId);
 }
@@ -90,6 +86,27 @@ assignDriver(id: string, driverId: string): Observable<TransportJob> {
       map(jobs => jobs.map(job => this.mapper.toTransportJob(job)))
     );
   }
+  acceptJob(jobId: string): Observable<TransportJob> {
+    const url = `${this.apiUrl}/${jobId}/accept`;
+    return this.http.post<TransportJob>(url, {}).pipe(
+      catchError(err => {
+        console.error('Accept job failed:', err);
+        return throwError(() => new Error('Could not accept job.'));
+      })
+    );
+  }
+  completeJob(jobId: string): Observable<TransportJob> {
+    return this.http.post<TransportJob>(`${this.apiUrl}/${jobId}/complete`, {});
+  }
+
+  cancelJob(jobId: string): Observable<TransportJob> {
+    return this.http.post<TransportJob>(`${this.apiUrl}/${jobId}/cancel`, {});
+  }
+
+  unassignJob(jobId: string): Observable<TransportJob> {
+    return this.http.post<TransportJob>(`${this.apiUrl}/${jobId}/unassign`, {});
+  }
+
 
 
 
