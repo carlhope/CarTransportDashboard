@@ -1,6 +1,7 @@
 using CarTransportDashboard.Mappers;
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.TransportJob;
+using CarTransportDashboard.Models.Users;
 using CarTransportDashboard.Repository.Interfaces;
 using CarTransportDashboard.Services.Interfaces;
 namespace CarTransportDashboard.Services
@@ -141,6 +142,26 @@ namespace CarTransportDashboard.Services
 
             var readDto = TransportJobMapper.ToDto(updateResult.Data);
             return OperationResult<TransportJobReadDto>.CreateSuccess(readDto, "Job updated successfully.");
+        }
+
+        public Task<OperationResult<TransportJobReadDto>> DeleteJobAsync(Guid jobId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OperationResult<TransportJobReadDto>> CompleteJobAsync(Guid jobId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OperationResult<TransportJobReadDto>> UnassignDriverFromJobAsync(Guid jobId, string actorId, UserRoles actorRole)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OperationResult<TransportJobReadDto>> CancelJob(Guid jobId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

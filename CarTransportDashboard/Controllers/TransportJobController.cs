@@ -1,6 +1,7 @@
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.TransportJob;
 using CarTransportDashboard.Models.Users;
+using CarTransportDashboard.Services;
 using CarTransportDashboard.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -100,6 +101,7 @@ public class TransportJobsController : ControllerBase
     }
 
     // POST: api/transportjobs/{id}/accept
+    //POST is used instead of PATCH as accepting a job may involve more complex processing (e.g. notifications)
     [HttpPost("{id}/accept")]
     [Authorize(Roles = "Driver")] // Optional: restrict to drivers
     public async Task<ActionResult> AcceptJob(Guid id)
@@ -116,9 +118,9 @@ public class TransportJobsController : ControllerBase
         return Ok(result.Data);
     }
 
-    // POST: api/transportjobs/{id}/assign-vehicle
+    // PATCH: api/transportjobs/{id}/assign-vehicle
     [Authorize(Roles = RoleConstants.Admin + "," + RoleConstants.Dispatcher)]// restrict to admins/dispatchers
-    [HttpPost("{id}/assign-vehicle")]
+    [HttpPatch("{id}/assign-vehicle")]
     public async Task<ActionResult> AssignVehicle(Guid id, [FromBody] Guid vehicleId)
     {
         var result = await _jobService.AssignVehicleToJobAsync(id, vehicleId);
@@ -130,6 +132,7 @@ public class TransportJobsController : ControllerBase
     }
 
     // POST: api/transportjobs/{id}/assign-driver
+    //POST is used instead of PATCH as assigning a driver may involve more complex processing (e.g. notifications)
     [HttpPost("{id}/assign-driver")]
     [Authorize(Roles = RoleConstants.Admin + "," + RoleConstants.Dispatcher)] // restrict to admins/dispatchers
     public async Task<ActionResult> AssignDriver(Guid id, [FromBody] string driverId)
@@ -143,26 +146,42 @@ public class TransportJobsController : ControllerBase
     }
 
     // POST: api/transportjobs/{id}/complete
+    //POST used instead of PATCH as this action may involve more complex processing (e.g. triggering payments)
     [HttpPost("{id}/complete")]
     [Authorize(Roles = RoleConstants.Driver)]
-    public IActionResult CompleteJob(Guid id)
+    public async Task<IActionResult> CompleteJob(Guid id)
     {
-        throw new NotImplementedException("CompleteJob endpoint not yet implemented.");
+        var result = await _jobService.CompleteJobAsync(id);
+
+        if (!result.Success)
+        {
+            // You can customize this based on error types
+            return BadRequest(new { error = result.Message });
+        }
+
+        return Ok(result.Data);
     }
 
+    // POST: api/transportjobs/{id}/cancel
+    //POST is used as this action may involve more complex processing (e.g. notifications)
     [HttpPost("{id}/cancel")]
     [Authorize(Roles = RoleConstants.Admin)]
     public async Task<IActionResult> CancelJob(Guid id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var userRole = User.FindFirstValue(ClaimTypes.Role);
+        var result = await _jobService.CancelJob(id);
 
-        // For now, just log who tried to cancel
-        throw new NotImplementedException($"CancelJob not implemented. Called by {userRole} ({userId})");
+        if (!result.Success)
+        {
+            return BadRequest(new { error = result.Message });
+        }
+
+        return Ok(result.Data);
     }
 
 
+
     // POST: api/transportjobs/{id}/unassign
+    //POST is used instead of PATCH as unassigning may involve more complex processing (e.g. notifications)
     [HttpPost("{id}/unassign")]
     [Authorize]
     public async Task<IActionResult> UnassignJob(Guid id)

@@ -1,5 +1,6 @@
 using CarTransportDashboard.Context;
 using CarTransportDashboard.Models;
+using CarTransportDashboard.Models.Dtos.TransportJob;
 using CarTransportDashboard.Repository.Interfaces;
 using CarTransportDashboard.Services;
 using Microsoft.EntityFrameworkCore;
@@ -108,6 +109,26 @@ namespace CarTransportDashboard.Repository{
 
             job.AssignedDriverId = driverId;
             return await UpdateAsync(job);
+        }
+
+        public Task<OperationResult<TransportJob>> DeleteJobAsync(Guid jobId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OperationResult<TransportJob>> CompleteJobAsync(Guid jobId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OperationResult<TransportJob>> UnassignDriverFromJobAsync(Guid jobId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OperationResult<TransportJob>> CancelJob(Guid jobId)
+        {
+            throw new NotImplementedException();
         }
     }
 
