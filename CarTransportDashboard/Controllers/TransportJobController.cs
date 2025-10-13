@@ -155,7 +155,6 @@ public class TransportJobsController : ControllerBase
 
         if (!result.Success)
         {
-            // You can customize this based on error types
             return BadRequest(new { error = result.Message });
         }
 
@@ -190,7 +189,8 @@ public class TransportJobsController : ControllerBase
         var userRole = User.FindFirstValue(ClaimTypes.Role);
         if (!Enum.TryParse<UserRoles>(userRole, out var parsedRole))
             return Forbid("Invalid user role.");
-        var job = await _jobService.GetJobAsync(id);
+        //
+        var job = await _jobService.GetJobEntityAsync(id);
         OperationResult<TransportJobReadDto> result;
         if (job == null)
             return NotFound("Job not found.");
@@ -200,7 +200,7 @@ public class TransportJobsController : ControllerBase
         {
             if (job.AssignedDriverId == userId)
             {
-                result = await _jobService.UnassignDriverFromJobAsync(id, userId, parsedRole);
+                result = await _jobService.UnassignDriverFromJobAsync(job);
                 if (!result.Success)
                     return BadRequest(result.Message);
                 Console.WriteLine($"Driver {userId} unassigned themselves from job {id}");
@@ -208,7 +208,7 @@ public class TransportJobsController : ControllerBase
             }
             return Forbid("Drivers can only unassign themselves from jobs.");
         }
-        result = await _jobService.UnassignDriverFromJobAsync(id, userId, parsedRole);
+        result = await _jobService.UnassignDriverFromJobAsync(job);
         if (!result.Success)
         {
             return BadRequest(result.Message);

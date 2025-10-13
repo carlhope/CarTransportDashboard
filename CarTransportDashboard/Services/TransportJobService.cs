@@ -28,6 +28,11 @@ namespace CarTransportDashboard.Services
             return job == null ? null : TransportJobMapper.ToDto(job);
         }
 
+        public async Task<TransportJob?> GetJobEntityAsync(Guid id)
+        {
+            return await _jobRepo.GetByIdAsync(id);
+        }
+
         public async Task<IEnumerable<TransportJobReadDto>> GetJobsAsync()
         {
             var jobs = await _jobRepo.GetAllAsync();
@@ -144,20 +149,27 @@ namespace CarTransportDashboard.Services
             return OperationResult<TransportJobReadDto>.CreateSuccess(readDto, "Job updated successfully.");
         }
 
-        public Task<OperationResult<TransportJobReadDto>> DeleteJobAsync(Guid jobId)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<OperationResult<TransportJobReadDto>> CompleteJobAsync(Guid jobId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<OperationResult<TransportJobReadDto>> UnassignDriverFromJobAsync(Guid jobId, string actorId, UserRoles actorRole)
+        public async Task<OperationResult<TransportJobReadDto>> UnassignDriverFromJobAsync(TransportJob job)
         {
-            throw new NotImplementedException();
+            if (job.AssignedDriverId == null)
+                return OperationResult<TransportJobReadDto>.CreateFailure("Job has no assigned driver.");
+            job.AssignedDriverId = null;
+            job.AssignedDriver = null;
+            job.UpdatedAt = DateTime.UtcNow;
+            job.Status = JobStatus.Available;
+
+            var result = await _jobRepo.UpdateAsync(job);
+            if (!result.Success) return OperationResult<TransportJobReadDto>.CreateFailure(result.Message);
+            if(result.Data == null) return OperationResult<TransportJobReadDto>.CreateFailure("Job is null");
+            var dto = TransportJobMapper.ToDto(result.Data);
+            return OperationResult<TransportJobReadDto>.CreateSuccess(dto);
         }
+
 
         public Task<OperationResult<TransportJobReadDto>> CancelJob(Guid jobId)
         {

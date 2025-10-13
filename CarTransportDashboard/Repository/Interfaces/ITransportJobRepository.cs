@@ -14,9 +14,5 @@ namespace CarTransportDashboard.Repository.Interfaces
         Task<OperationResult<TransportJob>> AssignVehicleAsync(Guid jobId, Guid vehicleId);
         Task<OperationResult<TransportJob>> UpdateAsync(TransportJob job);
         Task<IEnumerable<TransportJob>> GetAllByDriverIdsAsync(IEnumerable<string> driverIds, string? status, DateTime? startDate = null);
-        Task<OperationResult<TransportJob>> DeleteJobAsync(Guid jobId);
-        Task<OperationResult<TransportJob>> CompleteJobAsync(Guid jobId);
-        Task<OperationResult<TransportJob>> UnassignDriverFromJobAsync(Guid jobId);
-        Task<OperationResult<TransportJob>> CancelJob(Guid jobId);
     }
 }
