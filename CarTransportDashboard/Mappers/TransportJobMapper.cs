@@ -32,18 +32,19 @@ namespace CarTransportDashboard.Mappers
 
         public static TransportJob ToModel(TransportJobWriteDto dto)
         {
-            return new TransportJob
-            {
-                Id = dto.Id,
-                Title = dto.Title,
-                Description = dto.Description,
-                PickupLocation = dto.PickupLocation,
-                DropoffLocation = dto.DropoffLocation,
-                ScheduledDate = dto.ScheduledDate,
-                Status = dto.Status,
-                AssignedDriverId = dto.AssignedDriverId,
-                AssignedVehicleId = dto.AssignedVehicleId
-            };
+            return new TransportJob(
+                   title: dto.Title,
+                   description: dto.Description,
+                   pickupLocation: dto.PickupLocation,
+                   dropoffLocation: dto.DropoffLocation,
+                   scheduledDate: dto.ScheduledDate ?? DateTime.UtcNow,
+                   assignedVehicleId: dto.AssignedVehicleId ?? Guid.Empty
+               )
+               {
+                   Id = dto.Id,
+                   AssignedDriverId = dto.AssignedDriverId
+               };
+
         }
 
         public static void UpdateModel(TransportJob job, TransportJobWriteDto dto)
@@ -53,7 +54,6 @@ namespace CarTransportDashboard.Mappers
             job.PickupLocation = dto.PickupLocation;
             job.DropoffLocation = dto.DropoffLocation;
             job.ScheduledDate = dto.ScheduledDate;
-            job.Status = dto.Status;
             job.AssignedDriverId = dto.AssignedDriverId;
             job.AssignedVehicleId = dto.AssignedVehicleId;
         }

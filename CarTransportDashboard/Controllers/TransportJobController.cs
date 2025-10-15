@@ -89,16 +89,16 @@ public class TransportJobsController : ControllerBase
     }
 
     // PATCH: api/transportjobs/{id}/status
-    [HttpPatch("{id}/status")]
-    public async Task<ActionResult> UpdateJobStatus(Guid id, [FromBody] JobStatus status)
-    {
-        var result = await _jobService.UpdateJobStatusAsync(id, status);
+    //[HttpPatch("{id}/status")]
+    //public async Task<ActionResult> UpdateJobStatus(Guid id, [FromBody] JobStatus status)
+    //{
+    //    var result = await _jobService.UpdateJobStatusAsync(id, status);
 
-        if (!result.Success)
-            return NotFound(result.Message);
+    //    if (!result.Success)
+    //        return NotFound(result.Message);
 
-        return Ok(result.Data);
-    }
+    //    return Ok(result.Data);
+    //}
 
     // POST: api/transportjobs/{id}/accept
     //POST is used instead of PATCH as accepting a job may involve more complex processing (e.g. notifications)
@@ -151,7 +151,8 @@ public class TransportJobsController : ControllerBase
     [Authorize(Roles = RoleConstants.Driver)]
     public async Task<IActionResult> CompleteJob(Guid id)
     {
-        var result = await _jobService.CompleteJobAsync(id);
+        var job = await _jobService.GetJobEntityAsync(id);
+        var result = await _jobService.CompleteJobAsync(job);
 
         if (!result.Success)
         {
@@ -167,7 +168,8 @@ public class TransportJobsController : ControllerBase
     [Authorize(Roles = RoleConstants.Admin)]
     public async Task<IActionResult> CancelJob(Guid id)
     {
-        var result = await _jobService.CancelJob(id);
+        var job = await _jobService.GetJobEntityAsync(id);
+        var result = await _jobService.CancelJob(job);
 
         if (!result.Success)
         {

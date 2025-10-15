@@ -74,9 +74,11 @@ public class TransportJobRepositoryTests
     public async Task GetAvailableJobsAsync_ReturnsJobsWithVehicleNoDriver()
     {
         var context = GetDbContext();
-        var job1 = new TransportJob { Id = Guid.NewGuid(), Title = "A", AssignedVehicleId = Guid.NewGuid(), AssignedDriverId = null, Status = JobStatus.Available };
+        var job1 = new TransportJob { Id = Guid.NewGuid(), Title = "A", AssignedVehicleId = Guid.NewGuid(), AssignedDriverId = null };
         var job2 = new TransportJob { Id = Guid.NewGuid(), Title = "B", AssignedVehicleId = null, AssignedDriverId = null};
         var job3 = new TransportJob { Id = Guid.NewGuid(), Title = "C", AssignedVehicleId = Guid.NewGuid(), AssignedDriverId = Guid.NewGuid().ToString() };
+        job2.Cancel(); // Set status to Cancelled
+        job3.Cancel(); // Set status to Cancelled
         context.TransportJobs.AddRange(job1, job2, job3);
         await context.SaveChangesAsync();
 

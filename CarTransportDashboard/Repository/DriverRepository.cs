@@ -35,14 +35,11 @@ namespace CarTransportDashboard.Repository
 
         public async Task<IEnumerable<TransportJob>> GetAssignedJobsAsync(string driverId)
         {
-            //Needs refactoring as removed TransportJobs from DriverProfile
-            var driverProfile = await _db.DriverProfiles
-                //.Include(dp => dp.TransportJobs)
-                .FirstOrDefaultAsync(dp => dp.UserId == driverId);
-
-            //return driverProfile?.TransportJobs ?? Enumerable.Empty<TransportJob>();
-            return Enumerable.Empty<TransportJob>();
+            return await _db.TransportJobs
+                .Where(j => j.AssignedDriverId == driverId)
+                .ToListAsync();
         }
+
 
     }
 }

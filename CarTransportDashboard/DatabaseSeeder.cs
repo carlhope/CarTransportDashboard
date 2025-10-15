@@ -45,29 +45,24 @@ public static class DatabaseSeeder
                 context.Vehicles.AddRange(vehicle1, vehicle2);
 
                 context.TransportJobs.AddRange(
-                    new TransportJob
-                    {
-                        Id = Guid.NewGuid(),
-                        Title = "Pickup from Manchester",
-                        Description = "Collect vehicle from Manchester depot",
-                        Status = JobStatus.Available,
-                        PickupLocation = "Manchester",
-                        DropoffLocation = "Liverpool",
-                        ScheduledDate = DateTime.Today.AddDays(2),
-                        AssignedVehicleId = vehicle1.Id
-                    },
-                    new TransportJob
-                    {
-                        Id = Guid.NewGuid(),
-                        Title = "Delivery to Birmingham",
-                        Description = "Deliver vehicle to Birmingham client",
-                        Status = JobStatus.InProgress,
-                        PickupLocation = "Leeds",
-                        DropoffLocation = "Birmingham",
-                        ScheduledDate = DateTime.Today.AddDays(1),
-                        AssignedVehicleId = vehicle2.Id
-                    }
-                );
+                   new TransportJob(
+                       title: "Pickup from Manchester",
+                       description: "Collect vehicle from Manchester depot",
+                       pickupLocation: "Manchester",
+                       dropoffLocation: "Liverpool",
+                       scheduledDate: DateTime.Today.AddDays(2),
+                       assignedVehicleId: vehicle1.Id
+                   ),
+                   new TransportJob(
+                       title: "Delivery to Birmingham",
+                       description: "Deliver vehicle to Birmingham client",
+                       pickupLocation: "Leeds",
+                       dropoffLocation: "Birmingham",
+                       scheduledDate: DateTime.Today.AddDays(1),
+                       assignedVehicleId: vehicle2.Id
+                   )
+               );
+
                 await context.SaveChangesAsync();
                 // Seed roles
                 string[] roles = new[] { "Admin", "Driver", "Dispatcher" };

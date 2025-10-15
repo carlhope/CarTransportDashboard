@@ -136,14 +136,17 @@ public class VehicleRepositoryTests
     {
         var context = GetDbContext();
         var vehicleId = Guid.NewGuid();
+        var driver = new ApplicationUser() { FirstName = "John", LastName = "Doe" };
         context.Vehicles.Add(new Vehicle { Id = vehicleId, Make = "Audi", Model = "A4", RegistrationNumber = "MNO345" });
-        context.TransportJobs.Add(new TransportJob
+        TransportJob job = new TransportJob
         {
             Id = Guid.NewGuid(),
             Title = "Job1",
-            Status = JobStatus.InProgress,
             AssignedVehicleId = vehicleId
-        });
+        };
+        job.AssignDriver(driver);
+        job.AcceptJob();
+        context.TransportJobs.Add(job);
         await context.SaveChangesAsync();
 
         var repo = GetRepository(context);
@@ -157,14 +160,18 @@ public class VehicleRepositoryTests
     {
         var context = GetDbContext();
         var vehicleId = Guid.NewGuid();
+        var driver = new ApplicationUser() { FirstName = "John", LastName = "Doe" };
         context.Vehicles.Add(new Vehicle { Id = vehicleId, Make = "Audi", Model = "A4", RegistrationNumber = "MNO345" });
-        context.TransportJobs.Add(new TransportJob
+        TransportJob job = new TransportJob
         {
             Id = Guid.NewGuid(),
             Title = "Job1",
-            Status = JobStatus.Completed,
             AssignedVehicleId = vehicleId
-        });
+        };
+        job.AssignDriver(driver);
+        job.AcceptJob();
+        job.MarkAsCompleted();
+        context.TransportJobs.Add(job);
         await context.SaveChangesAsync();
 
         var repo = GetRepository(context);

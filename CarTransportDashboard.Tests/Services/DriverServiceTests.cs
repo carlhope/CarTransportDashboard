@@ -1,5 +1,7 @@
-﻿using CarTransportDashboard.Models;
+﻿using CarTransportDashboard.Context;
+using CarTransportDashboard.Models;
 using CarTransportDashboard.Repository.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -13,11 +15,14 @@ namespace CarTransportDashboard.Tests.Services
     {
         private readonly Mock<IDriverRepository> _mockRepo;
         private readonly DriverService _service;
+        private readonly Mock<UserManager<ApplicationUser>> _mockUserManager;
 
         public DriverServiceTests()
         {
             _mockRepo = new Mock<IDriverRepository>();
-            _service = new DriverService(_mockRepo.Object);
+            _mockUserManager = CreateMockUserManager();
+            _service = new DriverService(_mockRepo.Object, _mockUserManager.Object);
+
         }
         [Fact]
         public async Task GetAssignedJobsAsync_ReturnsMappedJobs_WhenRepositoryReturnsData()
@@ -71,6 +76,23 @@ namespace CarTransportDashboard.Tests.Services
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _service.GetAssignedJobsAsync(driverId));
         }
+
+        private static Mock<UserManager<ApplicationUser>> CreateMockUserManager()
+        {
+            var store = new Mock<IUserStore<ApplicationUser>>();
+            return new Mock<UserManager<ApplicationUser>>(
+                store.Object,
+                null, // IOptions<IdentityOptions>
+                null, // IPasswordHasher<ApplicationUser>
+                new IUserValidator<ApplicationUser>[0],
+                new IPasswordValidator<ApplicationUser>[0],
+                null, // ILookupNormalizer
+                null, // IdentityErrorDescriber
+                null, // IServiceProvider
+                null  // ILogger<UserManager<ApplicationUser>>
+            );
+        }
+
 
     }
 }
