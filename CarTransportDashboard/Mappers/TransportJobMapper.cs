@@ -18,6 +18,7 @@ namespace CarTransportDashboard.Mappers
                 Status = job.Status,
                 AssignedDriverId = job.AssignedDriverId,
                 AssignedVehicleId = job.AssignedVehicleId,
+                AssignedVehicle = VehicleMapper.ToDto(job.AssignedVehicle),
                 CreatedAt = job.CreatedAt,
                 UpdatedAt = job.UpdatedAt,
                 AssignedAt = job.AssignedAt,
