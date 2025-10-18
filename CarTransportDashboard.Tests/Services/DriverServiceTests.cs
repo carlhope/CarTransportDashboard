@@ -32,10 +32,26 @@ namespace CarTransportDashboard.Tests.Services
             var job1Id = Guid.Parse("11111111-1111-1111-1111-111111111111");
             var job2Id = Guid.Parse("22222222-2222-2222-2222-222222222222");
 
+            //mock vehicles assigned to jobs
+            var vehicle1 = new Vehicle
+            {
+                Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                Make = "Toyota",
+                Model = "Camry",
+                RegistrationNumber = "ABC123"
+            };
+            var vehicle2 = new Vehicle
+            {
+                Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                Make = "Honda",
+                Model = "Civic",
+                RegistrationNumber = "XYZ789"
+            };
+
             var transportJobs = new List<TransportJob>
                 {
-                    new TransportJob { Id = job1Id, Description = "Deliver goods" },
-                    new TransportJob { Id = job2Id, Description = "Pickup package" }
+                    new TransportJob { Id = job1Id, Description = "Deliver goods", AssignedVehicle=vehicle1 },
+                    new TransportJob { Id = job2Id, Description = "Pickup package", AssignedVehicle=vehicle2 }
                 };
 
             _mockRepo.Setup(r => r.GetAssignedJobsAsync(driverId))

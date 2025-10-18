@@ -1,15 +1,16 @@
 using CarTransportDashboard;
-using Microsoft.EntityFrameworkCore;
 using CarTransportDashboard.Context;
-using Microsoft.AspNetCore.Identity;
-using CarTransportDashboard.Repository.Interfaces;
-using CarTransportDashboard.Services.Interfaces;
-using CarTransportDashboard.Repository;
-using CarTransportDashboard.Services;
 using CarTransportDashboard.Models;
+using CarTransportDashboard.Repository;
+using CarTransportDashboard.Repository.Interfaces;
+using CarTransportDashboard.Services;
+using CarTransportDashboard.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 
@@ -17,7 +18,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+     .AddJsonOptions(options =>
+     {
+         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+     });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

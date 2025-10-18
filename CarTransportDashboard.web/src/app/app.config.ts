@@ -8,7 +8,6 @@ import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {AuthService} from './services/auth/auth';
 import {UserStoreService} from './services/auth/user-store-service';
 import {catchError, of, tap} from 'rxjs';
-import {SessionReadyService} from './services/auth/session-ready';
 import {initializeSession} from './app.initializer';
 
 export const appConfig: ApplicationConfig = {

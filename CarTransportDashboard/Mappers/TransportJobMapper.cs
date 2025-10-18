@@ -31,32 +31,32 @@ namespace CarTransportDashboard.Mappers
             return jobs.Select(j => ToDto(j)).ToList()?? new List<TransportJobReadDto>();
         }
 
-        public static TransportJob ToModel(TransportJobWriteDto dto)
+        public static TransportJob ToModel(TransportJobCreateDto dto)
         {
+
             return new TransportJob(
                    title: dto.Title,
                    description: dto.Description,
                    pickupLocation: dto.PickupLocation,
                    dropoffLocation: dto.DropoffLocation,
                    scheduledDate: dto.ScheduledDate ?? DateTime.UtcNow,
-                   assignedVehicleId: dto.AssignedVehicleId ?? Guid.Empty
-               )
-               {
-                   Id = dto.Id,
-                   AssignedDriverId = dto.AssignedDriverId
-               };
+                   assignedVehicleId: dto.AssignedVehicleId ?? Guid.Empty,
+                   vehicle: VehicleMapper.ToModel(dto.AssignedVehicle)
+               );
+           
 
         }
 
-        public static void UpdateModel(TransportJob job, TransportJobWriteDto dto)
+        public static void UpdateModel(TransportJob job, TransportJobUpdateDto dto)
         {
             job.Title = dto.Title;
             job.Description = dto.Description;
             job.PickupLocation = dto.PickupLocation;
             job.DropoffLocation = dto.DropoffLocation;
             job.ScheduledDate = dto.ScheduledDate;
-            job.AssignedDriverId = dto.AssignedDriverId;
             job.AssignedVehicleId = dto.AssignedVehicleId;
+            job.AssignedVehicle = VehicleMapper.ToModel(dto.AssignedVehicle);
+
         }
     }
 

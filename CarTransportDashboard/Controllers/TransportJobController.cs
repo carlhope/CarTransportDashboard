@@ -12,7 +12,7 @@ namespace CarTransportDashboard.Controllers;
 
 
 [ApiController]
-[Authorize] // Require authentication for all endpoints
+//[Authorize] // Require authentication for all endpoints
 [Route("api/[controller]")]
 public class TransportJobsController : ControllerBase
 {
@@ -66,7 +66,7 @@ public class TransportJobsController : ControllerBase
 
     // POST: api/transportjobs
     [HttpPost]
-    public async Task<ActionResult<TransportJobReadDto>> CreateJob([FromBody] TransportJobWriteDto dto)
+    public async Task<ActionResult<TransportJobReadDto>> CreateJob([FromBody] TransportJobCreateDto dto)
     {
         var result = await _jobService.CreateJobAsync(dto);
 
@@ -78,7 +78,7 @@ public class TransportJobsController : ControllerBase
 
     // PUT: api/transportjobs/{id}
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateJob(Guid id, [FromBody] TransportJobWriteDto dto)
+    public async Task<ActionResult> UpdateJob(Guid id, [FromBody] TransportJobUpdateDto dto)
     {
         var result = await _jobService.UpdateJobAsync(id, dto);
 
@@ -87,18 +87,6 @@ public class TransportJobsController : ControllerBase
 
         return Ok(result.Data);
     }
-
-    // PATCH: api/transportjobs/{id}/status
-    //[HttpPatch("{id}/status")]
-    //public async Task<ActionResult> UpdateJobStatus(Guid id, [FromBody] JobStatus status)
-    //{
-    //    var result = await _jobService.UpdateJobStatusAsync(id, status);
-
-    //    if (!result.Success)
-    //        return NotFound(result.Message);
-
-    //    return Ok(result.Data);
-    //}
 
     // POST: api/transportjobs/{id}/accept
     //POST is used instead of PATCH as accepting a job may involve more complex processing (e.g. notifications)

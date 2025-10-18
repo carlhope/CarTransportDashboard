@@ -21,15 +21,15 @@ namespace CarTransportDashboard.Models
         public Guid? AssignedVehicleId { get; set; }
         public Vehicle? AssignedVehicle { get; set; }
 
-        public string? AssignedDriverId { get; set; }
-        public ApplicationUser? AssignedDriver { get; set; }
+        public string? AssignedDriverId { get; private set; }
+        public ApplicationUser? AssignedDriver { get; private set; }
 
         public TransportJob() 
         {
             Status = JobStatus.Available;
         }
 
-        public TransportJob(string title, string description, string pickupLocation, string dropoffLocation, DateTime scheduledDate, Guid assignedVehicleId)
+        public TransportJob(string title, string description, string pickupLocation, string dropoffLocation, DateTime scheduledDate, Guid assignedVehicleId, Vehicle vehicle)
         {
             Id = Guid.NewGuid();
             Title = title;
@@ -38,11 +38,12 @@ namespace CarTransportDashboard.Models
             DropoffLocation = dropoffLocation;
             ScheduledDate = scheduledDate;
             AssignedVehicleId = assignedVehicleId;
+            AssignedVehicle = vehicle;
             Status = JobStatus.Available;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
         }
-        public TransportJob(string title, string description, string pickupLocation, string dropoffLocation, DateTime scheduledDate, Guid assignedVehicleId, JobStatus status)
+        public TransportJob(string title, string description, string pickupLocation, string dropoffLocation, DateTime scheduledDate, Guid assignedVehicleId, Vehicle vehicle, JobStatus status)
         {
             Id = Guid.NewGuid();
             Title = title;
@@ -51,6 +52,7 @@ namespace CarTransportDashboard.Models
             DropoffLocation = dropoffLocation;
             ScheduledDate = scheduledDate;
             AssignedVehicleId = assignedVehicleId;
+            AssignedVehicle = vehicle;
             Status = status;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;

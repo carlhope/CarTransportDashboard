@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CarTransportDashboard.Context;
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.TransportJob;
+using CarTransportDashboard.Models.Dtos.Vehicle;
 using CarTransportDashboard.Repository.Interfaces;
 using CarTransportDashboard.Services;
 using Moq;
@@ -16,6 +17,13 @@ public class TransportJobServiceTests
     private readonly Mock<IVehicleRepository> _vehicleRepoMock = new();
     private readonly Mock<IDriverRepository> _driverRepoMock = new();
     private readonly Mock<IDriverService> _driverServiceMock = new();
+    private Vehicle TestVehicle => new Vehicle
+    {
+        Id = Guid.NewGuid(),
+        Make = "TestMake",
+        Model = "TestModel",
+        RegistrationNumber = "TEST123"
+    };
 
     private TransportJobService CreateService() =>
         new TransportJobService(_jobRepoMock.Object, _vehicleRepoMock.Object, _driverRepoMock.Object, _driverServiceMock.Object);
@@ -24,7 +32,7 @@ public class TransportJobServiceTests
     public async Task GetJobAsync_ReturnsDto_WhenJobExists()
     {
         var jobId = Guid.NewGuid();
-        var job = new TransportJob { Id = jobId, Title = "Test" };
+        var job = new TransportJob { Id = jobId, Title = "Test", AssignedVehicle = TestVehicle };
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);
 
         var service = CreateService();
@@ -49,12 +57,12 @@ public class TransportJobServiceTests
     [Fact]
     public async Task GetJobsAsync_ReturnsDtos()
     {
-        TransportJob inProgressJob = new TransportJob { Id = Guid.NewGuid(), Title = "B"};
+        TransportJob inProgressJob = new TransportJob { Id = Guid.NewGuid(), Title = "B", AssignedVehicle=TestVehicle};
         inProgressJob.AssignDriver(new ApplicationUser { Id = Guid.NewGuid().ToString(), FirstName="Jane", LastName="Smith"});
         inProgressJob.AcceptJob(); //sets status to in progress
         var jobs = new List<TransportJob>
         {
-            new TransportJob { Id = Guid.NewGuid(), Title = "A" },//status defaults to Available
+            new TransportJob { Id = Guid.NewGuid(), Title = "A", AssignedVehicle = TestVehicle   },//status defaults to Available
             inProgressJob
         };
         _jobRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(jobs);
@@ -70,7 +78,7 @@ public class TransportJobServiceTests
     {
         var jobs = new List<TransportJob>
         {
-            new TransportJob { Id = Guid.NewGuid(), Title = "A" }//status defaults to Available
+            new TransportJob { Id = Guid.NewGuid(), Title = "A", AssignedVehicle = TestVehicle }//status defaults to Available
         };
         _jobRepoMock.Setup(r => r.GetAvailableJobsAsync()).ReturnsAsync(jobs);
 
@@ -86,7 +94,7 @@ public class TransportJobServiceTests
         var jobId = Guid.NewGuid();
         var service = CreateService();
         var driver = Guid.NewGuid().ToString();
-        var job = new TransportJob { Id = jobId, AssignedDriverId=driver };
+        var job = new TransportJob { Id = jobId, AssignedVehicle = TestVehicle };
         job.AssignDriver(new ApplicationUser() { Id=driver, FirstName="John", LastName="Doe"});
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);
 
@@ -130,8 +138,9 @@ public class TransportJobServiceTests
     {
         var jobId = Guid.NewGuid();
         var vehicleId = Guid.NewGuid();
-        var job = new TransportJob { Id = jobId };
         var vehicle = new Vehicle { Id = vehicleId };
+        var job = new TransportJob { Id = jobId, AssignedVehicle=vehicle };
+        
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);
         _vehicleRepoMock.Setup(r => r.GetByIdAsync(vehicleId)).ReturnsAsync(vehicle);
 
@@ -161,7 +170,7 @@ public class TransportJobServiceTests
     {
         var jobId = Guid.NewGuid();
         var driverId = Guid.NewGuid().ToString();
-        var job = new TransportJob { Id = jobId}; //status defaults to Available
+        var job = new TransportJob { Id = jobId, AssignedVehicle = TestVehicle }; //status defaults to Available
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);
         _jobRepoMock.Setup(r => r.UpdateAsync(job)).ReturnsAsync(OperationResult<TransportJob>.CreateSuccess(job));
         _driverRepoMock.Setup(r => r.IsInDriverRoleAsync(driverId.ToString())).ReturnsAsync(true);
@@ -192,7 +201,14 @@ public class TransportJobServiceTests
     [Fact]
     public async Task CreateJobAsync_AddsJobAndReturnsDto()
     {
-        var dto = new TransportJobWriteDto { Id = Guid.NewGuid(), Title = "New Job"};
+        var vehicleDto = new VehicleWriteDto
+        {
+            Id = Guid.NewGuid(),
+            Make = "Ford",
+            Model = "Focus",
+            RegistrationNumber = "ABC123"
+        };
+        var dto = new TransportJobCreateDto { Id = Guid.NewGuid(), Title = "New Job", AssignedVehicle= vehicleDto, AssignedDriverId=vehicleDto.Id.ToString()};
         TransportJob? addedJob = null;
         _jobRepoMock.Setup(r => r.AddAsync(It.IsAny<TransportJob>()))
              .ReturnsAsync((TransportJob j) =>
@@ -206,7 +222,6 @@ public class TransportJobServiceTests
 
         Assert.NotNull(result);
         Assert.Equal(dto.Title, result.Data.Title);
-        Assert.Equal(dto.Id, result.Data.Id);
         Assert.NotNull(addedJob);
     }
 
@@ -214,8 +229,15 @@ public class TransportJobServiceTests
     public async Task UpdateJobAsync_UpdatesJob_WhenExists()
     {
         var jobId = Guid.NewGuid();
-        var job = new TransportJob { Id = jobId, Title = "Old" };//status defaults to Available
-        var dto = new TransportJobWriteDto { Id = jobId, Title = "Updated"};
+        var job = new TransportJob { Id = jobId, Title = "Old", AssignedVehicle = TestVehicle };//status defaults to Available
+       var testVehicleDto = new VehicleWriteDto
+        {
+            Id = Guid.NewGuid(),
+            Make = "Toyota",
+            Model = "Corolla",
+            RegistrationNumber = "XYZ789"
+        };
+        var dto = new TransportJobUpdateDto { Id = jobId, Title = "Updated", AssignedVehicle = testVehicleDto};
 
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);
         _jobRepoMock.Setup(r => r.UpdateAsync(It.IsAny<TransportJob>()))
@@ -234,7 +256,7 @@ public class TransportJobServiceTests
     public async Task UpdateJobAsync_Throws_WhenJobNotFound()
     {
         var jobId = Guid.NewGuid();
-        var dto = new TransportJobWriteDto { Id = jobId, Title = "Updated"};
+        var dto = new TransportJobUpdateDto { Id = jobId, Title = "Updated"};
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync((TransportJob)null);
 
         var service = CreateService();

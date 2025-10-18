@@ -8,6 +8,7 @@ namespace CarTransportDashboard.Models.Dtos.Vehicle
         public string Make { get; set; } = string.Empty;
         public string Model { get; set; } = string.Empty;
         public string RegistrationNumber { get; set; } = string.Empty;
+        public FuelType FuelType { get; set; }
 
         // Navigation
         public ICollection<TransportJobReadDto>? AssignedJobs { get; set; }

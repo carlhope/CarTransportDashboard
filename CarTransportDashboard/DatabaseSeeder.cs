@@ -31,7 +31,8 @@ public static class DatabaseSeeder
                     Id = Guid.NewGuid(),
                     Make = "Ford",
                     Model = "Transit",
-                    RegistrationNumber = "AB12XYZ"
+                    RegistrationNumber = "AB12XYZ",
+                    FuelType=FuelType.Diesel
                 };
 
                 var vehicle2 = new Vehicle
@@ -39,7 +40,8 @@ public static class DatabaseSeeder
                     Id = Guid.NewGuid(),
                     Make = "Mercedes",
                     Model = "Sprinter",
-                    RegistrationNumber = "CD34LMN"
+                    RegistrationNumber = "CD34LMN",
+                    FuelType = FuelType.Diesel
                 };
 
                 context.Vehicles.AddRange(vehicle1, vehicle2);
@@ -51,7 +53,8 @@ public static class DatabaseSeeder
                        pickupLocation: "Manchester",
                        dropoffLocation: "Liverpool",
                        scheduledDate: DateTime.Today.AddDays(2),
-                       assignedVehicleId: vehicle1.Id
+                       assignedVehicleId: vehicle1.Id,
+                       vehicle: vehicle1
                    ),
                    new TransportJob(
                        title: "Delivery to Birmingham",
@@ -59,7 +62,8 @@ public static class DatabaseSeeder
                        pickupLocation: "Leeds",
                        dropoffLocation: "Birmingham",
                        scheduledDate: DateTime.Today.AddDays(1),
-                       assignedVehicleId: vehicle2.Id
+                       assignedVehicleId: vehicle2.Id,
+                       vehicle: vehicle2
                    )
                );
 

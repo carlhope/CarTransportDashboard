@@ -71,18 +71,6 @@ namespace CarTransportDashboard.Services
             return OperationResult<TransportJobReadDto>.CreateSuccess(jobDto, "Job accepted successfully.");
         }
 
-        //public async Task<OperationResult<TransportJobReadDto>> UpdateJobStatusAsync(Guid jobId, JobStatus status)
-        //{
-        //    var job = await _jobRepo.GetByIdAsync(jobId);
-        //    if (job is null)
-        //        return OperationResult<TransportJobReadDto>.CreateFailure("Transport job not found.");
-
-        //    job.Status = status;
-        //    await _jobRepo.UpdateAsync(job);
-        //    var jobDto = TransportJobMapper.ToDto(job);
-        //    return OperationResult<TransportJobReadDto>.CreateSuccess(jobDto, "Job status updated successfully.");
-        //}
-
         public async Task<OperationResult<TransportJobReadDto>> AssignVehicleToJobAsync(Guid jobId, Guid vehicleId)
         {
             var job = await _jobRepo.GetByIdAsync(jobId);
@@ -129,7 +117,7 @@ namespace CarTransportDashboard.Services
         }
 
 
-        public async Task<OperationResult<TransportJobReadDto>> CreateJobAsync(TransportJobWriteDto dto)
+        public async Task<OperationResult<TransportJobReadDto>> CreateJobAsync(TransportJobCreateDto dto)
         {
             var job = TransportJobMapper.ToModel(dto);
             var result = await _jobRepo.AddAsync(job);
@@ -141,7 +129,7 @@ namespace CarTransportDashboard.Services
             return OperationResult<TransportJobReadDto>.CreateSuccess(readDto, result.Message);
         }
 
-        public async Task<OperationResult<TransportJobReadDto>> UpdateJobAsync(Guid jobId, TransportJobWriteDto dto)
+        public async Task<OperationResult<TransportJobReadDto>> UpdateJobAsync(Guid jobId, TransportJobUpdateDto dto)
         {
             var job = await _jobRepo.GetByIdAsync(jobId);
             if (job is null)

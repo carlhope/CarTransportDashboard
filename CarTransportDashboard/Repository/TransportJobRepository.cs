@@ -98,25 +98,15 @@ namespace CarTransportDashboard.Repository{
             }
         }
 
-        public async Task<OperationResult<TransportJob>> AssignVehicleAsync(Guid jobId, Guid vehicleId)
-        {
-            var job = await GetByIdAsync(jobId);
-            if (job is null)
-                return OperationResult<TransportJob>.CreateFailure("Transport job not found.");
-            job.UpdatedAt = DateTime.UtcNow;
-            job.AssignedVehicleId = vehicleId;
-            return await UpdateAsync(job);
-        }
-
-        public async Task<OperationResult<TransportJob>> AssignDriverAsync(Guid jobId, string driverId)
-        {
-            var job = await GetByIdAsync(jobId);
-            if (job is null)
-                return OperationResult<TransportJob>.CreateFailure("Transport job not found.");
-
-            job.AssignedDriverId = driverId;
-            return await UpdateAsync(job);
-        }
+        //public async Task<OperationResult<TransportJob>> AssignVehicleAsync(Guid jobId, Guid vehicleId)
+        //{
+        //    var job = await GetByIdAsync(jobId);
+        //    if (job is null)
+        //        return OperationResult<TransportJob>.CreateFailure("Transport job not found.");
+        //    job.UpdatedAt = DateTime.UtcNow;
+        //    job.AssignedVehicleId = vehicleId;
+        //    return await UpdateAsync(job);
+        //}
     }
 
 }
