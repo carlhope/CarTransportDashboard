@@ -2,12 +2,16 @@ import { TestBed } from '@angular/core/testing';
 import { initializeSession } from './app.initializer';
 import { AuthService } from './services/auth/auth';
 import { UserStoreService } from './services/auth/user-store-service';
-import { of, throwError } from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {UserModel} from './models/user';
+import {Injector, runInInjectionContext} from '@angular/core';
 
 describe('initializeSession', () => {
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let userStoreSpy: jasmine.SpyObj<UserStoreService>;
+  let injector: Injector;
+  let initFn: () => Observable<UserModel | null>;
+
 
   beforeEach(() => {
     authServiceSpy = jasmine.createSpyObj('AuthService', ['refresh']);
@@ -19,6 +23,9 @@ describe('initializeSession', () => {
         { provide: UserStoreService, useValue: userStoreSpy }
       ]
     });
+
+    injector = TestBed.inject(Injector);
+    initFn = initializeSession(injector);
   });
 
   it('should set user and mark session ready on success', (done) => {
@@ -31,20 +38,23 @@ describe('initializeSession', () => {
     };
 
     authServiceSpy.refresh.and.returnValue(of(mockUser));
-
-    initializeSession().subscribe(() => {
+    runInInjectionContext(injector, () => {
+    initFn().subscribe(() => {
       expect(userStoreSpy.setUser).toHaveBeenCalledWith(mockUser);
       done();
+    });
     });
   });
 
   it('should clear user and mark session ready on error', (done) => {
     authServiceSpy.refresh.and.returnValue(throwError(() => new Error('Auth failed')));
-
-    initializeSession().subscribe(() => {
-      expect(userStoreSpy.clearUser).toHaveBeenCalled();
-      done();
+    runInInjectionContext(injector, () => {
+      initFn().subscribe(() => {
+        expect(userStoreSpy.clearUser).toHaveBeenCalled();
+        done();
+      });
     });
   });
 });
+
 

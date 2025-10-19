@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DriverDashboard } from './driver-dashboard';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('DriverDashboard', () => {
   let component: DriverDashboard;
@@ -8,7 +8,8 @@ describe('DriverDashboard', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DriverDashboard]
+      imports: [DriverDashboard],
+      providers: [provideHttpClientTesting()]
     })
     .compileComponents();
 
