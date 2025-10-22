@@ -22,6 +22,7 @@ namespace CarTransportDashboard.Tests.Controller.Auth
     {
         private readonly Mock<IAuthService> _authServiceMock;
         private readonly Mock<IWebHostEnvironment> _envMock;
+        private readonly Mock<ICsrfValidator> _csrfValidatorMock;
         private readonly AuthController _controller;
 
         public AuthControllerTests()
@@ -29,8 +30,9 @@ namespace CarTransportDashboard.Tests.Controller.Auth
             _authServiceMock = new Mock<IAuthService>();
             _envMock = new Mock<IWebHostEnvironment>();
             _envMock.Setup(e => e.EnvironmentName).Returns("Development");
+            _csrfValidatorMock = new Mock<ICsrfValidator>();
 
-            _controller = new AuthController(_authServiceMock.Object, _envMock.Object);
+            _controller = new AuthController(_authServiceMock.Object, _envMock.Object, _csrfValidatorMock.Object);
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -84,6 +86,7 @@ namespace CarTransportDashboard.Tests.Controller.Auth
         public async Task Refresh_ValidToken_ReturnsOkAndResetsRefreshToken()
         {
             var expected = new UserDto { Id = "user123", Email = "refresh@example.com", RefreshToken = "newtoken123" };
+            _csrfValidatorMock.Setup(v => v.IsValid(It.IsAny<HttpRequest>())).Returns(true);
 
             var cookieCollectionMock = new Mock<IRequestCookieCollection>();
             cookieCollectionMock.Setup(c => c["refreshToken"]).Returns("validtoken");
@@ -136,6 +139,7 @@ namespace CarTransportDashboard.Tests.Controller.Auth
         [Fact]
         public void Logout_ReturnsNoContent()
         {
+            _csrfValidatorMock.Setup(v => v.IsValid(It.IsAny<HttpRequest>())).Returns(true);
             var result = _controller.Logout();
             Assert.IsType<NoContentResult>(result);
         }

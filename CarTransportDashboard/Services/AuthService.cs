@@ -54,10 +54,11 @@ namespace CarTransportDashboard.Services
 
             var accessToken = GenerateJwtToken(user);
             var refreshToken = GenerateRefreshToken();
+            var csrfToken = GenerateCsrfToken();
 
-            await SaveRefreshTokenAsync(user.Id, refreshToken);
+            await SaveRefreshTokenAsync(user.Id, refreshToken, csrfToken);
             var roles = await _userManager.GetRolesAsync(user);
-            return MapToUserDto(user, accessToken, refreshToken, roles);
+            return MapToUserDto(user, accessToken, refreshToken, roles, csrfToken);
         }
 
         public async Task<UserDto?> LoginAsync(string email, string password)
@@ -68,10 +69,11 @@ namespace CarTransportDashboard.Services
 
             var accessToken = GenerateJwtToken(user);
             var refreshToken = GenerateRefreshToken();
+            var csrfToken = GenerateCsrfToken();
 
-            await SaveRefreshTokenAsync(user.Id, refreshToken);
+            await SaveRefreshTokenAsync(user.Id, refreshToken, csrfToken);
             var roles = await _userManager.GetRolesAsync(user);
-            return MapToUserDto(user, accessToken, refreshToken, roles);
+            return MapToUserDto(user, accessToken, refreshToken, roles, csrfToken);
         }
 
 
@@ -87,14 +89,16 @@ namespace CarTransportDashboard.Services
             // Revoke old token
             tokenEntity.IsRevoked = true;
             _db.RefreshTokens.Update(tokenEntity);
+            var oldCsrfToken = tokenEntity.CsrfToken;
 
-            var newAccessToken = GenerateJwtToken(tokenEntity.User);
             var newRefreshToken = GenerateRefreshToken();
-            await SaveRefreshTokenAsync(tokenEntity.User.Id, newRefreshToken);
+            var newAccessToken = GenerateJwtToken(tokenEntity.User);
+            await SaveRefreshTokenAsync(tokenEntity.User.Id, newRefreshToken, oldCsrfToken);
 
             await _db.SaveChangesAsync();
             var roles = await _userManager.GetRolesAsync(tokenEntity.User);
-            return MapToUserDto(tokenEntity.User, newAccessToken, newRefreshToken, roles);
+            return MapToUserDto(tokenEntity.User, newAccessToken, newRefreshToken, roles, tokenEntity.CsrfToken);
+
 
         }
         public async Task LogoutAsync(string refreshToken)
@@ -146,13 +150,14 @@ namespace CarTransportDashboard.Services
         }
 
 
-        private async Task SaveRefreshTokenAsync(string userId, string refreshToken)
+        private async Task SaveRefreshTokenAsync(string userId, string refreshToken, string csrfToken)
         {
             var token = new RefreshToken
             {
                 Token = refreshToken,
                 UserId = userId,
-                ExpiryDate = DateTime.UtcNow.AddDays(7)
+                ExpiryDate = DateTime.UtcNow.AddDays(7),
+                CsrfToken = csrfToken
             };
             _db.RefreshTokens.Add(token);
             await _db.SaveChangesAsync();
@@ -199,8 +204,13 @@ namespace CarTransportDashboard.Services
         {
             return Convert.ToBase64String(Guid.NewGuid().ToByteArray());
         }
+        private string GenerateCsrfToken()
+        {
+            return Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+        }
 
-        private UserDto MapToUserDto(ApplicationUser user, string accessToken, string refreshToken, IList<string> roles)
+
+        private UserDto MapToUserDto(ApplicationUser user, string accessToken, string refreshToken, IList<string> roles, string csrfToken)
         {
             return new UserDto
             {
@@ -210,8 +220,11 @@ namespace CarTransportDashboard.Services
                 LastName = user.LastName,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
+                CsrfToken = csrfToken,
                 Roles = roles.ToList()
             };
         }
+
+
     }
 }

@@ -23,14 +23,24 @@ export class AuthService {
   }
 
   refresh(): Observable<UserModel> {
-    return this.http.post<UserModel>(`${this.baseUrl}/refresh`, {}, { withCredentials: true })
-      .pipe(tap(user => this.userStore.setUser(user)));
+    const csrfToken = this.getCookie('X-CSRF-Token');
+    return this.http.post<UserModel>(`${this.baseUrl}/refresh`, {}, {
+      withCredentials: true,
+      headers: { 'X-CSRF-Token': csrfToken }
+    }).pipe(tap(user => this.userStore.setUser(user)));
   }
 
+
   logout(): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/logout`, {}, { withCredentials: true })
+    const csrfToken = this.getCookie('X-CSRF-Token');
+    return this.http.post<void>(`${this.baseUrl}/logout`, {}, { withCredentials: true, headers: { 'X-CSRF-Token': csrfToken } })
       .pipe(tap(() => this.userStore.clearUser()));
   }
+  private getCookie(name: string): string {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : '';
+  }
+
 
 }
 

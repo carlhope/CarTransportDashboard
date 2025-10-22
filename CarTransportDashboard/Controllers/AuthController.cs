@@ -1,5 +1,6 @@
 using CarTransportDashboard.Models.Dtos;
 using CarTransportDashboard.Models.Dtos.Auth;
+using CarTransportDashboard.Services;
 using CarTransportDashboard.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,13 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
     private readonly IWebHostEnvironment _env;
+    private readonly ICsrfValidator _csrfValidator;
 
-    public AuthController(IAuthService authService, IWebHostEnvironment env)
+    public AuthController(IAuthService authService, IWebHostEnvironment env, ICsrfValidator csrfValidator)
     {
         _authService = authService;
         _env = env;
+        _csrfValidator = csrfValidator;
     }
 
     [HttpPost("register")]
@@ -28,6 +31,14 @@ public class AuthController : ControllerBase
 
         // Set refresh token cookie
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
+        Response.Cookies.Append("X-CSRF-Token", user.CsrfToken, new CookieOptions
+        {
+            HttpOnly = false,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Path = "/"
+        });
+
 
         user.RefreshToken = "0";
         return Ok(user);
@@ -41,6 +52,14 @@ public class AuthController : ControllerBase
         if (user == null) return Unauthorized();
 
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
+        Response.Cookies.Append("X-CSRF-Token", user.CsrfToken, new CookieOptions
+        {
+            HttpOnly = false, // must be readable by JS to send in header
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Path = "/"
+        });
+
 
         user.RefreshToken = "0"; // Don't send to frontend
         return Ok(user);
@@ -50,12 +69,16 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<UserDto>> Refresh()
     {
         #if !DEBUG
-        var origin = Request.Headers["Origin"].ToString();
-        if (string.IsNullOrEmpty(origin) || !origin.Equals("http://localhost:4200", StringComparison.OrdinalIgnoreCase))
-        {
-            return Unauthorized();
-        }
+                        var origin = Request.Headers["Origin"].ToString();
+                        if (string.IsNullOrEmpty(origin) || !origin.Equals("http://localhost:4200", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return Unauthorized();
+                        }
         #endif
+        if (!_csrfValidator.IsValid(Request))
+            return Unauthorized();
+
+
         var refreshToken = Request.Cookies["refreshToken"];
         if (string.IsNullOrEmpty(refreshToken)) return Unauthorized();
 
@@ -63,14 +86,18 @@ public class AuthController : ControllerBase
         if (user == null) return Unauthorized();
 
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
-
         user.RefreshToken = "0";
         return Ok(user);
     }
+
     [Authorize]
     [HttpPost("logout")]
     public IActionResult Logout()
     {
+        if (!_csrfValidator.IsValid(Request))
+            return Unauthorized();
+
+
         Response.Cookies.Delete("refreshToken", new CookieOptions
         {
             HttpOnly = true,
@@ -83,6 +110,7 @@ public class AuthController : ControllerBase
 
         return NoContent();
     }
+
     private CookieOptions GetRefreshCookieOptions()
     {
         return new CookieOptions

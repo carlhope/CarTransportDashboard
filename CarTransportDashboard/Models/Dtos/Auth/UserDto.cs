@@ -12,4 +12,5 @@ public class UserDto
     public List<string> Roles { get; set; } = [];
     public string AccessToken { get; set; } = string.Empty;
     public string RefreshToken { get; set; } = string.Empty;
+    public string CsrfToken { get; set; } = string.Empty;
 }

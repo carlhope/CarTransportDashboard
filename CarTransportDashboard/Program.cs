@@ -67,6 +67,7 @@ builder.Services.AddScoped<ITransportJobService, TransportJobService>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
+builder.Services.AddSingleton<ICsrfValidator, CsrfValidator>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularOrigins", builder =>
