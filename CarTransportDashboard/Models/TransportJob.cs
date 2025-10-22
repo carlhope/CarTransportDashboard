@@ -16,6 +16,10 @@ namespace CarTransportDashboard.Models
         public DateTime? CompletedAt { get; set; }
         public DateTime? AssignedAt { get; set; }
         public DateTime? AcceptedAt { get; set; }
+        public float DistanceInMiles { get; set; } = (float)(Random.Shared.NextDouble()*(500));
+        public decimal CustomerPrice { get; set; }
+        public decimal DriverPayment { get; set; }
+        public bool isDriveable { get; set; } = true;
 
         // Foreign Keys
         public Guid? AssignedVehicleId { get; set; }
@@ -23,6 +27,12 @@ namespace CarTransportDashboard.Models
 
         public string? AssignedDriverId { get; private set; }
         public ApplicationUser? AssignedDriver { get; private set; }
+
+        private decimal basePrice = 100m;
+        private float includedMiles = 10.0F;
+        private decimal perMileRate = 0.75m;
+        private decimal undriveableSurcharge = 50m;
+        private float DriverFeePercentage = 0.75f;
 
         public TransportJob() 
         {
@@ -108,6 +118,39 @@ namespace CarTransportDashboard.Models
             AssignedDriverId = null;
             AssignedDriver = null;
         }
+        private void CalculateCustomerPrice()
+        {
+            decimal price = basePrice;
+
+            if (DistanceInMiles > includedMiles)
+            {
+                price += (decimal)(DistanceInMiles - includedMiles) * perMileRate;
+            }
+
+            if (!isDriveable)
+            {
+                price += undriveableSurcharge;
+            }
+
+            CustomerPrice=Math.Round(price,2);
+            
+        }
+        private void CalculateDriverFee()
+        {
+            //ensure customer price is calculated before calculating driver payment
+            if (CustomerPrice == null || CustomerPrice < basePrice)
+            {
+                CalculateCustomerPrice();
+            }
+
+            DriverPayment = Math.Round(CustomerPrice * 0.75m, 2);
+        }
+        public void ApplyPricing()
+        {
+            CalculateCustomerPrice();
+            CalculateDriverFee();
+        }
+
 
 
     }
