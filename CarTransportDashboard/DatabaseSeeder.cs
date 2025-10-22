@@ -68,6 +68,7 @@ public static class DatabaseSeeder
                );
 
                 await context.SaveChangesAsync();
+
                 // Seed roles
                 string[] roles = new[] { "Admin", "Driver", "Dispatcher" };
                 foreach (var role in roles)
@@ -79,7 +80,7 @@ public static class DatabaseSeeder
                 }
                 
 
-                // Seed users
+                // Seed admin user
                 var adminEmail = "admin@example.com";
                 var adminUser = await userManager.FindByEmailAsync(adminEmail);
                 if (adminUser == null)
@@ -100,7 +101,104 @@ public static class DatabaseSeeder
                     }
                 }
 
-               
+                // --- New: Seed driver user, vehicles and jobs assigned to the driver ---
+                var driverEmail = "driver@example.com";
+                var driverUser = await userManager.FindByEmailAsync(driverEmail);
+                if (driverUser == null)
+                {
+                    driverUser = new ApplicationUser
+                    {
+                        UserName = driverEmail,
+                        Email = driverEmail,
+                        EmailConfirmed = true,
+                        FirstName = "Driver",
+                        LastName = "User"
+                    };
+
+                    var driverResult = await userManager.CreateAsync(driverUser, "Password123!");
+                    if (driverResult.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(driverUser, "Driver");
+                    }
+                }
+
+                // Create vehicles dedicated for driver jobs (8 vehicles for 8 jobs)
+                var driverVehicles = new List<Vehicle>();
+                for (int i = 1; i <= 8; i++)
+                {
+                    driverVehicles.Add(new Vehicle
+                    {
+                        Id = Guid.NewGuid(),
+                        Make = "DriverMake" + i,
+                        Model = "Model" + i,
+                        RegistrationNumber = $"DRV{i:D3}",
+                        FuelType = i % 2 == 0 ? FuelType.Petrol : FuelType.Diesel
+                    });
+                }
+
+                context.Vehicles.AddRange(driverVehicles);
+                await context.SaveChangesAsync();
+
+                // Create jobs: 3 Completed, 2 InProgress, 3 Available (all assigned to driver as requested)
+                var jobs = new List<TransportJob>();
+
+                int index = 0;
+                // 3 Completed
+                for (int i = 0; i < 3; i++, index++)
+                {
+                    var v = driverVehicles[index];
+                    var job = new TransportJob(
+                        title: $"Driver Complete Job {i+1}",
+                        description: "Completed job for demo",
+                        pickupLocation: $"Origin {i+1}",
+                        dropoffLocation: $"Destination {i+1}",
+                        scheduledDate: DateTime.Today.AddDays(-i - 1),
+                        assignedVehicleId: v.Id,
+                        vehicle: v
+                    );
+                    job.AssignDriver(driverUser);
+                    job.AcceptJob();
+                    job.MarkAsCompleted();
+                    jobs.Add(job);
+                }
+
+                // 2 InProgress
+                for (int i = 0; i < 2; i++, index++)
+                {
+                    var v = driverVehicles[index];
+                    var job = new TransportJob(
+                        title: $"Driver InProgress Job {i+1}",
+                        description: "In-progress job for demo",
+                        pickupLocation: $"Origin IP {i+1}",
+                        dropoffLocation: $"Destination IP {i+1}",
+                        scheduledDate: DateTime.Today.AddDays(i),
+                        assignedVehicleId: v.Id,
+                        vehicle: v
+                    );
+                    job.AssignDriver(driverUser);
+                    job.AcceptJob();
+                    jobs.Add(job);
+                }
+
+                // 3 Available to driver (Status: Allocated)
+                for (int i = 0; i < 3; i++, index++)
+                {
+                    var v = driverVehicles[index];
+                    var job = new TransportJob(
+                        title: $"Driver Available Job {i+1}",
+                        description: "Available job for demo",
+                        pickupLocation: $"Origin A {i+1}",
+                        dropoffLocation: $"Destination A {i+1}",
+                        scheduledDate: DateTime.Today.AddDays(i + 2),
+                        assignedVehicleId: v.Id,
+                        vehicle: v
+                    );
+                    job.AssignDriver(driverUser);
+                    jobs.Add(job);
+                }
+
+                context.TransportJobs.AddRange(jobs);
+                await context.SaveChangesAsync();
             }
         }
     }

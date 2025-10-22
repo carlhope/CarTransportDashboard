@@ -68,7 +68,7 @@ assignDriver(id: string, driverId: string): Observable<TransportJob> {
   }
   getAvailableJobsForDriver(): Observable<TransportJob[]> {
     return this.http.get<any[]>(
-      `${this.apiUrl}/myjobs?status=Available`,
+      `${this.apiUrl}/myjobs?status=allocated`,
       { withCredentials: true }
     ).pipe(
       map(jobs => jobs.map(job => this.mapper.toTransportJob(job)))
