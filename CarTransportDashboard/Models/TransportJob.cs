@@ -138,7 +138,7 @@ namespace CarTransportDashboard.Models
         private void CalculateDriverFee()
         {
             //ensure customer price is calculated before calculating driver payment
-            if (CustomerPrice == null || CustomerPrice < basePrice)
+            if (CustomerPrice < basePrice)
             {
                 CalculateCustomerPrice();
             }
