@@ -1,5 +1,6 @@
 using CarTransportDashboard.Context;
 using CarTransportDashboard.Models.Users;
+using System.ComponentModel.DataAnnotations;
 namespace CarTransportDashboard.Models
 {
     public class TransportJob
@@ -20,6 +21,12 @@ namespace CarTransportDashboard.Models
         public decimal CustomerPrice { get; set; }
         public decimal DriverPayment { get; set; }
         public bool isDriveable { get; set; } = true;
+        // Pricing Constants
+        public static readonly decimal basePrice = 100m;
+        public static readonly float includedMiles = 10.0F;
+        public static readonly decimal perMileRate = 0.75m;
+        public static readonly decimal undriveableSurcharge = 50m;
+        public static readonly decimal driverFeePercentage = 0.75m;
 
         // Foreign Keys
         public Guid? AssignedVehicleId { get; set; }
@@ -111,6 +118,24 @@ namespace CarTransportDashboard.Models
             UpdatedAt = DateTime.UtcNow;
             AssignedDriverId = null;
             AssignedDriver = null;
+        }
+        private void ValidateJob()
+        {
+            if (string.IsNullOrWhiteSpace(Title))
+                throw new ValidationException("Job title cannot be empty.");
+            if (string.IsNullOrWhiteSpace(PickupLocation) || string.IsNullOrWhiteSpace(DropoffLocation))
+                throw new ValidationException("Pickup and dropoff locations must be specified.");
+            if (DistanceInMiles <= 0)
+                throw new ValidationException("Distance must be greater than zero.");
+            if (string.IsNullOrWhiteSpace(Description))
+                throw new ValidationException("Job description cannot be empty.");
+            if (string.Equals(PickupLocation, DropoffLocation, StringComparison.OrdinalIgnoreCase))
+                throw new ValidationException("Pickup and dropoff locations cannot be the same.");
+            if (DriverPayment < 25)
+            throw new ValidationException("Driver payment must be at least £25.");
+            if (CustomerPrice < DriverPayment)
+                throw new ValidationException("Customer price must be more than driver payment.");
+
         }
 
 

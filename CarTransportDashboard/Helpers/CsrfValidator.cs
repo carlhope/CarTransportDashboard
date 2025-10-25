@@ -1,4 +1,4 @@
-﻿using CarTransportDashboard.Helpers.interfaces;
+﻿using CarTransportDashboard.Helpers.Interfaces;
 using CarTransportDashboard.Services.Interfaces;
 
 namespace CarTransportDashboard.Helpers

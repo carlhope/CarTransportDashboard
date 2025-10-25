@@ -135,7 +135,6 @@ namespace CarTransportDashboard.Services
                 _logger.LogWarning("Job validation failed: {Message}", ex.Message);
                 return OperationResult<TransportJobReadDto>.CreateFailure(ex.Message);
             }
-            ApplyPricing(job);
             var result = await _jobRepo.AddAsync(job);
 
             if (!result.Success || result.Data is null)
@@ -150,6 +149,16 @@ namespace CarTransportDashboard.Services
             var job = await _jobRepo.GetByIdAsync(jobId);
             if (job is null)
                 return OperationResult<TransportJobReadDto>.CreateFailure("Transport job not found.");
+
+            try
+            {
+                ValidateJob(job);
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning("Job validation failed: {Message}", ex.Message);
+                return OperationResult<TransportJobReadDto>.CreateFailure(ex.Message);
+            }
 
             TransportJobMapper.UpdateModel(job, dto);
             var updateResult = await _jobRepo.UpdateAsync(job);
@@ -213,12 +222,6 @@ namespace CarTransportDashboard.Services
             {
                 return OperationResult<TransportJobReadDto>.CreateFailure(ex.Message);
             }
-        }
-
-        private void ApplyPricing(TransportJob job)
-        {
-            job.CustomerPrice = PricingCalculator.CalculateCustomerPrice(job.DistanceInMiles, job.isDriveable);
-            job.DriverPayment = PricingCalculator.CalculateDriverFee(job.CustomerPrice);
         }
         private void ValidateJob(TransportJob job)
         {

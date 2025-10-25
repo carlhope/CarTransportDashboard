@@ -1,4 +1,4 @@
-﻿namespace CarTransportDashboard.Helpers.interfaces
+﻿namespace CarTransportDashboard.Helpers.Interfaces
 {
     public interface ICsrfValidator
     {
