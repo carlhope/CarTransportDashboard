@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CarTransportDashboard.Context;
+using CarTransportDashboard.Helpers;
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.TransportJob;
 using CarTransportDashboard.Models.Dtos.Vehicle;
@@ -118,20 +119,6 @@ public class TransportJobServiceTests
         Assert.False(result.Success);
         Assert.Equal("Transport job not found.", result.Message);
     }
-
-    //[Fact]
-    //public async Task UpdateJobStatusAsync_UpdatesStatus()
-    //{
-    //    var jobId = Guid.NewGuid();
-    //    var job = new TransportJob { Id = jobId, Status = JobStatus.Available };
-    //    _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);
-
-    //    var service = CreateService();
-    //    await service.UpdateJobStatusAsync(jobId, JobStatus.Completed);
-
-    //    Assert.Equal(JobStatus.Completed, job.Status);
-    //    _jobRepoMock.Verify(r => r.UpdateAsync(job), Times.Once);
-    //}
 
     [Fact]
     public async Task AssignVehicleToJobAsync_UpdatesVehicle_WhenBothExist()

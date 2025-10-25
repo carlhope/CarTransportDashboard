@@ -12,7 +12,7 @@ namespace CarTransportDashboard.Controllers;
 
 
 [ApiController]
-//[Authorize] // Require authentication for all endpoints
+[Authorize] // Require authentication for all endpoints
 [Route("api/[controller]")]
 public class TransportJobsController : ControllerBase
 {

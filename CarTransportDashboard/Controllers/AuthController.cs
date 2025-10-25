@@ -1,6 +1,5 @@
-using CarTransportDashboard.Models.Dtos;
+using CarTransportDashboard.Helpers.interfaces;
 using CarTransportDashboard.Models.Dtos.Auth;
-using CarTransportDashboard.Services;
 using CarTransportDashboard.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +13,7 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
     private readonly IWebHostEnvironment _env;
-    private readonly ICsrfValidator _csrfValidator;
+    private  readonly ICsrfValidator _csrfValidator;
 
     public AuthController(IAuthService authService, IWebHostEnvironment env, ICsrfValidator csrfValidator)
     {
@@ -96,6 +95,7 @@ public class AuthController : ControllerBase
     {
         if (!_csrfValidator.IsValid(Request))
             return Unauthorized();
+
 
 
         Response.Cookies.Delete("refreshToken", new CookieOptions

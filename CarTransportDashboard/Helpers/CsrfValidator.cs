@@ -1,8 +1,9 @@
-﻿using CarTransportDashboard.Services.Interfaces;
+﻿using CarTransportDashboard.Helpers.interfaces;
+using CarTransportDashboard.Services.Interfaces;
 
-namespace CarTransportDashboard.Services
+namespace CarTransportDashboard.Helpers
 {
-    public class CsrfValidator : ICsrfValidator
+    public class CsrfValidator: ICsrfValidator
     {
         public bool IsValid(HttpRequest request)
         {
@@ -19,6 +20,7 @@ namespace CarTransportDashboard.Services
         }
 
     }
+
 
 
 }

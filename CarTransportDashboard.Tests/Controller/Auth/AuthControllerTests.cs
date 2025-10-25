@@ -1,4 +1,5 @@
 ﻿using CarTransportDashboard.Controllers;
+using CarTransportDashboard.Helpers.interfaces;
 using CarTransportDashboard.Models.Dtos;
 using CarTransportDashboard.Models.Dtos.Auth;
 using CarTransportDashboard.Services.Interfaces;
@@ -22,8 +23,8 @@ namespace CarTransportDashboard.Tests.Controller.Auth
     {
         private readonly Mock<IAuthService> _authServiceMock;
         private readonly Mock<IWebHostEnvironment> _envMock;
-        private readonly Mock<ICsrfValidator> _csrfValidatorMock;
         private readonly AuthController _controller;
+        private readonly Mock<ICsrfValidator> _csrfValidatorMock;
 
         public AuthControllerTests()
         {

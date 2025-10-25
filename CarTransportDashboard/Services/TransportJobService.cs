@@ -1,9 +1,10 @@
+using CarTransportDashboard.Helpers;
 using CarTransportDashboard.Mappers;
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.TransportJob;
-using CarTransportDashboard.Models.Users;
 using CarTransportDashboard.Repository.Interfaces;
 using CarTransportDashboard.Services.Interfaces;
+using System.ComponentModel.DataAnnotations;
 namespace CarTransportDashboard.Services
 {
     public class TransportJobService : ITransportJobService
@@ -12,17 +13,20 @@ namespace CarTransportDashboard.Services
         private readonly IVehicleRepository _vehicleRepo;
         private readonly IDriverRepository _driverRepo;
         private readonly IDriverService _driverService;
+        private readonly ILogger<TransportJobService> _logger;
 
         public TransportJobService(
             ITransportJobRepository jobRepo,
             IVehicleRepository vehicleRepo,
             IDriverRepository driverRepo,
-            IDriverService driverService)
+            IDriverService driverService,
+            ILogger<TransportJobService> logger)
         {
             _jobRepo = jobRepo;
             _vehicleRepo = vehicleRepo;
             _driverRepo = driverRepo;
             _driverService = driverService;
+            _logger = logger;
         }
 
         public async Task<TransportJobReadDto?> GetJobAsync(Guid id)
@@ -120,6 +124,18 @@ namespace CarTransportDashboard.Services
         public async Task<OperationResult<TransportJobReadDto>> CreateJobAsync(TransportJobCreateDto dto)
         {
             var job = TransportJobMapper.ToModel(dto);
+            job.DistanceInMiles = (float)Random.Shared.NextDouble() * 500; // Placeholder for distance calculation
+            
+            try
+            {
+                ValidateJob(job);
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning("Job validation failed: {Message}", ex.Message);
+                return OperationResult<TransportJobReadDto>.CreateFailure(ex.Message);
+            }
+            ApplyPricing(job);
             var result = await _jobRepo.AddAsync(job);
 
             if (!result.Success || result.Data is null)
@@ -197,6 +213,25 @@ namespace CarTransportDashboard.Services
             {
                 return OperationResult<TransportJobReadDto>.CreateFailure(ex.Message);
             }
+        }
+
+        private void ApplyPricing(TransportJob job)
+        {
+            job.CustomerPrice = PricingCalculator.CalculateCustomerPrice(job.DistanceInMiles, job.isDriveable);
+            job.DriverPayment = PricingCalculator.CalculateDriverFee(job.CustomerPrice);
+        }
+        private void ValidateJob(TransportJob job)
+        {
+            if (string.IsNullOrWhiteSpace(job.Title))
+                throw new ValidationException("Job title cannot be empty.");
+            if (string.IsNullOrWhiteSpace(job.PickupLocation) || string.IsNullOrWhiteSpace(job.DropoffLocation))
+                throw new ValidationException("Pickup and dropoff locations must be specified.");
+            if(job.DistanceInMiles <= 0)
+                throw new ValidationException("Distance must be greater than zero.");
+            if(string.IsNullOrWhiteSpace(job.Description))
+                throw new ValidationException("Job description cannot be empty.");
+            if (string.Equals(job.PickupLocation, job.DropoffLocation, StringComparison.OrdinalIgnoreCase))
+                throw new ValidationException("Pickup and dropoff locations cannot be the same.");
         }
 
     }

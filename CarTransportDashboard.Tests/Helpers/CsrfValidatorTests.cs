@@ -1,4 +1,5 @@
-﻿using CarTransportDashboard.Services;
+﻿using CarTransportDashboard.Helpers;
+using CarTransportDashboard.Helpers.interfaces;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -6,11 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarTransportDashboard.Tests.Services
+namespace CarTransportDashboard.Tests.Helpers
 {
     public class CsrfValidatorTests
     {
-        private readonly CsrfValidator _validator = new CsrfValidator();
+        private readonly ICsrfValidator _csrfValidator;
+        public CsrfValidatorTests()
+        {
+            _csrfValidator = new CsrfValidator();
+        }
 
         private HttpRequest CreateRequest(string headerValue, string cookieValue)
         {
@@ -35,35 +40,35 @@ namespace CarTransportDashboard.Tests.Services
         public void IsValid_ReturnsTrue_WhenHeaderAndCookieMatch()
         {
             var request = CreateRequest("abc%2F123%3D%3D", "abc/123==");
-            Assert.True(_validator.IsValid(request));
+            Assert.True(_csrfValidator.IsValid(request));
         }
 
         [Fact]
         public void IsValid_ReturnsFalse_WhenHeaderMissing()
         {
             var request = CreateRequest(null, "abc/123==");
-            Assert.False(_validator.IsValid(request));
+            Assert.False(_csrfValidator.IsValid(request));
         }
 
         [Fact]
         public void IsValid_ReturnsFalse_WhenCookieMissing()
         {
             var request = CreateRequest("abc%2F123%3D%3D", null);
-            Assert.False(_validator.IsValid(request));
+            Assert.False(_csrfValidator.IsValid(request));
         }
 
         [Fact]
         public void IsValid_ReturnsFalse_WhenHeaderAndCookieMismatch()
         {
             var request = CreateRequest("wrong%2Fvalue%3D%3D", "abc/123==");
-            Assert.False(_validator.IsValid(request));
+            Assert.False(_csrfValidator.IsValid(request));
         }
 
         [Fact]
         public void IsValid_ReturnsFalse_WhenBothValuesAreEmpty()
         {
             var request = CreateRequest("", "");
-            Assert.False(_validator.IsValid(request));
+            Assert.False(_csrfValidator.IsValid(request));
         }
     }
 
