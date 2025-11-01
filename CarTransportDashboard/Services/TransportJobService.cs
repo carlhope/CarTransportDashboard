@@ -124,8 +124,8 @@ namespace CarTransportDashboard.Services
         public async Task<OperationResult<TransportJobReadDto>> CreateJobAsync(TransportJobCreateDto dto)
         {
             var job = TransportJobMapper.ToModel(dto);
-            job.DistanceInMiles = (float)Random.Shared.NextDouble() * 500; // Placeholder for distance calculation
-            
+            job.DistanceInMiles = CalculateDistance(dto.PickupLocation, dto.DropoffLocation);
+
             try
             {
                 ValidateJob(job);
@@ -156,11 +156,26 @@ namespace CarTransportDashboard.Services
             }
             catch (ValidationException ex)
             {
-                _logger.LogWarning("Job validation failed: {Message}", ex.Message);
+                _logger.LogWarning("Pre-update Job validation failed: {Message}", ex.Message);
                 return OperationResult<TransportJobReadDto>.CreateFailure(ex.Message);
+            }
+            //if pickup or dropoff changed, recalculate distance
+            if (!string.Equals(job.PickupLocation, dto.PickupLocation, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(job.DropoffLocation, dto.DropoffLocation, StringComparison.OrdinalIgnoreCase))
+            {
+                job.DistanceInMiles = CalculateDistance(dto.PickupLocation, dto.DropoffLocation);
             }
 
             TransportJobMapper.UpdateModel(job, dto);
+            try
+            {
+                ValidateJob(job);
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning("Post-update Job validation failed: {Message}", ex.Message);
+                return OperationResult<TransportJobReadDto>.CreateFailure(ex.Message);
+            }
             var updateResult = await _jobRepo.UpdateAsync(job);
 
             if (!updateResult.Success || updateResult.Data is null)
@@ -235,6 +250,12 @@ namespace CarTransportDashboard.Services
                 throw new ValidationException("Job description cannot be empty.");
             if (string.Equals(job.PickupLocation, job.DropoffLocation, StringComparison.OrdinalIgnoreCase))
                 throw new ValidationException("Pickup and dropoff locations cannot be the same.");
+        }
+
+        private float CalculateDistance(string pickupLocation, string dropoffLocation)
+        {
+            // Placeholder for distance calculation logic
+            return (float)Random.Shared.NextDouble() * 500; // Random distance for demo purposes
         }
 
     }

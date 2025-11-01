@@ -1,5 +1,5 @@
 ﻿using CarTransportDashboard.Helpers;
-using CarTransportDashboard.Helpers.interfaces;
+using CarTransportDashboard.Helpers;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace CarTransportDashboard.Tests.Helpers
 {
     public class CsrfValidatorTests
     {
-        private readonly ICsrfValidator _csrfValidator;
+        private readonly CsrfValidator _csrfValidator;
         public CsrfValidatorTests()
         {
             _csrfValidator = new CsrfValidator();
