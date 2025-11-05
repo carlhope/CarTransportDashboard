@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
 import { AuthService } from '../../../services/auth/auth';
 import { LoginModel } from '../../../models/user';
 
@@ -15,7 +16,7 @@ export class Login implements OnInit {
 
   form!: FormGroup;
 
-  constructor(private fb: FormBuilder, private auth: AuthService) {}
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -31,6 +32,7 @@ export class Login implements OnInit {
     this.auth.login(dto).subscribe({
       next: user => {
         console.log('Logged in:', user);
+        this.router.navigate(['/dashboard']);
       },
       error: err => {
         console.error('Login failed:', err);

@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
 import { AuthService } from '../../../services/auth/auth';
 import { RegisterModel } from '../../../models/user';
 
@@ -16,7 +17,7 @@ export class Register implements OnInit {
   form!: FormGroup;
 
 
-  constructor(private fb: FormBuilder, private auth: AuthService)
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router)
   {
   }
 
@@ -37,6 +38,7 @@ export class Register implements OnInit {
       next: user => {
         // Handle success (e.g. redirect or show message)
         console.log('Registered:', user);
+        this.router.navigate(['/dashboard']);
       },
       error: err => {
         // Handle error
