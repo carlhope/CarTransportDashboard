@@ -59,7 +59,7 @@ public class VehicleController : ControllerBase
         var result = await _vehicleService.CreateVehicleAsync(dto);
 
         if (!result.Success || result.Data is null)
-            return BadRequest(result.Message);
+            return BadRequest();
 
         return CreatedAtAction(nameof(GetVehicle), new { id = result.Data.Id }, result.Data);
     }
@@ -72,7 +72,7 @@ public class VehicleController : ControllerBase
         var result = await _vehicleService.UpdateVehicleAsync(id, dto);
 
         if (!result.Success)
-            return NotFound(result.Message);
+            return NotFound();
 
         return NoContent();
     }
@@ -85,7 +85,7 @@ public class VehicleController : ControllerBase
         var result = await _vehicleService.DeleteVehicleAsync(id);
 
         if (!result.Success)
-            return NotFound(result.Message);
+            return NotFound();
 
         return NoContent();
     }

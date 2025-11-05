@@ -40,7 +40,7 @@ public class TransportJobsController : ControllerBase
       var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         List<string> users = new List<string>() {userId };
         if (string.IsNullOrEmpty(userId))
-            return Unauthorized("User ID claim missing or invalid.");
+            return Unauthorized();
         var jobs = await _jobService.GetJobsByDriverIdAsync(users, status!, startDate);
         return Ok(jobs);
     }
@@ -71,7 +71,7 @@ public class TransportJobsController : ControllerBase
         var result = await _jobService.CreateJobAsync(dto);
 
         if (!result.Success || result.Data is null)
-            return BadRequest(result.Message);
+            return BadRequest();
 
         return CreatedAtAction(nameof(GetJob), new { id = result.Data.Id }, result.Data);
     }
@@ -83,7 +83,7 @@ public class TransportJobsController : ControllerBase
         var result = await _jobService.UpdateJobAsync(id, dto);
 
         if (!result.Success)
-            return NotFound(result.Message);
+            return NotFound();
 
         return Ok(result.Data);
     }
@@ -96,12 +96,12 @@ public class TransportJobsController : ControllerBase
     {
         var driverId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(driverId))
-            return Unauthorized("User identity not found.");
+            return Unauthorized();
 
         var result = await _jobService.AcceptJobAsync(id, driverId);
 
         if (!result.Success)
-            return NotFound(result.Message);
+            return NotFound();
 
         return Ok(result.Data);
     }
@@ -114,7 +114,7 @@ public class TransportJobsController : ControllerBase
         var result = await _jobService.AssignVehicleToJobAsync(id, vehicleId);
 
         if (!result.Success)
-            return NotFound(result.Message);
+            return NotFound();
 
         return Ok(result.Data);
     }
@@ -128,7 +128,7 @@ public class TransportJobsController : ControllerBase
         var result = await _jobService.AssignDriverToJobAsync(id, driverId);
 
         if (!result.Success)
-            return NotFound(result.Message);
+            return NotFound(result);
         
         return Ok(result.Data);
     }
@@ -144,7 +144,7 @@ public class TransportJobsController : ControllerBase
 
         if (!result.Success)
         {
-            return BadRequest(new { error = result.Message });
+            return BadRequest();
         }
 
         return Ok(result.Data);
@@ -161,7 +161,7 @@ public class TransportJobsController : ControllerBase
 
         if (!result.Success)
         {
-            return BadRequest(new { error = result.Message });
+            return BadRequest();
         }
 
         return Ok(result.Data);
@@ -177,21 +177,21 @@ public class TransportJobsController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var userRole = User.FindFirstValue(ClaimTypes.Role);
         if (!Enum.TryParse<UserRoles>(userRole, out var parsedRole))
-            return Forbid("Invalid user role.");
+            return Forbid();
         //
         var job = await _jobService.GetJobEntityAsync(id);
         OperationResult<TransportJobReadDto> result;
         if (job == null)
-            return NotFound("Job not found.");
+            return NotFound();
         if (string.IsNullOrEmpty(userId))
-            return Unauthorized("User identity not found.");
+            return Unauthorized();
         if (parsedRole == UserRoles.Driver)
         {
             if (job.AssignedDriverId == userId)
             {
                 result = await _jobService.UnassignDriverFromJobAsync(job);
                 if (!result.Success)
-                    return BadRequest(result.Message);
+                    return BadRequest();
                 Console.WriteLine($"Driver {userId} unassigned themselves from job {id}");
                 return Ok(result.Data);
             }
@@ -200,7 +200,7 @@ public class TransportJobsController : ControllerBase
         result = await _jobService.UnassignDriverFromJobAsync(job);
         if (!result.Success)
         {
-            return BadRequest(result.Message);
+            return BadRequest();
         }
         Console.WriteLine($"User {userRole} ({userId}) unassigned driver from job {id}");
         return Ok(result.Data);
