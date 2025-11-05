@@ -31,18 +31,20 @@ export class DriverDashboard implements OnInit {
     last30Days: 1134.50
   };
 
-  constructor(private jobService: TransportJobService) {}
+  constructor(private jobService: TransportJobService) {
+  }
 
   ngOnInit(): void {
     console.log("DriverDashboard initialized");
 
-  this.refreshData()
+    this.refreshData()
+
   }
+
   private refreshData(): void {
     this.loadAcceptedJobs();
     this.loadAvailableJobs();
     this.loadCompletedJobs();
-    this.loadEarnings();
   }
 
   private loadAcceptedJobs(): void {
@@ -63,6 +65,7 @@ export class DriverDashboard implements OnInit {
     this.jobService.getCompletedJobs(30).subscribe(jobs => {
       this.completedJobs = jobs;
       console.log('Completed jobs:', jobs);
+      this.loadEarnings();
     });
   }
 
@@ -79,6 +82,7 @@ export class DriverDashboard implements OnInit {
       }
     });
   }
+
   completeJob(jobId: string): void {
     this.jobService.completeJob(jobId).subscribe({
       next: updatedJob => {
@@ -92,7 +96,8 @@ export class DriverDashboard implements OnInit {
   }
 
   cancelJob(jobId: string): void {
-    this.jobService.unassignJob(jobId).subscribe({
+    //cancelJob is admin only on backend. retained for re-use when admin dashboard created. To be replaced with requestCancellation
+    this.jobService.cancelJob(jobId).subscribe({
       next: updatedJob => {
         console.log(`Job ${jobId} cancelled.`);
         this.refreshData();
@@ -101,6 +106,11 @@ export class DriverDashboard implements OnInit {
         console.error(`Failed to cancel job ${jobId}:`, err.message);
       }
     });
+  }
+  requestCancellation(jobId: string): void {
+    alert("Your cancellation request has been noted. An admin will review it shortly.");
+    console.log(`Driver requested cancellation for job ${jobId}`);
+    //full implementation will be added once admin workflow is established.
   }
 
   declineJob(jobId: string): void {
@@ -116,7 +126,23 @@ export class DriverDashboard implements OnInit {
   }
 
   private loadEarnings(): void {
-    console.log(`Load Earnings triggered for user: ${this.driver?.firstName} ${this.driver?.lastName}`);
-  }
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - now.getDay()); // Sunday as start of week
 
+
+      this.earnings.today = this.completedJobs
+        .filter(job => job.completedAt && new Date(job.completedAt).getTime() >= todayStart.getTime())
+        .reduce((sum, job) => sum + (job.payout || 0), 0);
+
+      this.earnings.thisWeek =  this.completedJobs
+        .filter(job => job.completedAt && new Date(job.completedAt).getTime() >= weekStart.getTime())
+        .reduce((sum, job) => sum + (job.payout || 0), 0);
+
+      this.earnings.last30Days = this.completedJobs
+        .reduce((sum, job) => sum + (job.payout || 0), 0)
+
+
+  }
 }

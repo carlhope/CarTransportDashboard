@@ -23,7 +23,8 @@ namespace CarTransportDashboard.Mappers
                 UpdatedAt = job.UpdatedAt,
                 AssignedAt = job.AssignedAt,
                 CompletedAt = job.CompletedAt,
-                AcceptedAt = job.AcceptedAt
+                AcceptedAt = job.AcceptedAt,
+                DriverPayment = job.DriverPayment
             };
         }
         public static List<TransportJobReadDto> ToReadDtoList(IEnumerable<TransportJob> jobs)

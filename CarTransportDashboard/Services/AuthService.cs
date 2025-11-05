@@ -52,7 +52,7 @@ namespace CarTransportDashboard.Services
             if (!roleResult.Succeeded)
                 throw new Exception("Failed to assign role: " + string.Join("; ", roleResult.Errors.Select(e => e.Description)));
 
-            var accessToken = GenerateJwtToken(user);
+            var accessToken = await GenerateJwtToken(user);
             var refreshToken = GenerateRefreshToken();
             var csrfToken = GenerateCsrfToken();
 
@@ -67,7 +67,7 @@ namespace CarTransportDashboard.Services
             if (user == null || !await _userManager.CheckPasswordAsync(user, password))
                 return null;
 
-            var accessToken = GenerateJwtToken(user);
+            var accessToken = await GenerateJwtToken(user);
             var refreshToken = GenerateRefreshToken();
             var csrfToken = GenerateCsrfToken();
 
@@ -92,7 +92,7 @@ namespace CarTransportDashboard.Services
             var oldCsrfToken = tokenEntity.CsrfToken;
 
             var newRefreshToken = GenerateRefreshToken();
-            var newAccessToken = GenerateJwtToken(tokenEntity.User);
+            var newAccessToken = await GenerateJwtToken(tokenEntity.User);
             await SaveRefreshTokenAsync(tokenEntity.User.Id, newRefreshToken, oldCsrfToken);
 
             await _db.SaveChangesAsync();
@@ -163,14 +163,21 @@ namespace CarTransportDashboard.Services
             await _db.SaveChangesAsync();
         }
 
-        private string GenerateJwtToken(ApplicationUser user)
+        private async Task<string> GenerateJwtToken(ApplicationUser user)
         {
-            var claims = new[]
+            var roles = await _userManager.GetRolesAsync(user);
+            var claims = new List<Claim>
             {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
             new Claim(ClaimTypes.Name, user.UserName ?? "")
         };
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+
 
             var jwtKey = _config["Jwt:Key"];
             if (string.IsNullOrWhiteSpace(jwtKey))

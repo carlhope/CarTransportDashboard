@@ -55,7 +55,12 @@ public static class DatabaseSeeder
                        scheduledDate: DateTime.Today.AddDays(2),
                        assignedVehicleId: vehicle1.Id,
                        vehicle: vehicle1
-                   ),
+                   )
+                   {
+                       CustomerPrice = 100.00M,
+                       DriverPayment = 80.65M
+
+                   },
                    new TransportJob(
                        title: "Delivery to Birmingham",
                        description: "Deliver vehicle to Birmingham client",
@@ -65,6 +70,11 @@ public static class DatabaseSeeder
                        assignedVehicleId: vehicle2.Id,
                        vehicle: vehicle2
                    )
+                   {
+                       CustomerPrice = 100.00M,
+                       DriverPayment = 80.65M
+
+                   }
                );
 
                 await context.SaveChangesAsync();
@@ -155,7 +165,12 @@ public static class DatabaseSeeder
                         scheduledDate: DateTime.Today.AddDays(-i - 1),
                         assignedVehicleId: v.Id,
                         vehicle: v
-                    );
+                    )
+                    {
+                        CustomerPrice = 100.00M,
+                        DriverPayment = 80.65M
+
+                    };
                     job.AssignDriver(driverUser);
                     job.AcceptJob();
                     job.MarkAsCompleted();
@@ -174,7 +189,12 @@ public static class DatabaseSeeder
                         scheduledDate: DateTime.Today.AddDays(i),
                         assignedVehicleId: v.Id,
                         vehicle: v
-                    );
+                    )
+                    {
+                        CustomerPrice = 100.00M,
+                        DriverPayment = 80.65M
+
+                    };
                     job.AssignDriver(driverUser);
                     job.AcceptJob();
                     jobs.Add(job);
@@ -192,7 +212,12 @@ public static class DatabaseSeeder
                         scheduledDate: DateTime.Today.AddDays(i + 2),
                         assignedVehicleId: v.Id,
                         vehicle: v
-                    );
+                    )
+                    {
+                        CustomerPrice = 100.00M,
+                        DriverPayment = 80.65M
+
+                    };
                     job.AssignDriver(driverUser);
                     jobs.Add(job);
                 }

@@ -172,7 +172,6 @@ public class TransportJobsController : ControllerBase
     // POST: api/transportjobs/{id}/unassign
     //POST is used instead of PATCH as unassigning may involve more complex processing (e.g. notifications)
     [HttpPost("{id}/unassign")]
-    [Authorize]
     public async Task<IActionResult> UnassignJob(Guid id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

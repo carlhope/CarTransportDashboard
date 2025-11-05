@@ -42,7 +42,9 @@ export class ModelMapperService {
       assignedVehicleId: data.assignedVehicleId,
       assignedVehicle: data.assignedVehicle ? this.toVehicle(data.assignedVehicle) : undefined,
       assignedDriverId: data.assignedDriverId,
-      assignedDriver: data.assignedDriver ? this.toMinimalUser(data.assignedDriver) : undefined
+      assignedDriver: data.assignedDriver ? this.toMinimalUser(data.assignedDriver) : undefined,
+      completedAt: data.completedAt,
+      payout: data.driverPayment
     };
   }
 }
