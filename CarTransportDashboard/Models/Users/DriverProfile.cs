@@ -11,6 +11,16 @@ namespace CarTransportDashboard.Models.Users
 
         public required string LicenseNumber { get; set; }
         public DateTime LicenseExpiry { get; set; }
-        
+
+        public string? DispatcherId { get; set; }
+        public DispatcherProfile? Dispatcher { get; set; }
+
+        //called from DispatcherProfile.RemoveDriver to keep both sides in sync.
+        //Should not be called directly outside that context
+        public void UnassignDispatcher()
+        {
+            DispatcherId = null;
+            Dispatcher = null;
+        }
     }
 }

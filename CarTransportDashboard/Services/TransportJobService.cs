@@ -124,11 +124,10 @@ namespace CarTransportDashboard.Services
         public async Task<OperationResult<TransportJobReadDto>> CreateJobAsync(TransportJobCreateDto dto)
         {
             var job = TransportJobMapper.ToModel(dto);
-            job.DistanceInMiles = CalculateDistance(dto.PickupLocation, dto.DropoffLocation);
 
             try
             {
-                ValidateJob(job);
+                job.ValidateJob();
             }
             catch (ValidationException ex)
             {
@@ -152,24 +151,18 @@ namespace CarTransportDashboard.Services
 
             try
             {
-                ValidateJob(job);
+                job.ValidateJob();
             }
             catch (ValidationException ex)
             {
                 _logger.LogWarning("Pre-update Job validation failed: {Message}", ex.Message);
                 return OperationResult<TransportJobReadDto>.CreateFailure(ex.Message);
             }
-            //if pickup or dropoff changed, recalculate distance
-            if (!string.Equals(job.PickupLocation, dto.PickupLocation, StringComparison.OrdinalIgnoreCase) ||
-                !string.Equals(job.DropoffLocation, dto.DropoffLocation, StringComparison.OrdinalIgnoreCase))
-            {
-                job.DistanceInMiles = CalculateDistance(dto.PickupLocation, dto.DropoffLocation);
-            }
 
             TransportJobMapper.UpdateModel(job, dto);
             try
             {
-                ValidateJob(job);
+                job.ValidateJob();
             }
             catch (ValidationException ex)
             {
@@ -244,9 +237,9 @@ namespace CarTransportDashboard.Services
                 throw new ValidationException("Job title cannot be empty.");
             if (string.IsNullOrWhiteSpace(job.PickupLocation) || string.IsNullOrWhiteSpace(job.DropoffLocation))
                 throw new ValidationException("Pickup and dropoff locations must be specified.");
-            if(job.DistanceInMiles <= 0)
+            if (job.DistanceInMiles <= 0)
                 throw new ValidationException("Distance must be greater than zero.");
-            if(string.IsNullOrWhiteSpace(job.Description))
+            if (string.IsNullOrWhiteSpace(job.Description))
                 throw new ValidationException("Job description cannot be empty.");
             if (string.Equals(job.PickupLocation, job.DropoffLocation, StringComparison.OrdinalIgnoreCase))
                 throw new ValidationException("Pickup and dropoff locations cannot be the same.");

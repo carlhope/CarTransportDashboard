@@ -206,7 +206,8 @@ public class TransportJobServiceTests
             PickupLocation="Location B",
             Description="Test Description",
             AssignedVehicle = vehicleDto, 
-            AssignedDriverId=vehicleDto.Id.ToString()};
+            AssignedDriverId=vehicleDto.Id.ToString(),
+        };
         TransportJob? addedJob = null;
         _jobRepoMock.Setup(r => r.AddAsync(It.IsAny<TransportJob>()))
              .ReturnsAsync((TransportJob j) =>
@@ -235,6 +236,8 @@ public class TransportJobServiceTests
             PickupLocation="Old Pickup",
             DropoffLocation= "Old Dropoff",
             DistanceInMiles= 50.0F,//usually set during creation
+            DriverPayment=30,
+            CustomerPrice=50
         };//status defaults to Available
        var testVehicleDto = new VehicleWriteDto
         {
@@ -246,7 +249,10 @@ public class TransportJobServiceTests
         var dto = new TransportJobUpdateDto { 
             Id = jobId, 
             Title = "Updated", 
-            AssignedVehicle = testVehicleDto
+            AssignedVehicle = testVehicleDto,
+            Description= "Updated Description",
+            PickupLocation="Updated Pickup",
+            DropoffLocation= "Updated Dropoff",
         };
 
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);

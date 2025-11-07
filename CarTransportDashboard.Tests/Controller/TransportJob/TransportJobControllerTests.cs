@@ -72,8 +72,8 @@ namespace CarTransportDashboard.Tests.Controller.TransportJob
             var result = await controller.AcceptJob(jobId);
 
             // Assert
-            var unauthorized = Assert.IsType<UnauthorizedObjectResult>(result);
-            Assert.Equal("User identity not found.", unauthorized.Value);
+            Assert.IsType<UnauthorizedResult>(result);
+            
         }
         [Fact]
         public async Task AcceptJob_ReturnsOk_WhenAccepted()

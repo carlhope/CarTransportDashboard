@@ -97,16 +97,6 @@ namespace CarTransportDashboard.Repository{
                 return OperationResult<TransportJob>.CreateFailure("An unexpected error occurred.");
             }
         }
-
-        //public async Task<OperationResult<TransportJob>> AssignVehicleAsync(Guid jobId, Guid vehicleId)
-        //{
-        //    var job = await GetByIdAsync(jobId);
-        //    if (job is null)
-        //        return OperationResult<TransportJob>.CreateFailure("Transport job not found.");
-        //    job.UpdatedAt = DateTime.UtcNow;
-        //    job.AssignedVehicleId = vehicleId;
-        //    return await UpdateAsync(job);
-        //}
     }
 
 }

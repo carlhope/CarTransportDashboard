@@ -53,6 +53,7 @@ namespace CarTransportDashboard.Models
             Status = JobStatus.Available;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
+            CalculatePricing();
         }
         public TransportJob(string title, string description, string pickupLocation, string dropoffLocation, DateTime scheduledDate, Guid assignedVehicleId, Vehicle vehicle, JobStatus status)
         {
@@ -67,6 +68,7 @@ namespace CarTransportDashboard.Models
             Status = status;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
+            CalculatePricing();
         }
 
 
@@ -119,7 +121,7 @@ namespace CarTransportDashboard.Models
             AssignedDriverId = null;
             AssignedDriver = null;
         }
-        private void ValidateJob()
+        public void ValidateJob()
         {
             if (string.IsNullOrWhiteSpace(Title))
                 throw new ValidationException("Job title cannot be empty.");
@@ -135,12 +137,33 @@ namespace CarTransportDashboard.Models
             throw new ValidationException("Driver payment must be at least £25.");
             if (CustomerPrice < DriverPayment)
                 throw new ValidationException("Customer price must be more than driver payment.");
+            // TEMPORARY: Calling CalculatePricing() here to ensure values are set during updates. update method currently uses this validation method.
+            // This couples validation with mutation—refactor to separate concerns when time allows.
+            CalculatePricing();
 
         }
 
+        private void calculateDistance()
+        {
+            DistanceInMiles = 100;
+        }
 
-
-
+        private void CalculatePricing()
+        {
+            calculateDistance();
+            decimal price = basePrice;
+            if (DistanceInMiles > includedMiles)
+            {
+                float extraMiles = DistanceInMiles - includedMiles;
+                price += (decimal)extraMiles * perMileRate;
+            }
+            if (!isDriveable)
+            {
+                price += undriveableSurcharge;
+            }
+            CustomerPrice = Math.Round(price, 2);
+            DriverPayment = Math.Round(price * driverFeePercentage, 2);
+        }
     }
 
 

@@ -35,9 +35,10 @@ namespace CarTransportDashboard.Repository
 
         public async Task<IEnumerable<TransportJob>> GetAssignedJobsAsync(string driverId)
         {
-            return await _db.TransportJobs
+            var results = await _db.TransportJobs
                 .Where(j => j.AssignedDriverId == driverId)
                 .ToListAsync();
+            return results;
         }
 
 
