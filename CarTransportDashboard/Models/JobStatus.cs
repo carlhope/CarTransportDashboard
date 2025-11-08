@@ -6,7 +6,8 @@ namespace CarTransportDashboard.Models
     InProgress,
     Allocated,
     Completed,
-    Cancelled
+    Cancelled,
+    PendingReview
     }
 
 }

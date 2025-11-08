@@ -50,9 +50,17 @@ namespace CarTransportDashboard.Tests.Services
 
             var transportJobs = new List<TransportJob>
                 {
-                    new TransportJob { Id = job1Id, Description = "Deliver goods", AssignedVehicle=vehicle1 },
-                    new TransportJob { Id = job2Id, Description = "Pickup package", AssignedVehicle=vehicle2 }
+                    TransportJobFactory.CreateBasic(description: "Deliver goods"),
+                    TransportJobFactory.CreateBasic(description: "Pickup package")
                 };
+
+            transportJobs[0].Id = job1Id;
+            transportJobs[0].AssignedVehicle = vehicle1;
+            transportJobs[0].AssignedVehicleId = vehicle1.Id;
+
+            transportJobs[1].Id = job2Id;
+            transportJobs[1].AssignedVehicle = vehicle2;
+            transportJobs[1].AssignedVehicleId = vehicle2.Id;
 
             _mockRepo.Setup(r => r.GetAssignedJobsAsync(driverId))
                      .ReturnsAsync(transportJobs);

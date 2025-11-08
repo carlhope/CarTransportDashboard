@@ -134,49 +134,75 @@ public class VehicleRepositoryTests
     [Fact]
     public async Task IsAssignedToActiveJobAsync_ReturnsTrue_IfAssignedToActiveJob()
     {
+        // Arrange
         var context = GetDbContext();
         var vehicleId = Guid.NewGuid();
-        var driver = new ApplicationUser() { FirstName = "John", LastName = "Doe" };
-        context.Vehicles.Add(new Vehicle { Id = vehicleId, Make = "Audi", Model = "A4", RegistrationNumber = "MNO345" });
-        TransportJob job = new TransportJob
+
+        var driver = new ApplicationUser { FirstName = "John", LastName = "Doe" };
+
+        var vehicle = new Vehicle
         {
-            Id = Guid.NewGuid(),
-            Title = "Job1",
-            AssignedVehicleId = vehicleId
+            Id = vehicleId,
+            Make = "Audi",
+            Model = "A4",
+            RegistrationNumber = "MNO345",
+            FuelType = FuelType.Petrol
         };
+        context.Vehicles.Add(vehicle);
+
+        var job = TransportJobFactory.CreateBasic(title: "Job1");
+        job.AssignedVehicleId = vehicleId;
+        job.AssignedVehicle = vehicle;
         job.AssignDriver(driver);
         job.AcceptJob();
+
         context.TransportJobs.Add(job);
         await context.SaveChangesAsync();
 
         var repo = GetRepository(context);
+
+        // Act
         var result = await repo.IsAssignedToActiveJobAsync(vehicleId);
 
+        // Assert
         Assert.True(result);
     }
 
     [Fact]
     public async Task IsAssignedToActiveJobAsync_ReturnsFalse_IfNotAssignedOrJobCompleted()
     {
+        // Arrange
         var context = GetDbContext();
         var vehicleId = Guid.NewGuid();
-        var driver = new ApplicationUser() { FirstName = "John", LastName = "Doe" };
-        context.Vehicles.Add(new Vehicle { Id = vehicleId, Make = "Audi", Model = "A4", RegistrationNumber = "MNO345" });
-        TransportJob job = new TransportJob
+
+        var driver = new ApplicationUser { FirstName = "John", LastName = "Doe" };
+
+        var vehicle = new Vehicle
         {
-            Id = Guid.NewGuid(),
-            Title = "Job1",
-            AssignedVehicleId = vehicleId
+            Id = vehicleId,
+            Make = "Audi",
+            Model = "A4",
+            RegistrationNumber = "MNO345",
+            FuelType = FuelType.Petrol
         };
+        context.Vehicles.Add(vehicle);
+
+        var job = TransportJobFactory.CreateBasic(title: "Job1");
+        job.AssignedVehicleId = vehicleId;
+        job.AssignedVehicle = vehicle;
         job.AssignDriver(driver);
         job.AcceptJob();
         job.MarkAsCompleted();
+
         context.TransportJobs.Add(job);
         await context.SaveChangesAsync();
 
         var repo = GetRepository(context);
+
+        // Act
         var result = await repo.IsAssignedToActiveJobAsync(vehicleId);
 
+        // Assert
         Assert.False(result);
     }
 }

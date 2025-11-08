@@ -14,19 +14,22 @@ namespace CarTransportDashboard.Services
         private readonly IDriverRepository _driverRepo;
         private readonly IDriverService _driverService;
         private readonly ILogger<TransportJobService> _logger;
+        private readonly IRouteService _routeService;
 
         public TransportJobService(
             ITransportJobRepository jobRepo,
             IVehicleRepository vehicleRepo,
             IDriverRepository driverRepo,
             IDriverService driverService,
-            ILogger<TransportJobService> logger)
+            ILogger<TransportJobService> logger,
+            IRouteService routeService)
         {
             _jobRepo = jobRepo;
             _vehicleRepo = vehicleRepo;
             _driverRepo = driverRepo;
             _driverService = driverService;
             _logger = logger;
+            _routeService = routeService;
         }
 
         public async Task<TransportJobReadDto?> GetJobAsync(Guid id)
@@ -66,7 +69,7 @@ namespace CarTransportDashboard.Services
 
             if (job.Status != JobStatus.Allocated || job.AssignedDriverId!=driverId)
                 return OperationResult<TransportJobReadDto>.CreateFailure("Job is not available for acceptance.");
-
+            await UpdateRouteInfoAsync(job);
             job.AcceptJob();
 
             var jobDto = TransportJobMapper.ToDto(job);
@@ -106,6 +109,7 @@ namespace CarTransportDashboard.Services
             try
             {
                 job.AssignDriver(driver);
+                await UpdateRouteInfoAsync(job);
                 var result = await _jobRepo.UpdateAsync(job);
 
                 if (!result.Success)
@@ -124,7 +128,8 @@ namespace CarTransportDashboard.Services
         public async Task<OperationResult<TransportJobReadDto>> CreateJobAsync(TransportJobCreateDto dto)
         {
             var job = TransportJobMapper.ToModel(dto);
-
+            await UpdateRouteInfoAsync(job);
+            job.CalculatePricing();
             try
             {
                 job.Validate();
@@ -150,6 +155,7 @@ namespace CarTransportDashboard.Services
                 return OperationResult<TransportJobReadDto>.CreateFailure("Transport job not found.");
 
             TransportJobMapper.UpdateModel(job, dto);
+            await UpdateRouteInfoAsync(job);
             job.CalculatePricing();
             try
             {
@@ -222,24 +228,13 @@ namespace CarTransportDashboard.Services
                 return OperationResult<TransportJobReadDto>.CreateFailure(ex.Message);
             }
         }
-        private void ValidateJob(TransportJob job)
+        private async Task UpdateRouteInfoAsync(TransportJob job)
         {
-            if (string.IsNullOrWhiteSpace(job.Title))
-                throw new ValidationException("Job title cannot be empty.");
-            if (string.IsNullOrWhiteSpace(job.PickupLocation) || string.IsNullOrWhiteSpace(job.DropoffLocation))
-                throw new ValidationException("Pickup and dropoff locations must be specified.");
-            if (job.DistanceInMiles <= 0)
-                throw new ValidationException("Distance must be greater than zero.");
-            if (string.IsNullOrWhiteSpace(job.Description))
-                throw new ValidationException("Job description cannot be empty.");
-            if (string.Equals(job.PickupLocation, job.DropoffLocation, StringComparison.OrdinalIgnoreCase))
-                throw new ValidationException("Pickup and dropoff locations cannot be the same.");
-        }
-
-        private float CalculateDistance(string pickupLocation, string dropoffLocation)
-        {
-            // Placeholder for distance calculation logic
-            return (float)Random.Shared.NextDouble() * 500; // Random distance for demo purposes
+            var route = await _routeService.GetRouteInfoAsync(job.PickupLocation, job.DropoffLocation);
+            job.DistanceInMiles = route.DistanceInMiles;
+            job.EstimatedDuration = route.EstimatedDuration;
+            job.RoutePreviewUrl = route.RoutePreviewUrl;
+            job.LastRouteEstimateTime = DateTime.UtcNow;
         }
 
     }

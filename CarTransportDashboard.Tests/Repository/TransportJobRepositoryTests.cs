@@ -32,7 +32,7 @@ public class TransportJobRepositoryTests
     public async Task GetByIdAsync_ReturnsJob_WhenExists()
     {
         var context = GetDbContext();
-        var job = new TransportJob { Id = Guid.NewGuid(), Title = "Test" };
+        var job = TransportJobFactory.CreateBasic();
         context.TransportJobs.Add(job);
         await context.SaveChangesAsync();
 
@@ -59,8 +59,8 @@ public class TransportJobRepositoryTests
     {
         var context = GetDbContext();
         context.TransportJobs.AddRange(
-            new TransportJob { Id = Guid.NewGuid(), Title = "A" },
-            new TransportJob { Id = Guid.NewGuid(), Title = "B" }
+            TransportJobFactory.CreateBasic(title: "A"),
+            TransportJobFactory.CreateBasic(title: "B")
         );
         await context.SaveChangesAsync();
 
@@ -74,10 +74,14 @@ public class TransportJobRepositoryTests
     public async Task GetAvailableJobsAsync_ReturnsJobsWithVehicleNoDriver()
     {
         var context = GetDbContext();
-        var job1 = new TransportJob { Id = Guid.NewGuid(), Title = "A", AssignedVehicleId = Guid.NewGuid() };
-        var job2 = new TransportJob { Id = Guid.NewGuid(), Title = "B", AssignedVehicleId = null};
-        var job3 = new TransportJob { Id = Guid.NewGuid(), Title = "C", AssignedVehicleId = Guid.NewGuid() };
-        //job2.Cancel(); // Set status to Cancelled
+        var job1 = TransportJobFactory.CreateBasic(title: "A");
+        job1.AssignedVehicleId = Guid.NewGuid();
+
+        var job2 = TransportJobFactory.CreateBasic(title: "B");
+        job2.AssignedVehicleId = null;
+
+        var job3 = TransportJobFactory.CreateBasic(title: "C");
+        job3.AssignedVehicleId = Guid.NewGuid();
         job3.Cancel(); // Set status to Cancelled
         job2.AssignDriver(new ApplicationUser { Id = "driver1", FirstName="john", LastName="Doe" });
         context.TransportJobs.AddRange(job1, job2, job3);
@@ -95,7 +99,7 @@ public class TransportJobRepositoryTests
     {
         var context = GetDbContext();
         var repo = GetRepository(context);
-        var job = new TransportJob { Id = Guid.NewGuid(), Title = "Add" };
+        var job = TransportJobFactory.CreateBasic(title: "Add");
 
         await repo.AddAsync(job);
 
@@ -107,7 +111,7 @@ public class TransportJobRepositoryTests
     public async Task UpdateAsync_UpdatesJob()
     {
         var context = GetDbContext();
-        var job = new TransportJob { Id = Guid.NewGuid(), Title = "Old" };
+        var job = TransportJobFactory.CreateBasic(title: "Old");
         context.TransportJobs.Add(job);
         await context.SaveChangesAsync();
 
@@ -118,58 +122,4 @@ public class TransportJobRepositoryTests
         var updated = context.TransportJobs.Find(job.Id);
         Assert.Equal("New", updated.Title);
     }
-
-    //[Fact]
-    //public async Task AssignVehicleAsync_AssignsVehicle_WhenJobExists()
-    //{
-    //    var context = GetDbContext();
-    //    var job = new TransportJob { Id = Guid.NewGuid(), Title = "Job" };
-    //    context.TransportJobs.Add(job);
-    //    await context.SaveChangesAsync();
-
-    //    var repo = GetRepository(context);
-    //    var vehicleId = Guid.NewGuid();
-    //    await repo.AssignVehicleAsync(job.Id, vehicleId);
-
-    //    var updated = context.TransportJobs.Find(job.Id);
-    //    Assert.Equal(vehicleId, updated.AssignedVehicleId);
-    //}
-
-    //[Fact]
-    //public async Task AssignVehicleAsync_DoesNothing_WhenJobNotExists()
-    //{
-    //    var context = GetDbContext();
-    //    var repo = GetRepository(context);
-
-    //    await repo.AssignVehicleAsync(Guid.NewGuid(), Guid.NewGuid());
-
-    //    Assert.Empty(context.TransportJobs);
-    //}
-
-    //[Fact]
-    //public async Task AssignDriverAsync_AssignsDriver_WhenJobExists()
-    //{
-    //    var context = GetDbContext();
-    //    var job = new TransportJob { Id = Guid.NewGuid(), Title = "Job" };
-    //    context.TransportJobs.Add(job);
-    //    await context.SaveChangesAsync();
-
-    //    var repo = GetRepository(context);
-    //    var driverId = Guid.NewGuid().ToString();
-    //    await repo.AssignDriverAsync(job.Id, driverId);
-
-    //    var updated = context.TransportJobs.Find(job.Id);
-    //    Assert.Equal(driverId, updated.AssignedDriverId);
-    //}
-
-    //[Fact]
-    //public async Task AssignDriverAsync_DoesNothing_WhenJobNotExists()
-    //{
-    //    var context = GetDbContext();
-    //    var repo = GetRepository(context);
-
-    //    await repo.AssignDriverAsync(Guid.NewGuid(), Guid.NewGuid().ToString());
-
-    //    Assert.Empty(context.TransportJobs);
-    //}
 }
