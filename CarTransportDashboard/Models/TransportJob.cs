@@ -121,7 +121,7 @@ namespace CarTransportDashboard.Models
             AssignedDriverId = null;
             AssignedDriver = null;
         }
-        public void ValidateJob()
+        public void Validate()
         {
             if (string.IsNullOrWhiteSpace(Title))
                 throw new ValidationException("Job title cannot be empty.");
@@ -137,20 +137,14 @@ namespace CarTransportDashboard.Models
             throw new ValidationException("Driver payment must be at least £25.");
             if (CustomerPrice < DriverPayment)
                 throw new ValidationException("Customer price must be more than driver payment.");
-            // TEMPORARY: Calling CalculatePricing() here to ensure values are set during updates. update method currently uses this validation method.
-            // This couples validation with mutation—refactor to separate concerns when time allows.
-            CalculatePricing();
 
         }
 
-        private void calculateDistance()
-        {
-            DistanceInMiles = 100;
-        }
+      
 
-        private void CalculatePricing()
+        public void CalculatePricing()
         {
-            calculateDistance();
+            DistanceInMiles = 100.0F; // Placeholder value for distance
             decimal price = basePrice;
             if (DistanceInMiles > includedMiles)
             {

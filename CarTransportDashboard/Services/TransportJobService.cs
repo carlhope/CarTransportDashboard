@@ -127,7 +127,7 @@ namespace CarTransportDashboard.Services
 
             try
             {
-                job.ValidateJob();
+                job.Validate();
             }
             catch (ValidationException ex)
             {
@@ -149,20 +149,11 @@ namespace CarTransportDashboard.Services
             if (job is null)
                 return OperationResult<TransportJobReadDto>.CreateFailure("Transport job not found.");
 
-            try
-            {
-                job.ValidateJob();
-            }
-            catch (ValidationException ex)
-            {
-                _logger.LogWarning("Pre-update Job validation failed: {Message}", ex.Message);
-                return OperationResult<TransportJobReadDto>.CreateFailure(ex.Message);
-            }
-
             TransportJobMapper.UpdateModel(job, dto);
+            job.CalculatePricing();
             try
             {
-                job.ValidateJob();
+                job.Validate();
             }
             catch (ValidationException ex)
             {
