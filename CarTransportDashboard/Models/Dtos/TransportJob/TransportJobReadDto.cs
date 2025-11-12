@@ -9,8 +9,8 @@ namespace CarTransportDashboard.Models.Dtos.TransportJob
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public JobStatus Status { get; set; }
-        public string PickupLocation { get; set; } = string.Empty;
-        public string DropoffLocation { get; set; } = string.Empty;
+        public Address PickupLocation { get; set; }
+        public Address DropoffLocation { get; set; }
         public DateTime? ScheduledDate { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

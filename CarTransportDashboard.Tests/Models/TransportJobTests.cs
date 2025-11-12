@@ -13,13 +13,38 @@ namespace CarTransportDashboard.Tests.Models
         private readonly Vehicle _vehicle = new Vehicle(); // Stub or mock as needed
         private readonly ApplicationUser _driver = new ApplicationUser { Id = "driver-123", FirstName="test", LastName="user" };
 
+        private Address MockPickupAddress = new Address
+        {
+            CompanyName = "Acme Supplies Ltd",
+            AddressLine1 = "Unit 4, Acme Business Park",
+            AddressLine2 = "Warehouse Entrance",
+            Locality = "Stoke-on-Trent",
+            PostalCode = "ST1 1AA",
+            Country = "GB",
+            Lat = 53.0027,
+            Lng = -2.1794
+        };
+
+        private Address MockDropoffAddress = new Address
+        {
+            CompanyName = "Derby Distribution Hub",
+            AddressLine1 = "456 Industrial Estate",
+            AddressLine2 = "Loading Bay 3",
+            Locality = "Derby",
+            PostalCode = "DE1 2BB",
+            Country = "GB",
+            Lat = 52.9225,
+            Lng = -1.4746
+        };
+
+
         private TransportJob CreateAvailableJob()
         {
             return new TransportJob(
                 title: "Test Job",
                 description: "Deliver vehicle",
-                pickupLocation: "A",
-                dropoffLocation: "B",
+                pickupLocation: MockPickupAddress,
+                dropoffLocation: MockDropoffAddress,
                 scheduledDate: DateTime.UtcNow.AddDays(1),
                 assignedVehicleId: Guid.NewGuid(),
                 vehicle: _vehicle

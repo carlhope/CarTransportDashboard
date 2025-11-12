@@ -8,8 +8,8 @@ namespace CarTransportDashboard.Models.Dtos.TransportJob
         public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public string PickupLocation { get; set; } = string.Empty;
-        public string DropoffLocation { get; set; } = string.Empty;
+        public Address PickupLocation { get; set; }
+        public Address DropoffLocation { get; set; }
         public DateTime? ScheduledDate { get; set; }
 
         // Foreign Keys

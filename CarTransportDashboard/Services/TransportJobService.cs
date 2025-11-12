@@ -239,7 +239,7 @@ namespace CarTransportDashboard.Services
         }
         private async Task UpdateRouteInfoAsync(TransportJob job)
         {
-            var route = await _routeService.GetRouteInfoAsync(job.PickupLocation, job.DropoffLocation);
+            var route = await _routeService.GetRouteInfoAsync(job.PickupLocation.Formatted, job.DropoffLocation.Formatted);
             job.DistanceInMiles = route.DistanceInMiles;
             job.EstimatedDuration = route.EstimatedDuration;
             job.RoutePreviewUrl = route.RoutePreviewUrl;

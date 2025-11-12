@@ -45,13 +45,36 @@ public static class DatabaseSeeder
                 };
 
                 context.Vehicles.AddRange(vehicle1, vehicle2);
+                var mockPickupLocation = new Address {
+                CompanyName = "Acme Supplies Ltd",
+                AddressLine1 = "Unit 4, Acme Business Park",
+                AddressLine2 = "Warehouse Entrance",
+                Locality = "Stoke-on-Trent",
+                PostalCode = "ST1 1AA",
+                Country = "GB",
+                Lat = 53.0027,
+                Lng = -2.1794
+                  }
+                ;
+
+                var mockDropoffLocation = new Address {
+                  CompanyName = "Derby Distribution Hub",
+                  AddressLine1 = "456 Industrial Estate",
+                  AddressLine2 = "Loading Bay 3",
+                  Locality = "Derby",
+                  PostalCode = "DE1 2BB",
+                  Country = "GB",
+                  Lat = 52.9225,
+                  Lng = -1.4746
+                }
+                ;
 
                 context.TransportJobs.AddRange(
                    new TransportJob(
                        title: "Pickup from Manchester",
                        description: "Collect vehicle from Manchester depot",
-                       pickupLocation: "Manchester",
-                       dropoffLocation: "Liverpool",
+                       pickupLocation: mockPickupLocation,
+                       dropoffLocation: mockDropoffLocation,
                        scheduledDate: DateTime.Today.AddDays(2),
                        assignedVehicleId: vehicle1.Id,
                        vehicle: vehicle1
@@ -64,8 +87,8 @@ public static class DatabaseSeeder
                    new TransportJob(
                        title: "Delivery to Birmingham",
                        description: "Deliver vehicle to Birmingham client",
-                       pickupLocation: "Leeds",
-                       dropoffLocation: "Birmingham",
+                       pickupLocation: mockPickupLocation,
+                       dropoffLocation: mockDropoffLocation,
                        scheduledDate: DateTime.Today.AddDays(1),
                        assignedVehicleId: vehicle2.Id,
                        vehicle: vehicle2
@@ -160,8 +183,8 @@ public static class DatabaseSeeder
                     var job = new TransportJob(
                         title: $"Driver Complete Job {i+1}",
                         description: "Completed job for demo",
-                        pickupLocation: $"Origin {i+1}",
-                        dropoffLocation: $"Destination {i+1}",
+                        pickupLocation: mockPickupLocation,
+                        dropoffLocation: mockDropoffLocation,
                         scheduledDate: DateTime.Today.AddDays(-i - 1),
                         assignedVehicleId: v.Id,
                         vehicle: v
@@ -184,8 +207,8 @@ public static class DatabaseSeeder
                     var job = new TransportJob(
                         title: $"Driver InProgress Job {i+1}",
                         description: "In-progress job for demo",
-                        pickupLocation: $"Origin IP {i+1}",
-                        dropoffLocation: $"Destination IP {i+1}",
+                        pickupLocation: mockPickupLocation,
+                        dropoffLocation: mockDropoffLocation,
                         scheduledDate: DateTime.Today.AddDays(i),
                         assignedVehicleId: v.Id,
                         vehicle: v
@@ -207,8 +230,8 @@ public static class DatabaseSeeder
                     var job = new TransportJob(
                         title: $"Driver Available Job {i+1}",
                         description: "Available job for demo",
-                        pickupLocation: $"Origin A {i+1}",
-                        dropoffLocation: $"Destination A {i+1}",
+                        pickupLocation: mockPickupLocation,
+                        dropoffLocation: mockDropoffLocation,
                         scheduledDate: DateTime.Today.AddDays(i + 2),
                         assignedVehicleId: v.Id,
                         vehicle: v

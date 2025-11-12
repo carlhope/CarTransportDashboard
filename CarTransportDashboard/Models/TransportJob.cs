@@ -1,6 +1,7 @@
 using CarTransportDashboard.Context;
 using CarTransportDashboard.Models.Users;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Metrics;
 namespace CarTransportDashboard.Models
 {
     public class TransportJob
@@ -9,8 +10,6 @@ namespace CarTransportDashboard.Models
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public JobStatus Status { get; private set; }
-        public string PickupLocation { get; set; } = string.Empty;
-        public string DropoffLocation { get; set; } = string.Empty;
         public DateTime? ScheduledDate { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
@@ -38,13 +37,17 @@ namespace CarTransportDashboard.Models
 
         public string? AssignedDriverId { get; private set; }
         public ApplicationUser? AssignedDriver { get; private set; }
+        public Guid PickupLocationId { get; set; }
+        public Address PickupLocation { get; set; }
+        public Guid DropoffLocationId { get; set; }
+        public Address DropoffLocation { get; set; }
 
         private TransportJob()
         {
             // Required by EF Core
         }
 
-        public TransportJob(string title, string description, string pickupLocation, string dropoffLocation, DateTime scheduledDate, Guid assignedVehicleId, Vehicle vehicle)
+        public TransportJob(string title, string description, Address pickupLocation, Address dropoffLocation, DateTime scheduledDate, Guid assignedVehicleId, Vehicle vehicle)
         {
             Id = Guid.NewGuid();
             Title = title;
@@ -59,7 +62,7 @@ namespace CarTransportDashboard.Models
             UpdatedAt = DateTime.UtcNow;
             CalculatePricing();
         }
-        public TransportJob(string title, string description, string pickupLocation, string dropoffLocation, DateTime scheduledDate, Guid assignedVehicleId, Vehicle vehicle, JobStatus status)
+        public TransportJob(string title, string description, Address pickupLocation, Address dropoffLocation, DateTime scheduledDate, Guid assignedVehicleId, Vehicle vehicle, JobStatus status)
         {
             Id = Guid.NewGuid();
             Title = title;
@@ -130,22 +133,40 @@ namespace CarTransportDashboard.Models
         {
             if (string.IsNullOrWhiteSpace(Title))
                 throw new ValidationException("Job title cannot be empty.");
-            if (string.IsNullOrWhiteSpace(PickupLocation) || string.IsNullOrWhiteSpace(DropoffLocation))
+
+            if (PickupLocation == null || DropoffLocation == null)
                 throw new ValidationException("Pickup and dropoff locations must be specified.");
+
+            if (string.IsNullOrWhiteSpace(PickupLocation.AddressLine1) ||
+                string.IsNullOrWhiteSpace(PickupLocation.Locality) ||
+                string.IsNullOrWhiteSpace(PickupLocation.PostalCode) ||
+                string.IsNullOrWhiteSpace(PickupLocation.Country))
+                throw new ValidationException("Pickup location is missing required address details.");
+
+            if (string.IsNullOrWhiteSpace(DropoffLocation.AddressLine1) ||
+                string.IsNullOrWhiteSpace(DropoffLocation.Locality) ||
+                string.IsNullOrWhiteSpace(DropoffLocation.PostalCode) ||
+                string.IsNullOrWhiteSpace(DropoffLocation.Country))
+                throw new ValidationException("Dropoff location is missing required address details.");
+
             if (DistanceInMiles <= 0)
                 throw new ValidationException("Distance must be greater than zero.");
+
             if (string.IsNullOrWhiteSpace(Description))
                 throw new ValidationException("Job description cannot be empty.");
-            if (string.Equals(PickupLocation, DropoffLocation, StringComparison.OrdinalIgnoreCase))
+
+            if (PickupLocation.AddressLine1.Equals(DropoffLocation.AddressLine1, StringComparison.OrdinalIgnoreCase) &&
+                PickupLocation.PostalCode.Equals(DropoffLocation.PostalCode, StringComparison.OrdinalIgnoreCase))
                 throw new ValidationException("Pickup and dropoff locations cannot be the same.");
+
             if (DriverPayment < 25)
-            throw new ValidationException("Driver payment must be at least £25.");
+                throw new ValidationException("Driver payment must be at least £25.");
+
             if (CustomerPrice < DriverPayment)
                 throw new ValidationException("Customer price must be more than driver payment.");
-
         }
 
-      
+
 
         public void CalculatePricing()
         {
@@ -163,6 +184,7 @@ namespace CarTransportDashboard.Models
             CustomerPrice = Math.Round(price, 2);
             DriverPayment = Math.Round(price * driverFeePercentage, 2);
         }
+   
     }
 
 

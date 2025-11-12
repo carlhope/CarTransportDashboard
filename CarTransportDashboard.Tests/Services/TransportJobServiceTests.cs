@@ -32,6 +32,29 @@ public class TransportJobServiceTests
         Model = "TestModel",
         RegistrationNumber = "TEST123"
     };
+    private Address MockPickupAddress = new Address
+    {
+        CompanyName = "Acme Supplies Ltd",
+        AddressLine1 = "Unit 4, Acme Business Park",
+        AddressLine2 = "Warehouse Entrance",
+        Locality = "Stoke-on-Trent",
+        PostalCode = "ST1 1AA",
+        Country = "GB",
+        Lat = 53.0027,
+        Lng = -2.1794
+    };
+
+    private Address MockDropoffAddress = new Address
+    {
+        CompanyName = "Derby Distribution Hub",
+        AddressLine1 = "456 Industrial Estate",
+        AddressLine2 = "Loading Bay 3",
+        Locality = "Derby",
+        PostalCode = "DE1 2BB",
+        Country = "GB",
+        Lat = 52.9225,
+        Lng = -1.4746
+    };
 
     private TransportJobService CreateService() =>
         new TransportJobService(_jobRepoMock.Object, _vehicleRepoMock.Object, _driverRepoMock.Object, _driverServiceMock.Object, _loggerMock.Object, _routeServiceMock.Object);
@@ -275,8 +298,8 @@ public class TransportJobServiceTests
         var dto = new TransportJobCreateDto { 
             Id = Guid.NewGuid(), 
             Title = "New Job",
-            DropoffLocation="Location A",
-            PickupLocation="Location B",
+            DropoffLocation=MockPickupAddress,
+            PickupLocation=MockDropoffAddress,
             Description="Test Description",
             AssignedVehicle = vehicleDto, 
             AssignedDriverId=vehicleDto.Id.ToString(),
@@ -313,8 +336,8 @@ public class TransportJobServiceTests
         var job = TransportJobFactory.CreateBasic(
             title: "Old",
             description: "Old Description",
-            pickup: "Old Pickup",
-            dropoff: "Old Dropoff"
+            pickup: MockPickupAddress,
+            dropoff: MockDropoffAddress
         );
         job.Id = jobId;
         job.AssignedVehicle = TestVehicle;
@@ -337,8 +360,8 @@ public class TransportJobServiceTests
             Title = "Updated",
             AssignedVehicle = testVehicleDto,
             Description = "Updated Description",
-            PickupLocation = "Updated Pickup",
-            DropoffLocation = "Updated Dropoff"
+            PickupLocation = MockDropoffAddress,//swapped to minic a change
+            DropoffLocation = MockPickupAddress //swapped to minic a change
         };
 
         _jobRepoMock.Setup(r => r.GetByIdAsync(jobId)).ReturnsAsync(job);
