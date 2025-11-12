@@ -17,19 +17,63 @@
     }
   </div>
 
-  <div>
+  <!-- Pickup Location -->
+  <div formGroupName="pickupLocation" class="border border-gray-200 p-4">
     <label class="block text-sm font-medium text-gray-700">Pickup Location</label>
-    <input formControlName="pickupLocation" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
-    @if (jobForm.get('pickupLocation')?.invalid && jobForm.get('pickupLocation')?.touched) {
-      <p class="text-red-600 text-sm mt-1">Pickup location is required.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+      <div>
+        <input formControlName="companyName" placeholder="Business name(optional)" class="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+      </div>
+      <div>
+        <input formControlName="addressLine1" placeholder="Address line 1" class="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+      </div>
+      <div>
+        <input formControlName="addressLine2" placeholder="Address line 2" class="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+      </div>
+      <div>
+        <input formControlName="locality" placeholder="City or Town" class="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+      </div>
+      <div>
+        <input formControlName="postalCode" placeholder="Postcode" class="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+      </div>
+      <div>
+        <input formControlName="country" placeholder="Country" class="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+      </div>
+    </div>
+
+    @if (jobForm.get('pickupLocation.locality')?.invalid && jobForm.get('pickupLocation.locality')?.touched) {
+      <p class="text-red-600 text-sm mt-1">Pickup locality is required.</p>
     }
   </div>
 
-  <div>
+  <!-- Dropoff Location -->
+  <div formGroupName="dropoffLocation" class="mt-6 border border-gray-200 p-4">
     <label class="block text-sm font-medium text-gray-700">Dropoff Location</label>
-    <input formControlName="dropoffLocation" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
-    @if (jobForm.get('dropoffLocation')?.invalid && jobForm.get('dropoffLocation')?.touched) {
-      <p class="text-red-600 text-sm mt-1">Dropoff location is required.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+      <div>
+        <input formControlName="companyName" placeholder="Business name(optional)" class="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+      </div>
+      <div>
+        <input formControlName="addressLine1" placeholder="Address line 1" class="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+      </div>
+      <div>
+        <input formControlName="addressLine2" placeholder="Address line 2" class="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+      </div>
+      <div>
+        <input formControlName="locality" placeholder="City or Town" class="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+      </div>
+      <div>
+        <input formControlName="postalCode" placeholder="Postcode" class="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+      </div>
+      <div>
+        <input formControlName="country" placeholder="Country" class="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+      </div>
+    </div>
+
+    @if (jobForm.get('dropoffLocation.locality')?.invalid && jobForm.get('dropoffLocation.locality')?.touched) {
+      <p class="text-red-600 text-sm mt-1">Dropoff locality is required.</p>
     }
   </div>
 

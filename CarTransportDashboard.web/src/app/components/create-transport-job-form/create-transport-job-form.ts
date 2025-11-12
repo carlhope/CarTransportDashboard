@@ -35,8 +35,28 @@ export class CreateTransportJobForm implements OnInit {
     this.jobForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
-      pickupLocation: ['', Validators.required],
-      dropoffLocation: ['', Validators.required],
+      pickupLocation: this.fb.group({
+        companyName: [''],
+        addressLine1: ['', Validators.required],
+        addressLine2: [''],
+        locality: ['', Validators.required],
+        postalCode: ['', Validators.required],
+        country: ['United Kingdom', Validators.required],
+        lat: [null],
+        lng: [null],
+        formatted: ['']
+      }),
+      dropoffLocation: this.fb.group({
+        companyName: [''],
+        addressLine1: ['', Validators.required],
+        addressLine2: [''],
+        locality: ['', Validators.required],
+        postalCode: [''],
+        country: ['United Kingdom'],
+        lat: [null],
+        lng: [null],
+        formatted: ['']
+      }),
       scheduledDate: ['', Validators.required],
       useNewVehicle: false,
       assignedVehicleId: [''],
@@ -53,7 +73,9 @@ export class CreateTransportJobForm implements OnInit {
 
   ngOnInit() {
     //debugger;
-    console.log('CreateTransportJobForm initialized');
+    this.setupDynamicPostalValidation('pickupLocation');
+    this.setupDynamicPostalValidation('dropoffLocation');
+
   }
 
 
@@ -134,6 +156,29 @@ export class CreateTransportJobForm implements OnInit {
 
     return null;
   }
+  private setupDynamicPostalValidation(groupName: 'pickupLocation' | 'dropoffLocation') {
+    const group = this.jobForm.get(groupName) as FormGroup;
+    const countryControl = group.get('country');
+    const postalCodeControl = group.get('postalCode');
+    const routeControl = group.get('route');
+
+    countryControl?.valueChanges.subscribe(country => {
+      if (country === 'United Kingdom') {
+        postalCodeControl?.setValidators([
+          Validators.required,
+          Validators.pattern(/^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i)
+        ]);
+        routeControl?.setValidators([Validators.required]);
+      } else {
+        postalCodeControl?.setValidators([Validators.required]); // relaxed requirements for international
+        routeControl?.clearValidators();
+      }
+
+      postalCodeControl?.updateValueAndValidity();
+      routeControl?.updateValueAndValidity();
+    });
+  }
+
 
 
 }

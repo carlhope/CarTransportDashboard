@@ -1,6 +1,7 @@
 import { Vehicle } from './vehicle';
 import {MinimalUser} from './minimal-user';
 import { JobStatus } from './job-status';
+import {Address} from './Address';
 
 
 
@@ -10,8 +11,8 @@ export interface TransportJob {
   description: string;
   status: JobStatus;
 
-  pickupLocation: string;
-  dropoffLocation: string;
+  pickupLocation: Address;
+  dropoffLocation: Address;
   scheduledDate: string;
 
   acceptedAt?: string;

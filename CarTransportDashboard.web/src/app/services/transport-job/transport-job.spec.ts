@@ -4,7 +4,30 @@ import { TransportJobService } from './transport-job';
 import { ModelMapperService } from '../model-mapper/model-mapper';
 import {TransportJob } from '../../models/transport-job';
 import { JobStatus } from '../../models/job-status';
+import {Address} from '../../models/Address';
+const mockPickupLocation: Address = {
+  companyName: 'Acme Supplies Ltd',
+  addressLine1: 'Unit 4, Acme Business Park',
+  addressLine2: 'Warehouse Entrance',
+  locality: 'Stoke-on-Trent',
+  postalCode: 'ST1 1AA',
+  country: 'GB',
+  lat: 53.0027,
+  lng: -2.1794,
+  formatted: 'Acme Supplies Ltd, Unit 4, Acme Business Park, Stoke-on-Trent ST1 1AA, UK'
+};
 
+const mockDropoffLocation: Address = {
+  companyName: 'Derby Distribution Hub',
+  addressLine1: '456 Industrial Estate',
+  addressLine2: 'Loading Bay 3',
+  locality: 'Derby',
+  postalCode: 'DE1 2BB',
+  country: 'GB',
+  lat: 52.9225,
+  lng: -1.4746,
+  formatted: 'Derby Distribution Hub, 456 Industrial Estate, Derby DE1 2BB, UK'
+};
 describe('TransportJobService', () => {
   let service: TransportJobService;
   let httpMock: HttpTestingController;
@@ -39,8 +62,8 @@ describe('TransportJobService', () => {
       id: '1',
       title: 'Test Job',
       description: 'Deliver medical supplies',
-      pickupLocation: 'Warehouse A',
-      dropoffLocation: 'Clinic B',
+      pickupLocation: mockPickupLocation,
+      dropoffLocation: mockDropoffLocation,
       scheduledDate: new Date('2025-09-19T10:00:00').toISOString(),
       status: JobStatus.Available
     };

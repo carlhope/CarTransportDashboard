@@ -1,9 +1,33 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateTransportJobForm } from './create-transport-job-form';
 import {ReactiveFormsModule} from '@angular/forms';
-
 import { TransportJob } from '../../models/transport-job';
 import {fuelType} from '../../models/fuel-type';
+import {Address} from '../../models/Address';
+
+const mockPickupLocation: Address = {
+  companyName: 'Acme Supplies Ltd',
+  addressLine1: 'Unit 4, Acme Business Park',
+  addressLine2: 'Warehouse Entrance',
+  locality: 'Stoke-on-Trent',
+  postalCode: 'ST1 1AA',
+  country: 'GB',
+  lat: 53.0027,
+  lng: -2.1794,
+  formatted: 'Acme Supplies Ltd, Unit 4, Acme Business Park, Stoke-on-Trent ST1 1AA, UK'
+};
+
+const mockDropoffLocation: Address = {
+  companyName: 'Derby Distribution Hub',
+  addressLine1: '456 Industrial Estate',
+  addressLine2: 'Loading Bay 3',
+  locality: 'Derby',
+  postalCode: 'DE1 2BB',
+  country: 'GB',
+  lat: 52.9225,
+  lng: -1.4746,
+  formatted: 'Derby Distribution Hub, 456 Industrial Estate, Derby DE1 2BB, UK'
+};
 
 describe('CreateTransportJobForm', () => {
   let component: CreateTransportJobForm;
@@ -30,8 +54,8 @@ describe('CreateTransportJobForm', () => {
     component.jobForm.setValue({
       title: '',
       description: '',
-      pickupLocation: '',
-      dropoffLocation: '',
+      pickupLocation: mockPickupLocation,
+      dropoffLocation: mockPickupLocation,
       scheduledDate: '',
       useNewVehicle: false,
       assignedVehicleId: '',
@@ -53,8 +77,8 @@ describe('CreateTransportJobForm', () => {
     component.jobForm.setValue({
       title: 'Test Job',
       description: 'Test Description',
-      pickupLocation: 'Location A',
-      dropoffLocation: 'Location B',
+      pickupLocation: mockPickupLocation,
+      dropoffLocation: mockDropoffLocation,
       scheduledDate: '2025-09-20',
       useNewVehicle: false,
       assignedVehicleId: 'v1',
