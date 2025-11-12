@@ -58,7 +58,6 @@ namespace CarTransportDashboard.Models
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
             CalculatePricing();
-            IsSuspiciousRouteCheck();
         }
         public TransportJob(string title, string description, string pickupLocation, string dropoffLocation, DateTime scheduledDate, Guid assignedVehicleId, Vehicle vehicle, JobStatus status)
         {
@@ -74,7 +73,7 @@ namespace CarTransportDashboard.Models
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
             CalculatePricing();
-            IsSuspiciousRouteCheck();
+
         }
 
 
@@ -163,22 +162,6 @@ namespace CarTransportDashboard.Models
             }
             CustomerPrice = Math.Round(price, 2);
             DriverPayment = Math.Round(price * driverFeePercentage, 2);
-        }
-
-        private void IsSuspiciousRouteCheck()
-        {
-            
-            IsRouteSuspicious = DistanceInMiles > 500;
-            //will catch routes that are over 500 miles which is above normal for car transport jobs
-            //possibility that route data has been misinterpreted or incorrect
-            if (IsRouteSuspicious)
-            {
-                Status = JobStatus.PendingReview;
-            }
-            else
-                {
-                    Status = JobStatus.Available;
-                }
         }
     }
 

@@ -129,6 +129,11 @@ namespace CarTransportDashboard.Services
         {
             var job = TransportJobMapper.ToModel(dto);
             await UpdateRouteInfoAsync(job);
+            if (IsSuspiciousRoute(job))
+            {
+                //TODO: implement notification to dispatch team for review & inform creator
+            }
+
             job.CalculatePricing();
             try
             {
@@ -156,6 +161,10 @@ namespace CarTransportDashboard.Services
 
             TransportJobMapper.UpdateModel(job, dto);
             await UpdateRouteInfoAsync(job);
+            if (IsSuspiciousRoute(job))
+            {
+                //TODO: implement notification to dispatch team for review & inform creator
+            }
             job.CalculatePricing();
             try
             {
@@ -235,6 +244,24 @@ namespace CarTransportDashboard.Services
             job.EstimatedDuration = route.EstimatedDuration;
             job.RoutePreviewUrl = route.RoutePreviewUrl;
             job.LastRouteEstimateTime = DateTime.UtcNow;
+        }
+
+        private bool IsSuspiciousRoute(TransportJob job)
+        {
+            //catches unusually long routes for further review. possible address data misinterpretation by geocoding service.
+            //example misinterpretation: "Birmingham, UK" vs "Birmingham, AL, USA"
+            //if job is legitimate but flagged, dispatchers can manually review and clear the flag.
+            if( job.DistanceInMiles > 500 || job.EstimatedDuration.TotalHours > 10)
+                {
+                    job.IsRouteSuspicious = true;
+                    _logger.LogWarning("Job {JobId} flagged as suspicious route: {Distance} miles, {Duration} hours",
+                        job.Id, job.DistanceInMiles, job.EstimatedDuration.TotalHours);
+                }
+                else
+                {
+                    job.IsRouteSuspicious = false;
+                }
+            return job.IsRouteSuspicious;
         }
 
     }

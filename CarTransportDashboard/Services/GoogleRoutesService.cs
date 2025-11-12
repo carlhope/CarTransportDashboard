@@ -39,10 +39,15 @@ namespace CarTransportDashboard.Services
 
             return new RouteEstimateDto
             {
-                DistanceInMiles = distanceMeters / 1609.34f,
+                
+                DistanceInMiles = MetersToMiles(distanceMeters),
                 EstimatedDuration = TimeSpan.FromSeconds(durationSeconds),
                 RoutePreviewUrl = $"https://www.google.com/maps/dir/?api=1&origin={Uri.EscapeDataString(origin)}&destination={Uri.EscapeDataString(destination)}"
             };
+        }
+        private float MetersToMiles(int meters)
+        {
+            return meters / 1609.34f;
         }
     }
 }
