@@ -18,14 +18,18 @@ namespace CarTransportDashboard.Services
 
         public async Task<RouteEstimateDto> GetRouteInfoAsync(string origin, string destination)
         {
-            var requestBody = new
+            var requestBody = new RouteRequest
             {
-                origin = new { address = origin },
-                destination = new { address = destination },
-                travelMode = "DRIVE",
-                routingPreference = "TRAFFIC_AWARE",
-                departureTime = DateTime.UtcNow.ToString("o"),
-                units = "IMPERIAL"
+                Origin = new Location { Address = origin },
+                Destination = new Location { Address = destination },
+                TravelMode = "DRIVE",
+                RoutingPreference = "TRAFFIC_AWARE",
+                DepartureTime = DateTime.UtcNow.ToString("o"),
+                Units = "IMPERIAL",
+                RouteModifiers = new RouteModifiers
+                { 
+                    AvoidTolls = true, //removes requirement to factor toll costs into job pricing. drivers can still choose to take toll roads if they wish.
+                }
             };
 
             var request = new HttpRequestMessage(HttpMethod.Post, "directions/v2:computeRoutes")
