@@ -81,7 +81,8 @@ public static class DatabaseSeeder
                    )
                    {
                        CustomerPrice = 100.00M,
-                       DriverPayment = 80.65M
+                       DriverPayment = 80.65M,
+                       DistanceInMiles = 40.5F,
 
                    },
                    new TransportJob(
@@ -95,7 +96,8 @@ public static class DatabaseSeeder
                    )
                    {
                        CustomerPrice = 100.00M,
-                       DriverPayment = 80.65M
+                       DriverPayment = 80.65M,
+                       DistanceInMiles = 60.2F,
 
                    }
                );
@@ -191,7 +193,8 @@ public static class DatabaseSeeder
                     )
                     {
                         CustomerPrice = 100.00M,
-                        DriverPayment = 80.65M
+                        DriverPayment = 80.65M,
+                        DistanceInMiles = 50.0F
 
                     };
                     job.AssignDriver(driverUser);
@@ -215,7 +218,8 @@ public static class DatabaseSeeder
                     )
                     {
                         CustomerPrice = 100.00M,
-                        DriverPayment = 80.65M
+                        DriverPayment = 80.65M,
+                        DistanceInMiles = 75.0F
 
                     };
                     job.AssignDriver(driverUser);
@@ -238,7 +242,8 @@ public static class DatabaseSeeder
                     )
                     {
                         CustomerPrice = 100.00M,
-                        DriverPayment = 80.65M
+                        DriverPayment = 80.65M,
+                        DistanceInMiles = 60.0F
 
                     };
                     job.AssignDriver(driverUser);

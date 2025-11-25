@@ -20,17 +20,23 @@ namespace CarTransportDashboard.Repository{
     public async Task<TransportJob?> GetByIdAsync(Guid id) =>
         await _context.TransportJobs
             .Include(v=>v.AssignedVehicle)
+            .Include(j=>j.PickupLocation)
+            .Include(j=>j.DropoffLocation)
             .SingleOrDefaultAsync(j=>j.Id==id);
 
     public async Task<IEnumerable<TransportJob>> GetAllAsync() =>
         await _context.TransportJobs
             .Include(v=>v.AssignedVehicle)
+            .Include(j => j.PickupLocation)
+            .Include(j => j.DropoffLocation)
             .ToListAsync();
 
         public async Task<IEnumerable<TransportJob>> GetAllByDriverIdsAsync(IEnumerable<string> driverIds, string? status, DateTime? startDate = null)
         {
             var query = _context.TransportJobs
                 .Include(v => v.AssignedVehicle)
+                .Include(j => j.PickupLocation)
+                .Include(j => j.DropoffLocation)
                 .AsQueryable();
 
             query = query.Where(j => driverIds.Contains(j.AssignedDriverId));
@@ -54,6 +60,8 @@ namespace CarTransportDashboard.Repository{
         await _context.TransportJobs
             .Where(j=>j.Status ==JobStatus.Available)
             .Include(v=>v.AssignedVehicle)
+            .Include(j => j.PickupLocation)
+            .Include(j => j.DropoffLocation)
             .ToListAsync();
 
         public async Task<OperationResult<TransportJob>> AddAsync(TransportJob job)

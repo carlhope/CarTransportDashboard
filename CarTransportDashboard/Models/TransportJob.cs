@@ -170,7 +170,6 @@ namespace CarTransportDashboard.Models
 
         public void CalculatePricing()
         {
-            DistanceInMiles = 100.0F; // Placeholder value for distance
             decimal price = basePrice;
             if (DistanceInMiles > includedMiles)
             {
