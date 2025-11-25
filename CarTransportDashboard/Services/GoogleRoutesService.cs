@@ -31,15 +31,13 @@ namespace CarTransportDashboard.Services
                     AvoidTolls = true, //removes requirement to factor toll costs into job pricing. drivers can still choose to take toll roads if they wish.
                 }
             };
+            _httpClient.DefaultRequestHeaders.Add("X-Goog-Api-Key", _apiKey);
+            _httpClient.DefaultRequestHeaders.Add("X-Goog-FieldMask", "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline");
 
-            var request = new HttpRequestMessage(HttpMethod.Post, "directions/v2:computeRoutes")
-            {
-                Content = JsonContent.Create(requestBody)
-            };
-            request.Headers.Add("X-Goog-Api-Key", _apiKey);
-            request.Headers.Add("X-Goog-FieldMask", "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline");
-
-            var response = await _httpClient.SendAsync(request);
+            var response = await _httpClient.PostAsync(
+                "https://routes.googleapis.com/directions/v2:computeRoutes",
+                JsonContent.Create(requestBody)
+                );
             response.EnsureSuccessStatusCode();
 
             var routeResponse = await response.Content.ReadFromJsonAsync<RouteResponse>();
