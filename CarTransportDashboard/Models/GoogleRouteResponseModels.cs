@@ -18,7 +18,35 @@ namespace CarTransportDashboard.Models
 
         [JsonPropertyName("polyline")]
         public Polyline Polyline { get; set; } = new();
+
+        [JsonPropertyName("legs")]
+        public List<Leg> Legs { get; set; } = new();
     }
+
+    public class Leg
+    {
+        [JsonPropertyName("startLocation")]
+        public LatLng StartLocation { get; set; } = new();
+
+        [JsonPropertyName("endLocation")]
+        public LatLng EndLocation { get; set; } = new();
+    }
+
+    public class LatLng
+    {
+        [JsonPropertyName("latLng")]
+        public LatLngValue Value { get; set; } = new();
+    }
+
+    public class LatLngValue
+    {
+        [JsonPropertyName("latitude")]
+        public double Latitude { get; set; }
+
+        [JsonPropertyName("longitude")]
+        public double Longitude { get; set; }
+    }
+
 
     public class Polyline
     {

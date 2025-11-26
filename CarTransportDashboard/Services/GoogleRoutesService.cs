@@ -32,16 +32,28 @@ namespace CarTransportDashboard.Services
                 }
             };
             _httpClient.DefaultRequestHeaders.Add("X-Goog-Api-Key", _apiKey);
-            _httpClient.DefaultRequestHeaders.Add("X-Goog-FieldMask", "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline");
+            _httpClient.DefaultRequestHeaders.Add("X-Goog-FieldMask",
+                "routes.duration," +
+                "routes.distanceMeters," +
+                "routes.polyline.encodedPolyline," +
+                "routes.legs.startLocation.latLng.latitude," +
+                "routes.legs.startLocation.latLng.longitude,"+
+                "routes.legs.endLocation.latLng.latitude,"+
+                "routes.legs.endLocation.latLng.longitude"
+
+                );
 
             var response = await _httpClient.PostAsync(
                 "https://routes.googleapis.com/directions/v2:computeRoutes",
                 JsonContent.Create(requestBody)
                 );
+            Console.WriteLine(response);
             response.EnsureSuccessStatusCode();
 
             var routeResponse = await response.Content.ReadFromJsonAsync<RouteResponse>();
             var route = routeResponse?.Routes.FirstOrDefault() ?? throw new InvalidOperationException("No route found.");
+            var start = route.Legs[0].StartLocation.Value;
+            var end = route.Legs[0].EndLocation.Value;
 
             var durationSeconds = int.Parse(route.Duration.Replace("s", ""));
 
@@ -49,7 +61,7 @@ namespace CarTransportDashboard.Services
             {
                 DistanceInMiles = MetersToMiles(route.DistanceMeters),
                 EstimatedDuration = TimeSpan.FromSeconds(durationSeconds),
-                RoutePreviewUrl = $"https://www.google.com/maps/dir/?api=1&origin={Uri.EscapeDataString(origin)}&destination={Uri.EscapeDataString(destination)}"
+                RoutePreviewUrl = $"https://www.google.com/maps/dir/?api=1&origin={start.Latitude},{start.Longitude}&destination={end.Latitude},{end.Longitude}"
             };
         }
 
