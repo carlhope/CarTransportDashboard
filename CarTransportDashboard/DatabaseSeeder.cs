@@ -83,6 +83,7 @@ public static class DatabaseSeeder
                        CustomerPrice = 100.00M,
                        DriverPayment = 80.65M,
                        DistanceInMiles = 40.5F,
+                       EstimatedDuration = TimeSpan.FromHours(1.5)
 
                    },
                    new TransportJob(
@@ -98,6 +99,7 @@ public static class DatabaseSeeder
                        CustomerPrice = 100.00M,
                        DriverPayment = 80.65M,
                        DistanceInMiles = 60.2F,
+                       EstimatedDuration = TimeSpan.FromHours(2.0)
 
                    }
                );
@@ -194,7 +196,8 @@ public static class DatabaseSeeder
                     {
                         CustomerPrice = 100.00M,
                         DriverPayment = 80.65M,
-                        DistanceInMiles = 50.0F
+                        DistanceInMiles = 50.0F,
+                        EstimatedDuration = TimeSpan.FromHours(4.0)
 
                     };
                     job.AssignDriver(driverUser);
@@ -219,7 +222,8 @@ public static class DatabaseSeeder
                     {
                         CustomerPrice = 100.00M,
                         DriverPayment = 80.65M,
-                        DistanceInMiles = 75.0F
+                        DistanceInMiles = 75.0F,
+                        EstimatedDuration = TimeSpan.FromHours(5.0)
 
                     };
                     job.AssignDriver(driverUser);
@@ -243,7 +247,8 @@ public static class DatabaseSeeder
                     {
                         CustomerPrice = 100.00M,
                         DriverPayment = 80.65M,
-                        DistanceInMiles = 60.0F
+                        DistanceInMiles = 60.0F,
+                        EstimatedDuration = TimeSpan.FromHours(3.5)
 
                     };
                     job.AssignDriver(driverUser);

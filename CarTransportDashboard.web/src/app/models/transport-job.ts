@@ -24,6 +24,10 @@ export interface TransportJob {
 
   assignedDriverId?: string;
   assignedDriver?: MinimalUser;
+
+  //computed values
+  distance?: number;
+  estimatedTime?: string;
 }
 
 

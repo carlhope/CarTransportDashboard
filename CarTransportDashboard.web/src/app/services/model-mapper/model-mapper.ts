@@ -44,7 +44,9 @@ export class ModelMapperService {
       assignedDriverId: data.assignedDriverId,
       assignedDriver: data.assignedDriver ? this.toMinimalUser(data.assignedDriver) : undefined,
       completedAt: data.completedAt,
-      payout: data.driverPayment
+      payout: data.driverPayment,
+      estimatedTime: data.estimatedDuration,
+      distance: data.distanceInMiles,
     };
   }
 }

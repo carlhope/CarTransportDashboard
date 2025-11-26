@@ -14,6 +14,8 @@ namespace CarTransportDashboard.Mappers
                 Description = job.Description,
                 PickupLocation = job.PickupLocation,
                 DropoffLocation = job.DropoffLocation,
+                DistanceInMiles = job.DistanceInMiles,
+                EstimatedDuration = job.EstimatedDuration,
                 ScheduledDate = job.ScheduledDate,
                 Status = job.Status,
                 AssignedDriverId = job.AssignedDriverId,
