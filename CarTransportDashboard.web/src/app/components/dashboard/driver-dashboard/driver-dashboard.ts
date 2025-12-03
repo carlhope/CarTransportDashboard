@@ -29,9 +29,9 @@ export class DriverDashboard implements OnInit {
 
   earnings: EarningsSummary = {
     //Hardcoded placeholder values for now
-    today: 45.00,
-    thisWeek: 342.25,
-    last30Days: 1134.50
+    today: 0,
+    thisWeek: 0,
+    last30Days: 0
   };
 
   constructor(private jobService: TransportJobService) {
@@ -133,19 +133,22 @@ export class DriverDashboard implements OnInit {
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const weekStart = new Date(now);
     weekStart.setDate(now.getDate() - now.getDay()); // Sunday as start of week
+    const thirtyDaysAgo = new Date(now);
+    thirtyDaysAgo.setDate(now.getDate() - 30);
 
+    this.earnings.today = this.sumPayoutsSince(todayStart);
+    this.earnings.thisWeek = this.sumPayoutsSince(weekStart);
+    this.earnings.last30Days = this.sumPayoutsSince(thirtyDaysAgo);
+  }
 
-      this.earnings.today = this.completedJobs
-        .filter(job => job.completedAt && new Date(job.completedAt).getTime() >= todayStart.getTime())
-        .reduce((sum, job) => sum + (job.payout || 0), 0);
-
-      this.earnings.thisWeek =  this.completedJobs
-        .filter(job => job.completedAt && new Date(job.completedAt).getTime() >= weekStart.getTime())
-        .reduce((sum, job) => sum + (job.payout || 0), 0);
-
-      this.earnings.last30Days = this.completedJobs
-        .reduce((sum, job) => sum + (job.payout || 0), 0)
-
-
+  private sumPayoutsSince(cutoffDate: Date): number {
+    const jobs = this.completedJobs.filter(job => job.completedAt);
+    return jobs
+      .filter(job => {
+        if (!job.completedAt) return false; // skip if undefined
+        const completed = new Date(job.completedAt);
+        return completed.getTime() >= cutoffDate.getTime();
+      })
+      .reduce((sum, job) => sum + (job.payout || 0), 0);
   }
 }
