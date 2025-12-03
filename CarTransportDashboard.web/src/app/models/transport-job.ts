@@ -25,8 +25,8 @@ export interface TransportJob {
   assignedDriverId?: string;
   assignedDriver?: MinimalUser;
 
-  //computed values
-  distance?: number;
+  //values calculated on backend and returned via API
+  distanceInMiles?: number;
   estimatedTime?: string;
 }
 

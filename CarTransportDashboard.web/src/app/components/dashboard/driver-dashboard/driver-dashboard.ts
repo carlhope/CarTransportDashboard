@@ -2,15 +2,18 @@ import {Component, Input, OnInit} from '@angular/core';
 import {UserModel} from '../../../models/user';
 import { TransportJob } from '../../../models/transport-job';
 import { TransportJobService } from '../../../services/transport-job/transport-job';
-import {CurrencyPipe, DatePipe} from '@angular/common';
+import {CurrencyPipe, DatePipe, DecimalPipe} from '@angular/common';
 import {EarningsSummary} from '../../../models/Earnings';
 import {catchError, Observable, throwError} from 'rxjs';
+import {DurationPipe} from '../../../pipes/duration/duration-pipe';
 
 @Component({
   selector: 'app-driver-dashboard',
   imports: [
     DatePipe,
-    CurrencyPipe
+    CurrencyPipe,
+    DecimalPipe,
+    DurationPipe
   ],
   templateUrl: './driver-dashboard.html',
   styleUrl: './driver-dashboard.scss'

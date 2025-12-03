@@ -46,7 +46,7 @@ export class ModelMapperService {
       completedAt: data.completedAt,
       payout: data.driverPayment,
       estimatedTime: data.estimatedDuration,
-      distance: data.distanceInMiles,
+      distanceInMiles: data.distanceInMiles,
     };
   }
 }
