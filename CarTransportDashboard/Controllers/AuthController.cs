@@ -104,9 +104,8 @@ public class AuthController : ControllerBase
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.None,
-            Expires = DateTime.UtcNow.AddDays(7),
             IsEssential = true,
-            Path = "/"
+            Path = "/api/auth"
         });
 
         return NoContent();
@@ -121,7 +120,7 @@ public class AuthController : ControllerBase
             SameSite = SameSiteMode.None,
             Expires = DateTime.UtcNow.AddDays(7),
             IsEssential = true,
-            Path = "/"
+            Path = "/api/auth"
         };
     }
 }

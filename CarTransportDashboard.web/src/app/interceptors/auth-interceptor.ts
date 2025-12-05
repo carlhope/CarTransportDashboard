@@ -27,9 +27,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     })
     : req.clone({ withCredentials: true });
 
-  //console.log('Intercepting request:', req.url);
-  //console.log('Access Token:', accessToken);
-
   return next(authReq)
     .pipe(
     catchError(err => {
