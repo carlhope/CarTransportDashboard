@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
         var user = await _authService.RegisterAsync(dto);
         if (user == null) return BadRequest("Registration failed");
 
-        // Set refresh token cookie
+        // Set cookies
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
         Response.Cookies.Append("X-CSRF-Token", user.CsrfToken, new CookieOptions
         {
@@ -54,7 +54,7 @@ public class AuthController : ControllerBase
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
         Response.Cookies.Append("X-CSRF-Token", user.CsrfToken, new CookieOptions
         {
-            HttpOnly = false, // must be readable by JS to send in header
+            HttpOnly = false,
             Secure = true,
             SameSite = SameSiteMode.None,
             Path = "/"
@@ -75,8 +75,8 @@ public class AuthController : ControllerBase
                             return Unauthorized();
                         }
         #endif
-        if (!_csrfValidator.IsValid(Request))
-            return Unauthorized();
+       if (!_csrfValidator.IsValid(Request))
+          return Unauthorized();
 
 
         var refreshToken = Request.Cookies["refreshToken"];
@@ -101,7 +101,7 @@ public class AuthController : ControllerBase
 
         Response.Cookies.Delete("refreshToken", new CookieOptions
         {
-            HttpOnly = true,
+            HttpOnly = false,
             Secure = true,
             SameSite = SameSiteMode.None,
             IsEssential = true,

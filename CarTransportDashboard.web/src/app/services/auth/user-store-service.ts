@@ -5,19 +5,27 @@ import { UserModel } from '../../models/user';
 @Injectable({
   providedIn: 'root'
 })
-
 export class UserStoreService {
   private userSubject = new BehaviorSubject<UserModel | null>(null);
   user$ = this.userSubject.asObservable();
+  public csrfToken: string | null = null;
+
+  constructor() {
+    this.csrfToken = localStorage.getItem("csrfToken");
+  }
 
   setUser(user: UserModel) {
     this.userSubject.next(user);
-    localStorage.setItem('accessToken', user.accessToken ?? 'no user');
+    localStorage.setItem('isLoggedIn', 'true');
+    if (user.csrfToken) {
+      localStorage.setItem('csrfToken', user.csrfToken);
+    }
   }
 
   clearUser() {
     this.userSubject.next(null);
-    localStorage.removeItem('accessToken');
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('csrfToken');
   }
 
   get currentUser(): UserModel | null {

@@ -69,7 +69,7 @@ namespace CarTransportDashboard.Services
 
             if (job.Status != JobStatus.Allocated || job.AssignedDriverId!=driverId)
                 return OperationResult<TransportJobReadDto>.CreateFailure("Job is not available for acceptance.");
-            await UpdateRouteInfoAsync(job);
+            //await UpdateRouteInfoAsync(job); //commented out to avoid api overuse whilst in development. can be re-enabled later if needed.
             job.AcceptJob();
 
             var jobDto = TransportJobMapper.ToDto(job);

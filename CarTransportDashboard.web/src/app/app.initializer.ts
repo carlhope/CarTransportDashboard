@@ -10,7 +10,10 @@ export function initializeSession(injector: Injector): () => Observable<UserMode
     runInInjectionContext(injector, () => {
       const auth = inject(AuthService);
       const userStore = inject(UserStoreService);
-
+if(!userIsLoggedIn())
+{
+  return of(null);
+}
       return auth.refresh().pipe(
         tap(user => {
           if (user) userStore.setUser(user);
@@ -22,3 +25,8 @@ export function initializeSession(injector: Injector): () => Observable<UserMode
       );
     });
 }
+function userIsLoggedIn(): boolean {
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+  return !!isLoggedIn;
+}
+

@@ -20,6 +20,7 @@ export interface UserModel {
   roles: string[];
   refreshToken?: string; // will be null after login
   accessToken?: string;
+  csrfToken?: string;
 }
 export interface DriverModel extends UserModel {
   licenseNumber: string;
