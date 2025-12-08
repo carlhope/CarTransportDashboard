@@ -26,7 +26,8 @@ if(!userIsLoggedIn())
     });
 }
 function userIsLoggedIn(): boolean {
-  const isLoggedIn = localStorage.getItem('isLoggedIn');
-  return !!isLoggedIn;
+
+    const expiry = Number(localStorage.getItem('refreshExpiry'));
+    return !isNaN(expiry) && Date.now() <= expiry;
 }
 

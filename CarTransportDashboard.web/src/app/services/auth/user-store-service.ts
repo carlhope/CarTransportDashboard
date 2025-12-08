@@ -16,16 +16,19 @@ export class UserStoreService {
 
   setUser(user: UserModel) {
     this.userSubject.next(user);
-    localStorage.setItem('isLoggedIn', 'true');
     if (user.csrfToken) {
       localStorage.setItem('csrfToken', user.csrfToken);
+      const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+      const refreshExpiryMs = Date.now() + SEVEN_DAYS_MS;
+      localStorage.setItem('refreshExpiry', String(refreshExpiryMs));
+
     }
   }
 
   clearUser() {
     this.userSubject.next(null);
-    localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('csrfToken');
+    localStorage.removeItem('refreshExpiry');
   }
 
   get currentUser(): UserModel | null {
