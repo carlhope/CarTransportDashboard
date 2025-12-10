@@ -25,8 +25,8 @@
 
             await _next(context);
 
-            _logger.LogInformation("Finished handling request. Status: {StatusCode} by {User}",
-                context.Response.StatusCode, userName);
+            _logger.LogInformation("Finished handling request. Status: {StatusCode} by {User} from {Ip}",
+            context.Response.StatusCode, userName, ipAddress);
         }
     }
 }
