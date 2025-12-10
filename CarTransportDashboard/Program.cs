@@ -3,6 +3,7 @@ using CarTransportDashboard.Context;
 using CarTransportDashboard.Helpers;
 using CarTransportDashboard.Helpers;
 using CarTransportDashboard.Helpers.Interfaces;
+using CarTransportDashboard.Middleware;
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Repository;
 using CarTransportDashboard.Repository.Interfaces;
@@ -63,6 +64,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddMemoryCache();
+
 builder.Services.AddScoped<ITransportJobRepository, TransportJobRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IDriverRepository, DriverRepository>();
@@ -92,6 +95,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+app.UseMiddleware<ReplayProtectionMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

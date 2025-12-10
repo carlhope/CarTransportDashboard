@@ -7,7 +7,8 @@ import { catchError, switchMap, throwError } from 'rxjs';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const userStore = inject(UserStoreService);
-
+  const timestamp = Date.now().toString();
+  const nonce = crypto.randomUUID();
   const accessToken = userStore.currentUser?.accessToken;
   const csrfToken = userStore.csrfToken;
 
@@ -18,6 +19,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (csrfToken) {
     headers = headers.set('X-CSRF-Token', csrfToken);
   }
+  headers = headers.set('X-Timestamp', timestamp);
+  headers = headers.set('X-Nonce', nonce);
+
 
   const authReq = req.clone({
     headers,
@@ -43,6 +47,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               if (user.csrfToken) {
                 retryHeaders = retryHeaders.set('X-CSRF-Token', user.csrfToken);
               }
+              retryHeaders = retryHeaders.set('X-Timestamp', Date.now().toString());
+              retryHeaders = retryHeaders.set('X-Nonce', crypto.randomUUID());
+
 
               const retryReq = req.clone({
                 headers: retryHeaders,
