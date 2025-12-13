@@ -15,6 +15,8 @@ namespace CarTransportDashboard.Services
         private readonly IDriverService _driverService;
         private readonly ILogger<TransportJobService> _logger;
         private readonly IRouteService _routeService;
+        private readonly IEmailService _emailService;
+
 
         public TransportJobService(
             ITransportJobRepository jobRepo,
@@ -22,7 +24,8 @@ namespace CarTransportDashboard.Services
             IDriverRepository driverRepo,
             IDriverService driverService,
             ILogger<TransportJobService> logger,
-            IRouteService routeService)
+            IRouteService routeService,
+            IEmailService emailService)
         {
             _jobRepo = jobRepo;
             _vehicleRepo = vehicleRepo;
@@ -30,6 +33,7 @@ namespace CarTransportDashboard.Services
             _driverService = driverService;
             _logger = logger;
             _routeService = routeService;
+            _emailService = emailService;
         }
 
         public async Task<TransportJobReadDto?> GetJobAsync(Guid id)
@@ -75,6 +79,10 @@ namespace CarTransportDashboard.Services
             var jobDto = TransportJobMapper.ToDto(job);
 
             await _jobRepo.UpdateAsync(job);
+            if (job.AssignedDriverId != null)
+            {
+               await  _emailService.SendEmailAsync(job.AssignedDriverId, "New Job Accepted", $"You’ve accepted job #{jobId}");
+            }
             return OperationResult<TransportJobReadDto>.CreateSuccess(jobDto, "Job accepted successfully.");
         }
 

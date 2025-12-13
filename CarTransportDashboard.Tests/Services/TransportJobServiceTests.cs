@@ -25,6 +25,7 @@ public class TransportJobServiceTests
     private readonly Mock<IDriverService> _driverServiceMock = new();
     private readonly Mock<ILogger<TransportJobService>> _loggerMock = new();
     private readonly Mock<IRouteService> _routeServiceMock = new();
+    private readonly Mock<IEmailService> _emailServiceMock = new();
     private Vehicle TestVehicle => new Vehicle
     {
         Id = Guid.NewGuid(),
@@ -57,7 +58,7 @@ public class TransportJobServiceTests
     };
 
     private TransportJobService CreateService() =>
-        new TransportJobService(_jobRepoMock.Object, _vehicleRepoMock.Object, _driverRepoMock.Object, _driverServiceMock.Object, _loggerMock.Object, _routeServiceMock.Object);
+        new TransportJobService(_jobRepoMock.Object, _vehicleRepoMock.Object, _driverRepoMock.Object, _driverServiceMock.Object, _loggerMock.Object, _routeServiceMock.Object, _emailServiceMock.Object);
 
     [Fact]
     public async Task GetJobAsync_ReturnsDto_WhenJobExists()

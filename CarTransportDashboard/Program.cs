@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -75,6 +76,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddHttpClient<IRouteService, GoogleRoutesService>();
 builder.Services.AddSingleton<ICsrfValidator, CsrfValidator>();
+builder.Services.AddSingleton<IEmailService>( Sp => {
+    return EmailService.CreateAsync().GetAwaiter().GetResult(); 
+});
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularOrigins", builder =>
