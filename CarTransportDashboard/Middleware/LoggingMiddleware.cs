@@ -20,8 +20,16 @@
 
             _logger.LogInformation("Handling request: {Method} {Path} by {User} from {Ip}",
                 context.Request.Method, context.Request.Path, userName, ipAddress);
-            _logger.LogInformation("Finished handling request. Status: {StatusCode} by {User} from {Ip}",
-                context.Response.StatusCode, userName, ipAddress);
+            if (context.Request.ContentLength.HasValue && context.Request.ContentLength.Value > 10_000_000)
+            {
+                _logger.LogWarning(
+                    "Large request detected: {Size} bytes on {Method} {Path} from {Ip}",
+                    context.Request.ContentLength.Value,
+                    context.Request.Method,
+                    context.Request.Path,
+                    context.Connection.RemoteIpAddress
+                );
+            }
 
             await _next(context);
 
