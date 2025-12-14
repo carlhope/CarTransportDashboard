@@ -45,11 +45,11 @@ namespace CarTransportDashboard.Services
 
 
         // SendEmail method
-        public async Task SendEmailAsync(string to, string subject, string body)
+        public async Task SendEmailAsync(string recipientUserId, string subject, string body)
         {
-            if (string.IsNullOrEmpty(to)) return;
+            if (string.IsNullOrEmpty(recipientUserId)) return;
 
-            var payload = JsonSerializer.Serialize(new { to, subject, body });
+            var payload = JsonSerializer.Serialize(new { recipientUserId, subject, body });
             var bytes = Encoding.UTF8.GetBytes(payload);
 
             await _channel.BasicPublishAsync(
@@ -60,7 +60,7 @@ namespace CarTransportDashboard.Services
                 cancellationToken: CancellationToken.None
             );
 
-            Console.WriteLine($"[EmailService] Published email message → To: {to}, Subject: {subject}");
+            Console.WriteLine($"[EmailService] Published email message → To: {recipientUserId}, Subject: {subject}");
         }
 
 

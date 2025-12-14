@@ -1,9 +1,10 @@
-﻿using System;
+﻿using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 
 namespace EmailConsumer
 {
@@ -30,6 +31,7 @@ namespace EmailConsumer
             await consumerService.DisposeAsync();
         }
     }
+    public record EmailMessage(string RecipientUserId, string Subject, string Body);
 
     public class EmailConsumerService : IAsyncDisposable
     {
@@ -66,9 +68,20 @@ namespace EmailConsumer
             consumer.ReceivedAsync += async (sender, ea) =>
             {
                 var body = ea.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
-                Console.WriteLine($"[EmailConsumer] Received message → {message}");
-                await Task.Yield(); 
+                var json = Encoding.UTF8.GetString(body);
+
+                // Deserialize JSON back into a typed object
+                // currently uses RecipientUserId. This would typically be used to look up the user's email address.
+                // primary project currently uses in memory database, so is inaccessible from this demo consumer project.
+                var email = JsonSerializer.Deserialize<EmailMessage>(json);
+
+                // Log each property clearly
+                Console.WriteLine($"[EmailConsumer] Received message →");
+                Console.WriteLine($"   RecipientUserId: {email.RecipientUserId}");
+                Console.WriteLine($"   Subject: {email.Subject}");
+                Console.WriteLine($"   Body: {email.Body}");
+
+                await Task.Yield();
             };
 
             await _channel.BasicConsumeAsync(
@@ -87,4 +100,5 @@ namespace EmailConsumer
             if (_connection != null) await _connection.CloseAsync();
         }
     }
+    
 }
