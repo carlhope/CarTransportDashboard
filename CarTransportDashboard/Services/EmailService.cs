@@ -1,17 +1,13 @@
 ﻿using CarTransportDashboard.Services.Interfaces;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System.Text;
-using System.Text.Json;
-using RabbitMQ.Client;
 
 namespace CarTransportDashboard.Services
 {
+    using RabbitMQ.Client;
     // EmailService.cs (producer)
     using System;
     using System.Text;
     using System.Text.Json;
     using System.Threading.Tasks;
-    using RabbitMQ.Client;
 
     public class EmailService : IAsyncDisposable, IEmailService
     {
@@ -45,11 +41,11 @@ namespace CarTransportDashboard.Services
 
 
         // SendEmail method
-        public async Task SendEmailAsync(string recipientUserId, string subject, string body)
+        public async Task SendEmailAsync(string recipientUserId, string emailType, string senderUserId)
         {
             if (string.IsNullOrEmpty(recipientUserId)) return;
 
-            var payload = JsonSerializer.Serialize(new { recipientUserId, subject, body });
+            var payload = JsonSerializer.Serialize(new { recipientUserId, emailType, senderUserId });
             var bytes = Encoding.UTF8.GetBytes(payload);
 
             await _channel.BasicPublishAsync(
@@ -60,7 +56,7 @@ namespace CarTransportDashboard.Services
                 cancellationToken: CancellationToken.None
             );
 
-            Console.WriteLine($"[EmailService] Published email message → To: {recipientUserId}, Subject: {subject}");
+            Console.WriteLine($"[EmailService] Published email message → To: {recipientUserId}, Subject: {emailType}");
         }
 
 

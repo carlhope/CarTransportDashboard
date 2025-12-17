@@ -31,7 +31,15 @@ namespace EmailConsumer
             await consumerService.DisposeAsync();
         }
     }
-    public record EmailMessage(string RecipientUserId, string Subject, string Body);
+    public record EmailMessage(string RecipientUserId, EmailType EmailType, string SenderUserId);
+    public enum EmailType
+    {
+        JobAccepted,
+        JobAssigned,
+        PasswordReset,
+        AccountCreated,
+        Unknown
+    }
 
     public class EmailConsumerService : IAsyncDisposable
     {
@@ -75,11 +83,17 @@ namespace EmailConsumer
                 // primary project currently uses in memory database, so is inaccessible from this demo consumer project.
                 var email = JsonSerializer.Deserialize<EmailMessage>(json);
 
-                // Log each property clearly
-                Console.WriteLine($"[EmailConsumer] Received message →");
-                Console.WriteLine($"   RecipientUserId: {email.RecipientUserId}");
-                Console.WriteLine($"   Subject: {email.Subject}");
-                Console.WriteLine($"   Body: {email.Body}");
+                string template = email.EmailType switch
+                {
+                    EmailType.JobAccepted => $"User {email.RecipientUserId} has accepted the job.",
+                    EmailType.JobAssigned => $"User {email.RecipientUserId} has been assigned a new job by {email.SenderUserId}.",
+                    EmailType.PasswordReset => $"User {email.RecipientUserId} requested a password reset.",
+                    EmailType.AccountCreated => $"Welcome {email.RecipientUserId}, your account has been created.",
+                    _ => $"Unknown email type for {email.RecipientUserId}."
+                };
+
+                Console.WriteLine($"[EmailConsumer] Generated email → {template}");
+
 
                 await Task.Yield();
             };
@@ -100,5 +114,6 @@ namespace EmailConsumer
             if (_connection != null) await _connection.CloseAsync();
         }
     }
-    
+
+
 }
