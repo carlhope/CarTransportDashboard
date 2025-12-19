@@ -44,26 +44,14 @@ namespace EmailConsumer.Services
 
             consumer.ReceivedAsync += async (sender, ea) =>
             {
+                // currently uses RecipientUserId. This would typically be used to look up the user's email address.
+                // producer project currently uses in memory database, so is inaccessible from this demo consumer project.
+
                 var body = ea.Body.ToArray();
                 var json = Encoding.UTF8.GetString(body);
-
-                // Deserialize JSON back into a typed object
-                // currently uses RecipientUserId. This would typically be used to look up the user's email address.
-                // primary project currently uses in memory database, so is inaccessible from this demo consumer project.
-                var email = JsonSerializer.Deserialize<Email>(json);
-
-                string template = email.EmailType switch
-                {
-                    EmailType.JobAccepted => $"User {email.RecipientUserId} has accepted the job.",
-                    EmailType.JobAssigned => $"User {email.RecipientUserId} has been assigned a new job by {email.SenderUserId}.",
-                    EmailType.PasswordReset => $"User {email.RecipientUserId} requested a password reset.",
-                    EmailType.AccountCreated => $"Welcome {email.RecipientUserId}, your account has been created.",
-                    _ => $"Unknown email type for {email.RecipientUserId}."
-                };
-
-                Console.WriteLine($"[EmailConsumer] Generated email → {template}");
-
-
+                var data = JsonSerializer.Deserialize<Email>(json);
+                var template = EmailTemplateFactory.Create(data.EmailType);
+                Console.WriteLine(template.GenerateMessage(data));
                 await Task.Yield();
             };
 

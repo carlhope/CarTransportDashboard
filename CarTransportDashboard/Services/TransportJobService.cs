@@ -4,6 +4,7 @@ using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.TransportJob;
 using CarTransportDashboard.Repository.Interfaces;
 using CarTransportDashboard.Services.Interfaces;
+using Shared.Models;
 using System.ComponentModel.DataAnnotations;
 namespace CarTransportDashboard.Services
 {
@@ -81,7 +82,14 @@ namespace CarTransportDashboard.Services
             await _jobRepo.UpdateAsync(job);
             if (job.AssignedDriverId != null)
             {
-               await  _emailService.SendEmailAsync(job.AssignedDriverId, "New Job Accepted", $"You’ve accepted job #{jobId}");
+                var email = new Email(
+                     RecipientUserId: job.AssignedDriverId,
+                     EmailType: EmailType.JobAccepted,
+                     SenderUserId: "" //TODO: refactor to add parameter for sender user id. this can be obtained from auth context in controller layer.
+                 );
+
+                await _emailService.SendEmailAsync(email);
+
             }
             return OperationResult<TransportJobReadDto>.CreateSuccess(jobDto, "Job accepted successfully.");
         }

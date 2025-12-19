@@ -1,7 +1,9 @@
-﻿namespace CarTransportDashboard.Services.Interfaces
+﻿using Shared.Models;
+
+namespace CarTransportDashboard.Services.Interfaces
 {
     public interface IEmailService
     {
-        Task SendEmailAsync(string to, string subject, string body);
+        Task SendEmailAsync(Email email);
     }
 }

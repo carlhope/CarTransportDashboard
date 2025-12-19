@@ -3,6 +3,7 @@
 namespace CarTransportDashboard.Services
 {
     using RabbitMQ.Client;
+    using Shared.Models;
     // EmailService.cs (producer)
     using System;
     using System.Text;
@@ -41,11 +42,11 @@ namespace CarTransportDashboard.Services
 
 
         // SendEmail method
-        public async Task SendEmailAsync(string recipientUserId, string emailType, string senderUserId)
+        public async Task SendEmailAsync(Email email)
         {
-            if (string.IsNullOrEmpty(recipientUserId)) return;
+            if (string.IsNullOrEmpty(email.RecipientUserId)) return;
 
-            var payload = JsonSerializer.Serialize(new { recipientUserId, emailType, senderUserId });
+            var payload = JsonSerializer.Serialize(new { email.RecipientUserId, email.EmailType, email.SenderUserId });
             var bytes = Encoding.UTF8.GetBytes(payload);
 
             await _channel.BasicPublishAsync(
@@ -56,7 +57,7 @@ namespace CarTransportDashboard.Services
                 cancellationToken: CancellationToken.None
             );
 
-            Console.WriteLine($"[EmailService] Published email message → To: {recipientUserId}, Subject: {emailType}");
+            Console.WriteLine($"[EmailService] Published email message → To: {email.RecipientUserId}, Subject: {email.EmailType}");
         }
 
 

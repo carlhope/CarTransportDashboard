@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailConsumer.Models
+namespace Shared.Models
 {
     public record Email(string RecipientUserId, EmailType EmailType, string SenderUserId);
 
