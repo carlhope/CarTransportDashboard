@@ -1,5 +1,6 @@
-﻿using EmailConsumer.Models;
+﻿
 using EmailConsumer.Templates;
+using Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,7 @@
-﻿using EmailConsumer.Models;
+﻿
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

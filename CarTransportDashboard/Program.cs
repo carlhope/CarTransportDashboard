@@ -49,6 +49,12 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
+.AddGoogle(options =>
+ {
+     options.ClientId = builder.Configuration["Google:ClientId"];
+     options.ClientSecret = builder.Configuration["Google:ClientSecret"];
+     options.CallbackPath = "/api/auth/external/callback/google";
+ })
 .AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
