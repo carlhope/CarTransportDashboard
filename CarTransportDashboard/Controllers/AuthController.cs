@@ -111,6 +111,29 @@ public class AuthController : ControllerBase
         return NoContent();
     }
 
+    // External authentication endpoints would go here (e.g., Google OAuth)
+    [HttpGet("external/{provider}")]
+    public IActionResult ExternalLogin(string provider, string returnUrl = "/")
+    {
+        // TODO: implement
+        throw new NotImplementedException();
+    }
+
+    [HttpGet("external/callback/{provider}")]
+    public async Task<IActionResult> ExternalLoginCallback(string provider, string returnUrl = "/")
+    {
+        // TODO: implement
+        throw new NotImplementedException();
+    }
+
+    [Authorize]
+    [HttpPost("external/link/{provider}")]
+    public async Task<IActionResult> LinkExternalLogin(string provider)
+    {
+        // TODO: implement
+        throw new NotImplementedException();
+    }
+
     private CookieOptions GetRefreshCookieOptions()
     {
         return new CookieOptions

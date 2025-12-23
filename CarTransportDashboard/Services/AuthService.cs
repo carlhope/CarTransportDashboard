@@ -149,6 +149,19 @@ namespace CarTransportDashboard.Services
 
         }
 
+        // External login methods would go here (e.g., Google OAuth)
+       
+
+            public Task<UserDto> LoginWithExternalProviderAsync(ExternalLoginInfo info)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task LinkExternalProviderAsync(string userId, ExternalLoginInfo info)
+            {
+                throw new NotImplementedException();
+            }
+
 
         private async Task SaveRefreshTokenAsync(string userId, string refreshToken, string csrfToken)
         {
