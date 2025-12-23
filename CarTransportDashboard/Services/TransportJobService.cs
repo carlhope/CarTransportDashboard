@@ -132,6 +132,17 @@ namespace CarTransportDashboard.Services
                     return OperationResult<TransportJobReadDto>.CreateFailure(result.Message);
 
                 var jobDto = TransportJobMapper.ToDto(result.Data!);
+                if (job.AssignedDriverId != null)
+                {
+                    var email = new Email(
+                         RecipientUserId: job.AssignedDriverId,
+                         EmailType: EmailType.JobAssigned,
+                         SenderUserId: "" //TODO: refactor to add parameter for sender user id. this can be obtained from auth context in controller layer.
+                     );
+
+                    await _emailService.SendEmailAsync(email);
+
+                }
                 return OperationResult<TransportJobReadDto>.CreateSuccess(jobDto, "Driver assigned to job successfully.");
             }
             catch (InvalidOperationException ex)
