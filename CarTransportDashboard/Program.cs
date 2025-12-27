@@ -47,8 +47,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 builder.Services.AddAuthentication()
 .AddGoogle(options =>
  {
-     options.ClientId = builder.Configuration["Google:ClientId"];
-     options.ClientSecret = builder.Configuration["Google:ClientSecret"];
+     options.ClientId = builder.Configuration["GoogleAuth:ClientId"];
+     options.ClientSecret = builder.Configuration["GoogleAuth:ClientSecret"];
      options.CallbackPath = "/api/auth/external/callback/google";
  })
 .AddJwtBearer(options =>
