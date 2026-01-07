@@ -1,7 +1,6 @@
 using CarTransportDashboard;
 using CarTransportDashboard.Context;
 using CarTransportDashboard.Helpers;
-using CarTransportDashboard.Helpers;
 using CarTransportDashboard.Helpers.Interfaces;
 using CarTransportDashboard.Middleware;
 using CarTransportDashboard.Models;
@@ -10,8 +9,10 @@ using CarTransportDashboard.Repository.Interfaces;
 using CarTransportDashboard.Services;
 using CarTransportDashboard.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -44,31 +45,28 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-builder.Services.AddAuthentication()
-.AddGoogle(options =>
- {
-     options.ClientId = builder.Configuration["GoogleAuth:ClientId"];
-     options.ClientSecret = builder.Configuration["GoogleAuth:ClientSecret"];
-     options.CallbackPath = "/api/auth/external/callback/google";
- })
-.AddJwtBearer(options =>
+builder.Services.AddAuthentication(options =>
 {
-    options.TokenValidationParameters = new TokenValidationParameters
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer( options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
-        )
-    };
-});
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+            )
+        };
+    });
 
 builder.Services.AddMemoryCache();
-
 builder.Services.AddScoped<ITransportJobRepository, TransportJobRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IDriverRepository, DriverRepository>();
@@ -101,12 +99,15 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-app.UseMiddleware<ReplayProtectionMiddleware>();
-app.UseMiddleware<LoggingMiddleware>();
+//disabled whilst testing endpoints in browser
+//app.UseMiddleware<ReplayProtectionMiddleware>();
+//app.UseMiddleware<LoggingMiddleware>();
 
 app.UseHttpsRedirection();
+app.UseCookiePolicy();
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllers();
 await DatabaseSeeder.SeedData(app.Services);

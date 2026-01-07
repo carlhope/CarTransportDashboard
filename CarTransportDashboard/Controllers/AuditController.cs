@@ -23,4 +23,10 @@ public class AuditController : ControllerBase
         // TODO: Return change history for entity
         return Ok(/* changes */);
     }
+
+    [HttpGet("test")]
+    public IActionResult Test()
+    {
+        return Ok("hello World!");
+    }
 }

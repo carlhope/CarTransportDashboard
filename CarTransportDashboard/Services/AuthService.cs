@@ -2,17 +2,18 @@ using CarTransportDashboard.Context;
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos;
 using CarTransportDashboard.Models.Dtos.Auth;
+using CarTransportDashboard.Models.Users;
 using CarTransportDashboard.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Authentication;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using CarTransportDashboard.Models.Users;
-using System.Security.Authentication;
 
 namespace CarTransportDashboard.Services
 {
@@ -20,14 +21,16 @@ namespace CarTransportDashboard.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _config;
         private readonly ApplicationDbContext _db;
 
-        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration config, ApplicationDbContext db, RoleManager<IdentityRole> roleManager)
+        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration config, ApplicationDbContext db, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
             _config = config;
             _db = db;
         }
@@ -148,20 +151,6 @@ namespace CarTransportDashboard.Services
             return operationResult;
 
         }
-
-        // External login methods would go here (e.g., Google OAuth)
-       
-
-            public Task<UserDto> LoginWithExternalProviderAsync(ExternalLoginInfo info)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Task LinkExternalProviderAsync(string userId, ExternalLoginInfo info)
-            {
-                throw new NotImplementedException();
-            }
-
 
         private async Task SaveRefreshTokenAsync(string userId, string refreshToken, string csrfToken)
         {
