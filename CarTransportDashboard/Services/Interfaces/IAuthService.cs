@@ -9,8 +9,7 @@ namespace CarTransportDashboard.Services.Interfaces
         Task<UserDto?> LoginAsync(string email, string password);
         Task<UserDto?> RefreshTokenAsync(string refreshToken);
         Task LogoutAsync(string refreshToken);
-        IActionResult BeginExternalLogin(string provider, string returnUrl);
-        Task<UserDto?> CompleteExternalLoginAsync(string provider, string returnUrl);
-        Task<UserDto> LinkExternalProviderAsync(string userId, string provider);
+        Task<UserDto> FindByEmailAsync(string email);
+        Task<UserDto> FindOrCreateByEmailAsync(string email, string? firstName = null, string? lastName = null);
     }
 }

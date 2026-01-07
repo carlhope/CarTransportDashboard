@@ -99,9 +99,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-//disabled whilst testing endpoints in browser
-//app.UseMiddleware<ReplayProtectionMiddleware>();
-//app.UseMiddleware<LoggingMiddleware>();
+
+app.UseMiddleware<ReplayProtectionMiddleware>();
+app.UseMiddleware<LoggingMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseCookiePolicy();

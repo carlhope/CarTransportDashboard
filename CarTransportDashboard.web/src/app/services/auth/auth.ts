@@ -21,6 +21,11 @@ export class AuthService {
     return this.http.post<UserModel>(`${this.baseUrl}/login`, dto)
       .pipe(tap(user => this.userStore.setUser(user)));
   }
+  googleLogin(idToken: string): Observable<UserModel> {
+    return this.http.post<UserModel>(`${this.baseUrl}/google`, { idToken })
+      .pipe(tap(user => this.userStore.setUser(user)));
+  }
+
 
   refresh(): Observable<UserModel> {
     return this.http.post<UserModel>(`${this.baseUrl}/refresh`, {})

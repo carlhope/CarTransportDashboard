@@ -69,14 +69,7 @@ namespace CarTransportDashboard.Services
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, password))
                 return null;
-
-            var accessToken = await GenerateJwtToken(user);
-            var refreshToken = GenerateRefreshToken();
-            var csrfToken = GenerateCsrfToken();
-
-            await SaveRefreshTokenAsync(user.Id, refreshToken, csrfToken);
-            var roles = await _userManager.GetRolesAsync(user);
-            return MapToUserDto(user, accessToken, refreshToken, roles, csrfToken);
+            return await IssueTokensForUserAsync(user);
         }
 
 
@@ -151,7 +144,54 @@ namespace CarTransportDashboard.Services
             return operationResult;
 
         }
+        public async Task<UserDto> FindByEmailAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return null;
+            return new UserDto
+            {
+                Email = user.Email!,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Id = user.Id,
+                Roles = (await _userManager.GetRolesAsync(user)).ToList(),
+            };
+        }
+        // Lookup or create (for Google login)
+        public async Task<UserDto> FindOrCreateByEmailAsync(string email, string? firstName = null, string? lastName = null)
+        {
+            var userEntity = await _userManager.FindByEmailAsync(email);
+            if (userEntity == null)
+            {
+                userEntity = new ApplicationUser
+                {
+                    Email = email,
+                    UserName = email,
+                    FirstName = firstName ?? string.Empty,
+                    LastName = lastName ?? string.Empty
+                };
 
+
+                var result = await _userManager.CreateAsync(userEntity);
+                if (!result.Succeeded)
+                    throw new InvalidOperationException("Failed to create user from Google login");
+                await _userManager.AddToRoleAsync(userEntity, RoleConstants.Driver);
+            }
+
+            return await IssueTokensForUserAsync(userEntity);
+        }
+
+        private async Task<UserDto> IssueTokensForUserAsync(ApplicationUser user)
+        {
+            var accessToken = await GenerateJwtToken(user);
+            var refreshToken = GenerateRefreshToken();
+            var csrfToken = GenerateCsrfToken();
+
+            await SaveRefreshTokenAsync(user.Id, refreshToken, csrfToken);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return MapToUserDto(user, accessToken, refreshToken, roles, csrfToken);
+        }
         private async Task SaveRefreshTokenAsync(string userId, string refreshToken, string csrfToken)
         {
             var token = new RefreshToken
@@ -234,6 +274,6 @@ namespace CarTransportDashboard.Services
             };
         }
 
-
+        
     }
 }

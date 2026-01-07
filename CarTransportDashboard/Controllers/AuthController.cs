@@ -3,6 +3,7 @@ using CarTransportDashboard.Helpers;
 using CarTransportDashboard.Helpers.Interfaces;
 using CarTransportDashboard.Models.Dtos.Auth;
 using CarTransportDashboard.Services.Interfaces;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -115,37 +116,21 @@ public class AuthController : ControllerBase
 
     [HttpPost("google")]
     [AllowAnonymous]
-    public async Task<IActionResult> GoogleLogin([FromBody] string idToken)
+    public async Task<IActionResult> GoogleLogin([FromBody] IdTokenDto dto)
     {
-        // 1. Validate Google ID token
-        var payload = await Google.Apis.Auth.GoogleJsonWebSignature.ValidateAsync(idToken);
-
-        if (payload == null)
+        var payload = await GoogleJsonWebSignature.ValidateAsync(dto.IdToken);
+        if (payload == null || !payload.EmailVerified)
             return Unauthorized("Invalid Google token");
+       
+            var user = await _authService.FindOrCreateByEmailAsync(payload.Email, payload.GivenName, payload.FamilyName);
 
-        // 2. Create your own JWT
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, payload.Subject),
-            new Claim(JwtRegisteredClaimNames.Email, payload.Email),
-            new Claim("name", payload.Name)
-        };
+        Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
+        Response.Cookies.Append("X-CSRF-Token", user.CsrfToken, GetCsrfCookieOptions());
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddHours(1),
-            signingCredentials: creds
-        );
-
-        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-        return Ok(new { token = jwt });
+        user.RefreshToken = "0"; // don’t send to frontend
+        return Ok(user);
     }
+
 
 
     private CookieOptions GetRefreshCookieOptions()
@@ -172,4 +157,8 @@ public class AuthController : ControllerBase
         };
     }
 
+}
+public class IdTokenDto
+{
+    public string IdToken { get; set; }
 }
