@@ -28,15 +28,17 @@ export class Login implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
-
-    // Wait until the global 'google' exists
+  }
+  ngAfterViewInit(): void {
     const checkGoogle = setInterval(() => {
       if (window.hasOwnProperty('google')) {
         clearInterval(checkGoogle);
+
         google.accounts.id.initialize({
           client_id: '561971564563-18a63e1t8e9c03oi947v4a014fr22qh3.apps.googleusercontent.com',
           callback: (response: any) => this.handleGoogleResponse(response)
         });
+
         google.accounts.id.renderButton(
           document.getElementById('googleBtn'),
           { theme: 'outline', size: 'large' }
