@@ -2,6 +2,7 @@ using CarTransportDashboard.Helpers;
 using CarTransportDashboard.Mappers;
 using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.TransportJob;
+using CarTransportDashboard.Models.Dtos.Vehicle;
 using CarTransportDashboard.Repository.Interfaces;
 using CarTransportDashboard.Services.Interfaces;
 using Shared.Models;
@@ -154,6 +155,10 @@ namespace CarTransportDashboard.Services
 
         public async Task<OperationResult<TransportJobReadDto>> CreateJobAsync(TransportJobCreateDto dto)
         {
+            if (dto.AssignedVehicleId.HasValue)
+            {
+                dto.AssignedVehicle = null; 
+            }
             var job = TransportJobMapper.ToModel(dto);
             await UpdateRouteInfoAsync(job);
             if (IsSuspiciousRoute(job))
@@ -266,7 +271,7 @@ namespace CarTransportDashboard.Services
         }
         private async Task UpdateRouteInfoAsync(TransportJob job)
         {
-            var route = await _routeService.GetRouteInfoAsync(job.PickupLocation.Formatted, job.DropoffLocation.Formatted);
+            var route = await _routeService.GetRouteInfoAsync(job.PickupLocation.PostalCode, job.DropoffLocation.PostalCode);
             job.DistanceInMiles = route.DistanceInMiles;
             job.EstimatedDuration = route.EstimatedDuration;
             job.RoutePreviewUrl = route.RoutePreviewUrl;

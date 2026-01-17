@@ -95,10 +95,8 @@ export class CreateTransportJobForm implements OnInit {
       };
       if (!this.jobForm.value.useNewVehicle) {
         job.assignedVehicle = undefined;
-        console.log(job.assignedVehicleId);
       } else {
         job.assignedVehicleId = undefined;
-        console.log(job.assignedVehicle);
       }
 
 
@@ -126,7 +124,12 @@ export class CreateTransportJobForm implements OnInit {
         if (vehicle) {
           this.matchedVehicle = vehicle;
           this.vehicleSearchFailed = false;
-          this.jobForm.patchValue({ assignedVehicleId: vehicle.id });
+          this.jobForm.patchValue({
+            useNewVehicle: false,//
+            assignedVehicleId: vehicle.id });
+          this.jobForm.get('assignedVehicle')?.reset();//
+          this.jobForm.updateValueAndValidity();//
+
         } else {
           this.matchedVehicle = null;
           this.vehicleSearchFailed = true;

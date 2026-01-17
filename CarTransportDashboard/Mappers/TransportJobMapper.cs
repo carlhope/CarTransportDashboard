@@ -20,7 +20,9 @@ namespace CarTransportDashboard.Mappers
                 Status = job.Status,
                 AssignedDriverId = job.AssignedDriverId,
                 AssignedVehicleId = job.AssignedVehicleId,
-                AssignedVehicle = VehicleMapper.ToDto(job.AssignedVehicle),
+                AssignedVehicle = job.AssignedVehicle != null
+                    ? VehicleMapper.ToDto(job.AssignedVehicle)
+                    : null,
                 CreatedAt = job.CreatedAt,
                 UpdatedAt = job.UpdatedAt,
                 AssignedAt = job.AssignedAt,
@@ -44,7 +46,9 @@ namespace CarTransportDashboard.Mappers
                    dropoffLocation: dto.DropoffLocation,
                    scheduledDate: dto.ScheduledDate ?? DateTime.UtcNow,
                    assignedVehicleId: dto.AssignedVehicleId ?? Guid.Empty,
-                   vehicle: VehicleMapper.ToModel(dto.AssignedVehicle)
+                   vehicle: dto.AssignedVehicle is null
+                        ? null
+                        : VehicleMapper.ToModel(dto.AssignedVehicle)
                );
            
 

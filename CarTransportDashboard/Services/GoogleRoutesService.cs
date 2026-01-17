@@ -1,6 +1,7 @@
 ﻿using CarTransportDashboard.Models;
 using CarTransportDashboard.Models.Dtos.Routes;
 using CarTransportDashboard.Services.Interfaces;
+using System.Text;
 using System.Text.Json;
 
 namespace CarTransportDashboard.Services
@@ -31,22 +32,34 @@ namespace CarTransportDashboard.Services
                     AvoidTolls = true, //removes requirement to factor toll costs into job pricing. drivers can still choose to take toll roads if they wish.
                 }
             };
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
             _httpClient.DefaultRequestHeaders.Add("X-Goog-Api-Key", _apiKey);
-            _httpClient.DefaultRequestHeaders.Add("X-Goog-FieldMask",
-                "routes.duration," +
-                "routes.distanceMeters," +
-                "routes.polyline.encodedPolyline," +
-                "routes.legs.startLocation.latLng.latitude," +
-                "routes.legs.startLocation.latLng.longitude,"+
-                "routes.legs.endLocation.latLng.latitude,"+
-                "routes.legs.endLocation.latLng.longitude"
+            //_httpClient.DefaultRequestHeaders.Add("X-Goog-FieldMask",
+            //    "routes.duration," +
+            //    "routes.distanceMeters," +
+            //    "routes.polyline.encodedPolyline," +
+            //    "routes.legs.startLocation.latLng.latitude," +
+            //    "routes.legs.startLocation.latLng.longitude,"+
+            //    "routes.legs.endLocation.latLng.latitude,"+
+            //    "routes.legs.endLocation.latLng.longitude"
 
+            //    );
+                    _httpClient.DefaultRequestHeaders.Add("X-Goog-FieldMask",
+                    "routes.duration,routes.distanceMeters,routes.legs,routes.polyline"
                 );
+
+            var json = JsonSerializer.Serialize(requestBody, jsonOptions);
+            Console.WriteLine(json);
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync(
                 "https://routes.googleapis.com/directions/v2:computeRoutes",
-                JsonContent.Create(requestBody)
-                );
+                content
+            );
             Console.WriteLine(response);
             response.EnsureSuccessStatusCode();
 

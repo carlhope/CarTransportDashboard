@@ -14,7 +14,7 @@ namespace CarTransportDashboard.Models.Dtos.TransportJob
 
         // Foreign Keys
         public Guid? AssignedVehicleId { get; set; }
-        public required VehicleWriteDto AssignedVehicle { get; set; }
+        public VehicleWriteDto? AssignedVehicle { get; set; }
 
         public string? AssignedDriverId { get; set; }
         public ApplicationUser? AssignedDriver { get; set; }
