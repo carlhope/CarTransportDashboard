@@ -19,13 +19,13 @@
   <!-- Pickup Location -->
   <div class="flex items-center text-sm text-gray-700">
     <mat-icon aria-hidden="true" class="mr-1">location_on</mat-icon>
-    Pickup: {{ job.pickupLocation }}
+    Pickup: {{ job.pickupLocation.formatted }}
   </div>
 
   <!-- Dropoff Location -->
   <div class="flex items-center text-sm text-gray-700">
     <mat-icon aria-hidden="true" class="mr-1">flag</mat-icon>
-    Dropoff: {{ job.dropoffLocation }}
+    Dropoff: {{ job.dropoffLocation.formatted }}
   </div>
 
   <!-- Assigned Vehicle -->

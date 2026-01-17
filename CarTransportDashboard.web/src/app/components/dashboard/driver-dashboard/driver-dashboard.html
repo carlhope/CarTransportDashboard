@@ -13,16 +13,16 @@
         @for (job of acceptedJobs; track job.id) {
           <div class="p-2 border rounded hover:bg-gray-50">
             <div class="font-semibold text-gray-800">{{ job.title }}</div>
-            <div class="text-sm text-gray-600">Pickup: {{ job.pickupLocation }}</div>
-            <div class="text-sm text-gray-600">Dropoff: {{ job.dropoffLocation }}</div>
+            <div class="text-sm text-gray-600"><strong>Pickup:</strong> {{ job.pickupLocation.formatted }}</div>
+            <div class="text-sm text-gray-600"><strong>Dropoff:</strong> {{ job.dropoffLocation.formatted }}</div>
             @if (job.distanceInMiles) {
               <div class="text-sm text-gray-600 mt-1">
-                Distance: {{ job.distanceInMiles | number:'1.1-1' }} miles
+                <strong>Distance:</strong> {{ job.distanceInMiles | number:'1.1-1' }} miles
               </div>
             }
             @if (job.estimatedTime) {
               <div class="text-sm text-gray-600">
-                Driving Duration: {{ job.estimatedTime | duration }}
+                <strong>Driving Duration:</strong> {{ job.estimatedTime | duration }}
               </div>
             }
             <div class="flex gap-2 mt-2">
@@ -52,16 +52,16 @@
         @for (job of availableJobs; track job.id) {
           <div class="p-2 border rounded hover:bg-gray-50">
             <div class="font-semibold text-gray-800">{{ job.title }}</div>
-            <div class="text-sm text-gray-600">Pickup: {{ job.pickupLocation }}</div>
-            <div class="text-sm text-gray-600">Dropoff: {{ job.dropoffLocation }}</div>
+            <div class="text-sm text-gray-600"><strong>Pickup:</strong> {{ job.pickupLocation.formatted }}</div>
+            <div class="text-sm text-gray-600"><strong>Dropoff:</strong> {{ job.dropoffLocation.formatted }}</div>
             @if (job.distanceInMiles) {
               <div class="text-sm text-gray-600 mt-1">
-                Distance: {{ job.distanceInMiles | number:'1.1-1' }} miles
+                <strong>Distance:</strong> {{ job.distanceInMiles | number:'1.1-1' }} miles
               </div>
             }
             @if (job.estimatedTime) {
               <div class="text-sm text-gray-600">
-                Driving Duration: {{ job.estimatedTime | duration }}
+                <strong>Driving Duration:</strong> {{ job.estimatedTime | duration }}
               </div>
             }
             <div class="flex gap-2 mt-2">
