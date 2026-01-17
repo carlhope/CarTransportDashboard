@@ -16,6 +16,7 @@ describe('initializeSession', () => {
   beforeEach(() => {
     authServiceSpy = jasmine.createSpyObj('AuthService', ['refresh']);
     userStoreSpy = jasmine.createSpyObj('UserStoreService', ['setUser', 'clearUser']);
+    localStorage.setItem('refreshExpiry', (Date.now() + 10000).toString());
 
     TestBed.configureTestingModule({
       providers: [
