@@ -166,7 +166,7 @@ public static class DatabaseSeeder
                     driverVehicles.Add(new Vehicle
                     {
                         Id = Guid.NewGuid(),
-                        Make = "DriverMake" + i,
+                        Make = "Make" + i,
                         Model = "Model" + i,
                         RegistrationNumber = $"DRV{i:D3}",
                         FuelType = i % 2 == 0 ? FuelType.Petrol : FuelType.Diesel
