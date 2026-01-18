@@ -23,7 +23,7 @@ export class ModelMapperService {
   toMinimalUser(data: any): MinimalUser {
     return {
       id: data.id,
-      fullName: data.fullName,
+      fullName: data.firstName+" "+data.lastName,
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
