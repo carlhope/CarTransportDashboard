@@ -29,6 +29,7 @@ namespace CarTransportDashboard.Repository{
             .Include(v=>v.AssignedVehicle)
             .Include(j => j.PickupLocation)
             .Include(j => j.DropoffLocation)
+            .Include(d=>d.AssignedDriver)
             .ToListAsync();
 
         public async Task<IEnumerable<TransportJob>> GetAllByDriverIdsAsync(IEnumerable<string> driverIds, string? status, DateTime? startDate = null)
