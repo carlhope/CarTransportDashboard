@@ -25,7 +25,7 @@ namespace CarTransportDashboard.Services
                 Destination = new Location { Address = destination },
                 TravelMode = "DRIVE",
                 RoutingPreference = "TRAFFIC_AWARE",
-                DepartureTime = DateTime.UtcNow.ToString("o"),
+                DepartureTime = DateTime.UtcNow.AddSeconds(30).ToString("o"),
                 Units = "IMPERIAL",
                 RouteModifiers = new RouteModifiers
                 { 
@@ -60,7 +60,10 @@ namespace CarTransportDashboard.Services
                 "https://routes.googleapis.com/directions/v2:computeRoutes",
                 content
             );
-            Console.WriteLine(response);
+            //Console.WriteLine(response);
+            //var errorBody = await response.Content.ReadAsStringAsync();
+            //Console.WriteLine("ERROR BODY:");
+            //Console.WriteLine(errorBody);
             response.EnsureSuccessStatusCode();
 
             var routeResponse = await response.Content.ReadFromJsonAsync<RouteResponse>();
