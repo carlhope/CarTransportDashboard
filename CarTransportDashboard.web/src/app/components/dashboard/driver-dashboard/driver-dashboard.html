@@ -1,19 +1,37 @@
-<div class="dashboard-container">
+<div class="flex flex-col h-full w-full p-4 gap-4">
 
-  <app-job-tabs></app-job-tabs>
+  <!-- Tabs -->
+  <app-job-tabs class="w-full"></app-job-tabs>
 
-  <div class="dashboard-main">
-    <app-job-list></app-job-list>
+  <!-- Main content area -->
+  <div class="flex flex-1 gap-4">
 
-    <div class="dashboard-detail">
-      <app-job-detail></app-job-detail>
-      <app-job-map></app-job-map>
+    <!-- Job list -->
+    <app-job-list class="w-1/3 min-w-[260px] bg-white rounded-lg shadow-sm p-3"></app-job-list>
+
+    <!-- Detail + Map -->
+    <div class="relative flex-1">
+
+      <!-- Map fills the entire area -->
+      <app-job-map class="w-full h-full rounded-lg overflow-hidden"></app-job-map>
+
+      <!-- Floating job detail card -->
+      <app-job-detail
+        class="absolute bottom-4 left-4 w-80 bg-white rounded-lg shadow-lg p-4"
+      ></app-job-detail>
+
     </div>
+
   </div>
 
-  <app-earnings-summary [earnings]="earnings"></app-earnings-summary>
+  <!-- Earnings summary -->
+  <app-earnings-summary
+    [earnings]="earnings"
+    class="w-full bg-white rounded-lg shadow-sm p-4"
+  ></app-earnings-summary>
 
 </div>
+
 
 
 

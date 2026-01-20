@@ -1,1 +1,20 @@
-<p>job-list works!</p>
+<div class="flex flex-col gap-2">
+  @for (job of jobs; track job.id) {
+    <div
+      class="p-3 rounded-md bg-white shadow-sm cursor-pointer hover:bg-gray-50 transition"
+      [class.border-l-4]="job.id === selectedJobId"
+      [class.border-blue-500]="job.id === selectedJobId"
+      (click)="selectJob(job)"
+    >
+      <div class="font-medium text-gray-800">{{ job.title }}</div>
+
+      <div class="text-sm text-gray-500 flex items-center gap-1">
+        <span>{{ job.pickupLocation.locality }}</span>
+        <span>→</span>
+        <span>{{ job.dropoffLocation.locality }}</span>
+      </div>
+    </div>
+  }
+</div>
+
+
