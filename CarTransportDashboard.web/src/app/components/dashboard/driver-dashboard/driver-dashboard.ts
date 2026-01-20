@@ -4,6 +4,7 @@ import { TransportJob } from '../../../models/transport-job';
 import { TransportJobService } from '../../../services/transport-job/transport-job';
 import {CurrencyPipe, DatePipe, DecimalPipe} from '@angular/common';
 import {EarningsSummary} from '../../../models/Earnings';
+import {JobTabs, JobList, JobDetail, JobMap, EarningsSummary as EarningsDisplay} from '../shared'
 import {catchError, Observable, throwError} from 'rxjs';
 import {DurationPipe} from '../../../pipes/duration/duration-pipe';
 
@@ -13,7 +14,12 @@ import {DurationPipe} from '../../../pipes/duration/duration-pipe';
     DatePipe,
     CurrencyPipe,
     DecimalPipe,
-    DurationPipe
+    DurationPipe,
+    JobList,
+    JobTabs,
+    JobDetail,
+    JobMap,
+    EarningsDisplay,
   ],
   templateUrl: './driver-dashboard.html',
   styleUrl: './driver-dashboard.scss'
