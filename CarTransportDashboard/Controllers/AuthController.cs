@@ -127,7 +127,7 @@ public class AuthController : ControllerBase
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
         Response.Cookies.Append("X-CSRF-Token", user.CsrfToken, GetCsrfCookieOptions());
 
-        user.RefreshToken = "0"; // don’t send to frontend
+        user.RefreshToken = "0"; // donï¿½t send to frontend
         return Ok(user);
     }
 
