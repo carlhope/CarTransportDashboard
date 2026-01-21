@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, computed, Input, OnInit, signal} from '@angular/core';
 import {UserModel} from '../../../models/user';
 import { TransportJob } from '../../../models/transport-job';
 import { TransportJobService } from '../../../services/transport-job/transport-job';
@@ -22,28 +22,22 @@ import {JobStatus} from '../../../models/job-status';
 export class DriverDashboard implements OnInit {
   @Input() driver: UserModel | null = null;
 
-  acceptedJobs: TransportJob[] = [];
-  allocatedJobs: TransportJob[] = [];
-  completedJobs: TransportJob[] = [];
+  acceptedJobs = signal<TransportJob[]>([]);
+  allocatedJobs = signal<TransportJob[]>([]);
+  completedJobs = signal<TransportJob[]>([]);
   currencyCode: string = 'GBP'; // Hardcoded for simplicity. Could be made dynamic based on locale.
-  selectedTab: JobStatus = JobStatus.InProgress; // default to "Active"
+  selectedTab = signal<JobStatus>(JobStatus.InProgress);// default to "Active"
   selectedJob: TransportJob | null = null;
 
-  get filteredJobs(): TransportJob[] {
-    switch (this.selectedTab) {
-      case JobStatus.InProgress:
-        return this.acceptedJobs;
-
-      case JobStatus.Allocated:
-        return this.allocatedJobs;
-
-      case JobStatus.Completed:
-        return this.completedJobs;
-
-      default:
-        return [];
+  filteredJobs = computed(() => {
+    switch (this.selectedTab())
+    {
+      case JobStatus.InProgress: return this.acceptedJobs();
+      case JobStatus.Allocated: return this.allocatedJobs();
+      case JobStatus.Completed: return this.completedJobs();
+      default: return [];
     }
-  }
+  });
 
   earnings: EarningsSummary = {
     //Hardcoded placeholder values for now
@@ -70,21 +64,21 @@ export class DriverDashboard implements OnInit {
 
   private loadAcceptedJobs(): void {
     this.jobService.getAcceptedJobs().subscribe(jobs => {
-      this.acceptedJobs = jobs;
+      this.acceptedJobs.set(jobs);
       console.log('Accepted jobs:', jobs);
     });
   }
 
   private loadAvailableJobs(): void {
     this.jobService.getAvailableJobsForDriver().subscribe(jobs => {
-      this.allocatedJobs = jobs;
+      this.allocatedJobs.set(jobs);
       console.log('Available jobs:', jobs);
     });
   }
 
   private loadCompletedJobs(): void {
     this.jobService.getCompletedJobs(30).subscribe(jobs => {
-      this.completedJobs = jobs;
+      this.completedJobs.set(jobs);
       console.log('Completed jobs:', jobs);
       this.loadEarnings();
     });
@@ -133,7 +127,7 @@ export class DriverDashboard implements OnInit {
     });
   }
   onTabChange(status :JobStatus) {
-    this.selectedTab = status;
+    this.selectedTab.set(status);
   }
 
   onJobSelected(job: TransportJob) {
@@ -154,7 +148,7 @@ export class DriverDashboard implements OnInit {
   }
 
   private sumPayoutsSince(cutoffDate: Date): number {
-    const jobs = this.completedJobs.filter(job => job.completedAt);
+    const jobs = this.completedJobs().filter(job => job.completedAt);
     return jobs
       .filter(job => {
         if (!job.completedAt) return false; // skip if undefined

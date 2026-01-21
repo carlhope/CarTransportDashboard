@@ -51,7 +51,7 @@
 
             <!-- Row 2: 2 columns -->
             <p class="md:col-span-1"><strong>Distance:</strong> {{ job.distanceInMiles }} miles</p>
-            <p class="md:col-span-1"><strong>Duration:</strong> {{ job.estimatedTime }} mins</p>
+            <p class="md:col-span-1"><strong>Duration:</strong> {{ job.estimatedTime | duration }}</p>
             <div class="hidden md:block"></div> <!-- empty 3rd column -->
 
           </div>
