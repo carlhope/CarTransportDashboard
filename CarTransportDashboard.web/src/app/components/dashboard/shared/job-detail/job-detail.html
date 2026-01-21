@@ -1,18 +1,123 @@
 @if (job) {
-  <div class="flex flex-col gap-2">
-    <h2 class="text-lg font-semibold">
-      {{ job.pickupLocation.locality }}
-    </h2>
 
-    <div class="text-sm text-gray-600">
-      <div><strong>Dropoff:</strong> {{ job.dropoffLocation.locality }}</div>
-      <div><strong>Status:</strong> {{ statusDisplay[job.status] }}</div>
-      <div><strong>Payout:</strong> £{{ job.payout }}</div>
-      <div><strong>Scheduled:</strong> {{ job.scheduledDate | date:'short' }}</div>
+  <div class="detail-card">
+    <!-- Header -->
+    <div class="detail-header">
+      <h2>{{ job.pickupLocation.locality }} → {{ job.dropoffLocation.locality }}</h2>
+      <p>{{ job.scheduledDate | date:'medium' }}</p>
     </div>
+
+    <!-- Tabs -->
+    <nav class="detail-tabs flex w-full">
+    <button
+      class="flex-1 text-center"
+      [class.active]="activeTab === 'summary'"
+      (click)="activeTab = 'summary'">
+      Summary
+    </button>
+      <button
+        class="flex-1 text-center"
+        [class.active]="activeTab === 'vehicle'"
+        (click)="activeTab = 'vehicle'">
+        Vehicle
+      </button>
+    <button
+      class="flex-1 text-center"
+      [class.active]="activeTab === 'pickup'"
+      (click)="activeTab = 'pickup'">
+      Pickup
+    </button>
+
+    <button
+      class="flex-1 text-center"
+      [class.active]="activeTab === 'dropoff'"
+      (click)="activeTab = 'dropoff'">
+      Dropoff
+    </button>
+  </nav>
+
+    <!-- Tab Content -->
+    <div class="detail-content">
+
+      @switch (activeTab) {
+
+        @case ('summary') {
+          <div class="tab-summary grid grid-cols-1 md:grid-cols-3 gap-2">
+
+            <!-- Row 1: 3 columns -->
+            <p><strong>Pickup:</strong> {{ job.pickupLocation.locality }}</p>
+            <p><strong>Dropoff:</strong> {{ job.dropoffLocation.locality }}</p>
+            <p><strong>Payment:</strong> £{{ job.payout }}</p>
+
+            <!-- Row 2: 2 columns -->
+            <p class="md:col-span-1"><strong>Distance:</strong> {{ job.distanceInMiles }} miles</p>
+            <p class="md:col-span-1"><strong>Duration:</strong> {{ job.estimatedTime }} mins</p>
+            <div class="hidden md:block"></div> <!-- empty 3rd column -->
+
+          </div>
+        }
+        @case ('vehicle') {
+          <div class="tab-vehicle grid grid-cols-1 md:grid-cols-[50%_1fr] gap-2">
+
+            <!-- Row 1 -->
+            <p><strong>Registration:</strong> {{ job.assignedVehicle?.registrationNumber }}</p>
+            <p><strong>Make:</strong> {{ job.assignedVehicle?.make }}</p>
+
+            <!-- Row 2 -->
+            <p><strong>Model:</strong> {{ job.assignedVehicle?.model }}</p>
+            <p><strong>Colour:</strong> {{ job.assignedVehicle?.fuelType }}</p>
+
+          </div>
+        }
+
+        @case ('pickup') {
+          <div class="tab-pickup grid grid-cols-1 md:grid-cols-2 gap-2">
+
+            <p><strong>Address Line 1:</strong> {{ job.pickupLocation.addressLine1 }}</p>
+            <p><strong>Address Line 2:</strong> {{ job.pickupLocation.addressLine2 }}</p>
+
+            <p><strong>Locality:</strong> {{ job.pickupLocation.locality }}</p>
+            <p><strong>Postal Code:</strong> {{ job.pickupLocation.postalCode }}</p>
+
+          </div>
+        }
+
+        @case ('dropoff') {
+          <div class="tab-dropoff grid grid-cols-1 md:grid-cols-2 gap-2">
+
+            <p><strong>Address Line 1:</strong> {{ job.dropoffLocation.addressLine1 }}</p>
+            <p><strong>Address Line 2:</strong> {{ job.dropoffLocation.addressLine2 }}</p>
+
+            <p><strong>Locality:</strong> {{ job.dropoffLocation.locality }}</p>
+            <p><strong>Postal Code:</strong> {{ job.dropoffLocation.postalCode }}</p>
+
+          </div>
+        }
+
+      }
+
+    </div>
+
+    <div class="detail-actions flex justify-end gap-3 mt-4">
+      @if(actions.length>0){
+        @for (btn of actions; track btn.action) {
+          <app-button
+            [label]="btn.label"
+            [variant]="btn.variant"
+            (pressed)="onAction(btn.action)"
+          ></app-button>
+        }
+      }
+      @else{
+        <app-button
+          label="placeholder"
+          variant="secondary"
+          class="opacity-0 pointer-events-none"
+        ></app-button>
+
+      }
+    </div>
+
   </div>
-} @else {
-  <div class="text-gray-500 text-sm italic">
-    Select a job to view details
-  </div>
+
 }

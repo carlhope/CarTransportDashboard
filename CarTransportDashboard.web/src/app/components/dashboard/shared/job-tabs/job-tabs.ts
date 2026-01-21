@@ -13,7 +13,7 @@ export class JobTabs {
 
   tabs = [
     { id: JobStatus.InProgress, label: 'Active' },
-    { id: JobStatus.Available, label: 'Upcoming' },
+    { id: JobStatus.Allocated, label: 'Allocated' },
     { id: JobStatus.Completed, label: 'Completed' }
   ];
 

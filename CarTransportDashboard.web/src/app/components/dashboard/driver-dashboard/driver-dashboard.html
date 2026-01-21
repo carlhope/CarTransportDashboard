@@ -24,11 +24,13 @@
       <!-- Map fills the entire area -->
       <app-job-map class="w-full h-full rounded-lg overflow-hidden"></app-job-map>
 
-      <!-- Floating job detail card -->
-      <app-job-detail
-        [job]="selectedJob"
-        class="absolute bottom-4 left-4 w-80 bg-white rounded-lg shadow-lg p-4">
-      </app-job-detail>
+      <!-- Floating job detail card, centred -->
+      <div class="absolute inset-x-0 bottom-4 flex justify-center">
+        <app-job-detail
+          [job]="selectedJob"
+          class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-4">
+        </app-job-detail>
+      </div>
 
     </div>
 

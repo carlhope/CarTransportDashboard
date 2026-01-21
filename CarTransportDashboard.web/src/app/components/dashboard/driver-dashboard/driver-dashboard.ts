@@ -30,7 +30,7 @@ export class DriverDashboard implements OnInit {
   @Input() driver: UserModel | null = null;
 
   acceptedJobs: TransportJob[] = [];
-  availableJobs: TransportJob[] = [];
+  allocatedJobs: TransportJob[] = [];
   completedJobs: TransportJob[] = [];
   currencyCode: string = 'GBP'; // Hardcoded for simplicity. Could be made dynamic based on locale.
   selectedTab: JobStatus = JobStatus.InProgress; // default to "Active"
@@ -41,8 +41,8 @@ export class DriverDashboard implements OnInit {
       case JobStatus.InProgress:
         return this.acceptedJobs;
 
-      case JobStatus.Available:
-        return this.availableJobs;
+      case JobStatus.Allocated:
+        return this.allocatedJobs;
 
       case JobStatus.Completed:
         return this.completedJobs;
@@ -84,7 +84,7 @@ export class DriverDashboard implements OnInit {
 
   private loadAvailableJobs(): void {
     this.jobService.getAvailableJobsForDriver().subscribe(jobs => {
-      this.availableJobs = jobs;
+      this.allocatedJobs = jobs;
       console.log('Available jobs:', jobs);
     });
   }
