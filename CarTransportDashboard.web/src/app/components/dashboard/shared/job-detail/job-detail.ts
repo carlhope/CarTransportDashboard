@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {TransportJob} from '../../../../models/transport-job';
 import {JobStatus, JobStatusDisplay} from '../../../../models/job-status';
@@ -15,6 +15,10 @@ import {Button} from "../../../ui/button/button";
 })
 export class JobDetail {
   @Input() job: TransportJob | null = null;
+  @Output() accept = new EventEmitter<string>();
+  @Output() decline = new EventEmitter<string>();
+  @Output() complete = new EventEmitter<string>();
+  @Output() cancel = new EventEmitter<string>();
   statusDisplay = JobStatusDisplay;
   // Default tab
   activeTab: 'summary' |'vehicle' | 'pickup' | 'dropoff' = 'summary';
@@ -43,39 +47,24 @@ export class JobDetail {
     }
   }
   onAction(action: string) {
+    if (!this.job?.id) return;
     switch (action) {
       case 'accept':
-        this.acceptJob();
+        this.accept.emit(this.job.id);
         break;
 
       case 'decline':
-        this.declineJob();
+        this.decline.emit(this.job.id);
         break;
 
       case 'complete':
-        this.completeJob();
+        this.complete.emit(this.job.id);
         break;
 
       case 'cancel':
-        this.cancelJob();
+        this.cancel.emit(this.job.id);
         break;
     }
-  }
-  //placeholders
-  acceptJob() {
-    console.log('Accept job');
-  }
-
-  declineJob() {
-    console.log('Decline job');
-  }
-
-  completeJob() {
-    console.log('Complete job');
-  }
-
-  cancelJob() {
-    console.log('Cancel job');
   }
 
 }

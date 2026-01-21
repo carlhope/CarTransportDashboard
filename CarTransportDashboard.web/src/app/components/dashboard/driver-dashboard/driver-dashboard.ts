@@ -2,20 +2,13 @@ import {Component, Input, OnInit} from '@angular/core';
 import {UserModel} from '../../../models/user';
 import { TransportJob } from '../../../models/transport-job';
 import { TransportJobService } from '../../../services/transport-job/transport-job';
-import {CurrencyPipe, DatePipe, DecimalPipe} from '@angular/common';
 import {EarningsSummary} from '../../../models/Earnings';
 import {JobTabs, JobList, JobDetail, JobMap, EarningsSummary as EarningsDisplay} from '../shared'
-import {catchError, Observable, throwError} from 'rxjs';
-import {DurationPipe} from '../../../pipes/duration/duration-pipe';
 import {JobStatus} from '../../../models/job-status';
 
 @Component({
   selector: 'app-driver-dashboard',
   imports: [
-    DatePipe,
-    CurrencyPipe,
-    DecimalPipe,
-    DurationPipe,
     JobList,
     JobTabs,
     JobDetail,
@@ -119,19 +112,6 @@ export class DriverDashboard implements OnInit {
       },
       error: err => {
         console.error(`Failed to complete job ${jobId}:`, err.message);
-      }
-    });
-  }
-
-  cancelJob(jobId: string): void {
-    //cancelJob is admin only on backend. retained for re-use when admin dashboard created. To be replaced with requestCancellation
-    this.jobService.cancelJob(jobId).subscribe({
-      next: updatedJob => {
-        console.log(`Job ${jobId} cancelled.`);
-        this.refreshData();
-      },
-      error: err => {
-        console.error(`Failed to cancel job ${jobId}:`, err.message);
       }
     });
   }
