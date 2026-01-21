@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {JobStatus} from '../../../../models/job-status';
 
 @Component({
   selector: 'app-job-tabs',
@@ -8,15 +9,16 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 })
 export class JobTabs {
   @Input() activeTab: string = 'active';
-  @Output() tabChange = new EventEmitter<string>();
+  @Output() tabChange = new EventEmitter<JobStatus>();
 
   tabs = [
-    { id: 'active', label: 'Active' },
-    { id: 'upcoming', label: 'Upcoming' },
-    { id: 'completed', label: 'Completed' }
+    { id: JobStatus.InProgress, label: 'Active' },
+    { id: JobStatus.Available, label: 'Upcoming' },
+    { id: JobStatus.Completed, label: 'Completed' }
   ];
 
-  selectTab(tabId: string) {
+  selectTab(tabId: JobStatus) {
     this.tabChange.emit(tabId);
   }
+
 }

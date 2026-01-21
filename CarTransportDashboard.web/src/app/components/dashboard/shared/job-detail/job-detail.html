@@ -1,1 +1,18 @@
-<p>job-detail works!</p>
+@if (job) {
+  <div class="flex flex-col gap-2">
+    <h2 class="text-lg font-semibold">
+      {{ job.pickupLocation.locality }}
+    </h2>
+
+    <div class="text-sm text-gray-600">
+      <div><strong>Dropoff:</strong> {{ job.dropoffLocation.locality }}</div>
+      <div><strong>Status:</strong> {{ statusDisplay[job.status] }}</div>
+      <div><strong>Payout:</strong> £{{ job.payout }}</div>
+      <div><strong>Scheduled:</strong> {{ job.scheduledDate | date:'short' }}</div>
+    </div>
+  </div>
+} @else {
+  <div class="text-gray-500 text-sm italic">
+    Select a job to view details
+  </div>
+}

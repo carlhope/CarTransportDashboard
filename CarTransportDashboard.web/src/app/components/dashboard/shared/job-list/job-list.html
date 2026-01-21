@@ -2,16 +2,27 @@
   @for (job of jobs; track job.id) {
     <div
       class="p-3 rounded-md bg-white shadow-sm cursor-pointer hover:bg-gray-50 transition"
-      [class.border-l-4]="job.id === selectedJobId"
-      [class.border-blue-500]="job.id === selectedJobId"
+      [class.border-l-4]="job === selectedJob"
+      [class.border-blue-500]="job === selectedJob"
       (click)="selectJob(job)"
     >
-      <div class="font-medium text-gray-800">{{ job.title }}</div>
+      <!-- Title -->
+      <div class="font-medium text-gray-800">
+        {{ job.title }}
+      </div>
 
+      <!-- Pickup → Dropoff -->
       <div class="text-sm text-gray-500 flex items-center gap-1">
         <span>{{ job.pickupLocation.locality }}</span>
         <span>→</span>
         <span>{{ job.dropoffLocation.locality }}</span>
+      </div>
+
+      <!-- Extra info row -->
+      <div class="text-xs text-gray-400 flex items-center gap-3 mt-1">
+        <span>{{ statusDisplay[job.status] }}</span>
+        <span>•</span>
+        <span>£{{ job.payout }}</span>
       </div>
     </div>
   }

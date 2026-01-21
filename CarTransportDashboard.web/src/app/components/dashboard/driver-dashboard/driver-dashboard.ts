@@ -7,6 +7,7 @@ import {EarningsSummary} from '../../../models/Earnings';
 import {JobTabs, JobList, JobDetail, JobMap, EarningsSummary as EarningsDisplay} from '../shared'
 import {catchError, Observable, throwError} from 'rxjs';
 import {DurationPipe} from '../../../pipes/duration/duration-pipe';
+import {JobStatus} from '../../../models/job-status';
 
 @Component({
   selector: 'app-driver-dashboard',
@@ -32,6 +33,24 @@ export class DriverDashboard implements OnInit {
   availableJobs: TransportJob[] = [];
   completedJobs: TransportJob[] = [];
   currencyCode: string = 'GBP'; // Hardcoded for simplicity. Could be made dynamic based on locale.
+  selectedTab: JobStatus = JobStatus.InProgress; // default to "Active"
+  selectedJob: TransportJob | null = null;
+
+  get filteredJobs(): TransportJob[] {
+    switch (this.selectedTab) {
+      case JobStatus.InProgress:
+        return this.acceptedJobs;
+
+      case JobStatus.Available:
+        return this.availableJobs;
+
+      case JobStatus.Completed:
+        return this.completedJobs;
+
+      default:
+        return [];
+    }
+  }
 
   earnings: EarningsSummary = {
     //Hardcoded placeholder values for now
@@ -132,6 +151,13 @@ export class DriverDashboard implements OnInit {
         console.error(`Failed to decline job ${jobId}:`, err.message);
       }
     });
+  }
+  onTabChange(status :JobStatus) {
+    this.selectedTab = status;
+  }
+
+  onJobSelected(job: TransportJob) {
+    this.selectedJob = job;
   }
 
   private loadEarnings(): void {
