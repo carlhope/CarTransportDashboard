@@ -18,6 +18,7 @@ public static class DatabaseSeeder
             var context = services.GetRequiredService<ApplicationDbContext>();
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            Random random = new Random();
 
             // Ensure database is created
             await context.Database.EnsureCreatedAsync();
@@ -75,15 +76,15 @@ public static class DatabaseSeeder
                        description: "Collect vehicle from Manchester depot",
                        pickupLocation: mockPickupLocation,
                        dropoffLocation: mockDropoffLocation,
-                       scheduledDate: DateTime.Today.AddDays(2),
+                       scheduledDate: DateTime.Today.AddDays(random.Next(1, 12)),
                        assignedVehicleId: vehicle1.Id,
                        vehicle: vehicle1
                    )
                    {
                        CustomerPrice = 100.00M,
-                       DriverPayment = 80.65M,
+                       DriverPayment = 80.00M,
                        DistanceInMiles = 40.5F,
-                       EstimatedDuration = TimeSpan.FromHours(1.5)
+                       EstimatedDuration = TimeSpan.FromHours(random.Next(1,6))
 
                    },
                    new TransportJob(
@@ -91,7 +92,7 @@ public static class DatabaseSeeder
                        description: "Deliver vehicle to Birmingham client",
                        pickupLocation: mockPickupLocation,
                        dropoffLocation: mockDropoffLocation,
-                       scheduledDate: DateTime.Today.AddDays(1),
+                       scheduledDate: DateTime.Today.AddDays(random.Next(1, 12)),
                        assignedVehicleId: vehicle2.Id,
                        vehicle: vehicle2
                    )
@@ -99,7 +100,7 @@ public static class DatabaseSeeder
                        CustomerPrice = 100.00M,
                        DriverPayment = 80.65M,
                        DistanceInMiles = 60.2F,
-                       EstimatedDuration = TimeSpan.FromHours(2.0)
+                       EstimatedDuration = TimeSpan.FromHours(random.Next(1,6))
 
                    }
                );
@@ -197,7 +198,7 @@ public static class DatabaseSeeder
                         CustomerPrice = 100.00M,
                         DriverPayment = 80.65M,
                         DistanceInMiles = 50.0F,
-                        EstimatedDuration = TimeSpan.FromHours(4.0)
+                        EstimatedDuration = TimeSpan.FromHours(random.Next(1,6))
 
                     };
                     job.AssignDriver(driverUser);
@@ -223,7 +224,7 @@ public static class DatabaseSeeder
                         CustomerPrice = 100.00M,
                         DriverPayment = 80.65M,
                         DistanceInMiles = 75.0F,
-                        EstimatedDuration = TimeSpan.FromHours(5.0)
+                        EstimatedDuration = TimeSpan.FromHours(random.Next(1,6))
 
                     };
                     job.AssignDriver(driverUser);
@@ -248,7 +249,7 @@ public static class DatabaseSeeder
                         CustomerPrice = 100.00M,
                         DriverPayment = 80.65M,
                         DistanceInMiles = 60.0F,
-                        EstimatedDuration = TimeSpan.FromHours(3.5)
+                        EstimatedDuration = TimeSpan.FromHours(random.Next(1,6))
 
                     };
                     job.AssignDriver(driverUser);
