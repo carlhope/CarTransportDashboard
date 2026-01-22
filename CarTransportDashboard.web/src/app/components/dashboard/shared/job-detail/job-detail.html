@@ -1,11 +1,6 @@
 @if (job) {
 
   <div class="detail-card">
-    <!-- Header -->
-    <div class="detail-header">
-      <h2>{{ job.pickupLocation.locality }} → {{ job.dropoffLocation.locality }}</h2>
-      <p>{{ job.scheduledDate | date:'medium' }}</p>
-    </div>
 
     <!-- Tabs -->
     <nav class="detail-tabs flex w-full">
@@ -52,7 +47,7 @@
             <!-- Row 2: 2 columns -->
             <p class="md:col-span-1"><strong>Distance:</strong> {{ job.distanceInMiles }} miles</p>
             <p class="md:col-span-1"><strong>Duration:</strong> {{ job.estimatedTime | duration }}</p>
-            <div class="hidden md:block"></div> <!-- empty 3rd column -->
+            <p class="md:col-span-1"><strong>Date:</strong> {{ job.scheduledDate | date:'medium' }}</p>
 
           </div>
         }
@@ -98,7 +93,7 @@
 
     </div>
 
-    <div class="detail-actions flex justify-end gap-3 mt-4">
+    <div class="detail-actions flex justify-end gap-3">
       @if(actions.length>0){
         @for (btn of actions; track btn.action) {
           <app-button

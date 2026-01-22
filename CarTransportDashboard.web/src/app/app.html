@@ -3,12 +3,12 @@
   <app-header (toggleMenu)="toggleMobileMenu()" />
   <!-- Mobile dropdown menu -->
   @if(mobileMenuOpen){
-    <app-mobile-nav-menu [visibleNavItems]="visibleNavItems" (onLogout)="handleLogout()"/>
+    <app-mobile-nav-menu class="lg:hidden" [visibleNavItems]="visibleNavItems" (onLogout)="handleLogout()"/>
   }
   <!-- Main layout -->
   <div class="flex flex-1">
     <!-- Sidebar nav (desktop only) -->
-    <aside class="w-64 bg-gray-100 p-4 hidden md:block">
+    <aside class="w-64 bg-gray-100 p-4 hidden lg:block">
       <app-nav-menu [visibleNavItems]="visibleNavItems" (onLogout)="handleLogout()"/>
     </aside>
     <!-- Main content -->
