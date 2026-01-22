@@ -433,7 +433,7 @@ out-tsc/
 # Environment files
 *.env
 *.local.env
-/CarTransportDashboard.Web/src/environments/*.local.ts
+/CarTransportDashboard/src/app/localSecrets.ts
 
 # Angular cache
 .angular/
