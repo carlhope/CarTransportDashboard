@@ -1,10 +1,13 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TransportJob} from '../../../../models/transport-job';
 import {JobStatusDisplay} from '../../../../models/job-status';
+import {DurationPipe} from '../../../../pipes/duration/duration-pipe';
 
 @Component({
   selector: 'app-job-list',
-  imports: [],
+  imports: [
+    DurationPipe
+  ],
   templateUrl: './job-list.html',
   styleUrl: './job-list.scss'
 })

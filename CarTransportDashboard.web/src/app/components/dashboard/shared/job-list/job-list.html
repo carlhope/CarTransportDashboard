@@ -6,22 +6,20 @@
       [class.border-blue-500]="job === selectedJob"
       (click)="selectJob(job)"
     >
-      <!-- Title -->
-      <div class="font-medium text-gray-800">
-        {{ job.title }}
-      </div>
-
-      <!-- Pickup → Dropoff -->
-      <div class="text-sm text-gray-500 flex items-center gap-1">
+      <!-- Route (Primary Line) -->
+      <div class="font-medium text-gray-800 flex items-center gap-1">
         <span>{{ job.pickupLocation.locality }}</span>
         <span>→</span>
         <span>{{ job.dropoffLocation.locality }}</span>
       </div>
 
+
       <!-- Extra info row -->
       <div class="text-xs text-gray-400 flex items-center gap-3 mt-1">
-        <span>{{ statusDisplay[job.status] }}</span>
-        <span>•</span>
+        <span>{{job.estimatedTime | duration}}</span>
+      </div>
+      <div class="text-xs text-gray-400 flex items-center gap-3 mt-1">
+
         <span>£{{ job.payout??0.00}}</span>
       </div>
     </div>
