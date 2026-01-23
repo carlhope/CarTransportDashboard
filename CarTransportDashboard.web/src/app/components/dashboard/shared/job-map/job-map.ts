@@ -16,18 +16,12 @@ export class JobMap implements OnInit {
   }
 
   private loadGoogleMapsScript(): Promise<void> {
-    console.log('Origin:', window.location.origin);
-    console.log('key '+localSecrets.apiKey);
-
     if (this.scriptLoaded) return Promise.resolve();
-
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${localSecrets.apiKey}`;
-
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${localSecrets.googleMapsApiKey}`;
       script.async = true;
       script.defer = true;
-
       script.onload = () => {
         this.scriptLoaded = true;
         resolve();
