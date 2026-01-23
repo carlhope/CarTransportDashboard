@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TransportJob} from '../../../../models/transport-job';
-import {JobStatus, JobStatusDisplay} from '../../../../models/job-status';
+import {JobStatusDisplay} from '../../../../models/job-status';
 
 @Component({
   selector: 'app-job-list',
@@ -18,4 +18,5 @@ export class JobList {
   selectJob(job: TransportJob) {
     this.jobSelected.emit(job);
   }
+
 }

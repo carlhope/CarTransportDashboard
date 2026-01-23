@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-2">
+<div class="flex flex-col gap-2 max-h-[500px] overflow-y-auto pr-1">
   @for (job of jobs; track job.id) {
     <div
       class="p-3 rounded-md bg-white shadow-sm cursor-pointer hover:bg-gray-50 transition"
@@ -22,7 +22,7 @@
       <div class="text-xs text-gray-400 flex items-center gap-3 mt-1">
         <span>{{ statusDisplay[job.status] }}</span>
         <span>•</span>
-        <span>£{{ job.payout }}</span>
+        <span>£{{ job.payout??0.00}}</span>
       </div>
     </div>
   }

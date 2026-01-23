@@ -1,10 +1,11 @@
-import {Component, computed, Input, OnInit, signal} from '@angular/core';
+import {Component, computed, effect, Input, OnInit, signal, SimpleChanges} from '@angular/core';
 import {UserModel} from '../../../models/user';
 import { TransportJob } from '../../../models/transport-job';
 import { TransportJobService } from '../../../services/transport-job/transport-job';
 import {EarningsSummary} from '../../../models/Earnings';
 import {JobTabs, JobList, JobDetail, JobMap, EarningsSummary as EarningsDisplay} from '../shared'
 import {JobStatus} from '../../../models/job-status';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-driver-dashboard',
@@ -21,75 +22,74 @@ import {JobStatus} from '../../../models/job-status';
 
 export class DriverDashboard implements OnInit {
   @Input() driver: UserModel | null = null;
-
   acceptedJobs = signal<TransportJob[]>([]);
   allocatedJobs = signal<TransportJob[]>([]);
   completedJobs = signal<TransportJob[]>([]);
-  currencyCode: string = 'GBP'; // Hardcoded for simplicity. Could be made dynamic based on locale.
   selectedTab = signal<JobStatus>(JobStatus.InProgress);// default to "Active"
-  selectedJob: TransportJob | null = null;
-
+  selectedJob = signal<TransportJob | null>(null);
   filteredJobs = computed(() => {
-    switch (this.selectedTab())
-    {
-      case JobStatus.InProgress: return this.acceptedJobs();
-      case JobStatus.Allocated: return this.allocatedJobs();
-      case JobStatus.Completed: return this.completedJobs();
+    // force dependency tracking
+    const accepted = this.acceptedJobs();
+    const allocated = this.allocatedJobs();
+    const completed = this.completedJobs();
+
+    switch (this.selectedTab()) {
+      case JobStatus.InProgress: return accepted;
+      case JobStatus.Allocated: return allocated;
+      case JobStatus.Completed: return completed;
       default: return [];
     }
   });
 
-  earnings: EarningsSummary = {
-    //Hardcoded placeholder values for now
-    today: 0,
-    thisWeek: 0,
-    last30Days: 0
-  };
+  private readonly now = new Date();
+
+  private readonly todayStart = new Date(
+    this.now.getFullYear(),
+    this.now.getMonth(),
+    this.now.getDate()
+  );
+
+  private readonly weekStart = new Date(
+    this.now.getFullYear(),
+    this.now.getMonth(),
+    this.now.getDate() - this.now.getDay()
+  );
+
+  private readonly thirtyDaysAgo = new Date(
+    this.now.getFullYear(),
+    this.now.getMonth(),
+    this.now.getDate() - 30
+  );
+  earnings = computed(() => {
+    const jobs = this.completedJobs().filter(j => j.completedAt);
+
+    return {
+      today: this.sumSince(jobs, this.todayStart),
+      thisWeek: this.sumSince(jobs, this.weekStart),
+      last30Days: this.sumSince(jobs, this.thirtyDaysAgo)
+    };
+  });
+
+
 
   constructor(private jobService: TransportJobService) {
+    effect(() => {
+      const jobs = this.filteredJobs();
+      this.selectedJob.set(jobs[0] ?? null);
+    });
   }
 
   ngOnInit(): void {
-    console.log("DriverDashboard initialized");
+    this.refreshJobs();
 
-    this.refreshData()
-
-  }
-
-  private refreshData(): void {
-    this.loadAcceptedJobs();
-    this.loadAvailableJobs();
-    this.loadCompletedJobs();
-  }
-
-  private loadAcceptedJobs(): void {
-    this.jobService.getAcceptedJobs().subscribe(jobs => {
-      this.acceptedJobs.set(jobs);
-      console.log('Accepted jobs:', jobs);
-    });
-  }
-
-  private loadAvailableJobs(): void {
-    this.jobService.getAvailableJobsForDriver().subscribe(jobs => {
-      this.allocatedJobs.set(jobs);
-      console.log('Available jobs:', jobs);
-    });
-  }
-
-  private loadCompletedJobs(): void {
-    this.jobService.getCompletedJobs(30).subscribe(jobs => {
-      this.completedJobs.set(jobs);
-      console.log('Completed jobs:', jobs);
-      this.loadEarnings();
-    });
   }
 
   acceptJob(jobId: string): void {
-    console.log(`Accept job triggered for ID: ${jobId}`);
+    console.log('Sending jobId:', jobId);
+
     this.jobService.acceptJob(jobId).subscribe({
       next: updatedJob => {
-        console.log('Job accepted:', updatedJob);
-        this.refreshData();
+        this.refreshJobs();
         console.log(updatedJob);
       },
       error: err => {
@@ -98,11 +98,11 @@ export class DriverDashboard implements OnInit {
     });
   }
 
+
   completeJob(jobId: string): void {
     this.jobService.completeJob(jobId).subscribe({
       next: updatedJob => {
-        console.log(`Job ${jobId} marked as complete.`);
-        this.refreshData();
+        this.refreshJobs();
       },
       error: err => {
         console.error(`Failed to complete job ${jobId}:`, err.message);
@@ -118,8 +118,7 @@ export class DriverDashboard implements OnInit {
   declineJob(jobId: string): void {
     this.jobService.unassignJob(jobId).subscribe({
       next: updatedJob => {
-        console.log(`Job ${jobId} declined.`);
-        this.refreshData();
+        this.refreshJobs();
       },
       error: err => {
         console.error(`Failed to decline job ${jobId}:`, err.message);
@@ -131,30 +130,27 @@ export class DriverDashboard implements OnInit {
   }
 
   onJobSelected(job: TransportJob) {
-    this.selectedJob = job;
+    this.selectedJob.set(job);
   }
 
-  private loadEarnings(): void {
-    const now = new Date();
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const weekStart = new Date(now);
-    weekStart.setDate(now.getDate() - now.getDay()); // Sunday as start of week
-    const thirtyDaysAgo = new Date(now);
-    thirtyDaysAgo.setDate(now.getDate() - 30);
-
-    this.earnings.today = this.sumPayoutsSince(todayStart);
-    this.earnings.thisWeek = this.sumPayoutsSince(weekStart);
-    this.earnings.last30Days = this.sumPayoutsSince(thirtyDaysAgo);
-  }
-
-  private sumPayoutsSince(cutoffDate: Date): number {
-    const jobs = this.completedJobs().filter(job => job.completedAt);
+  private sumSince(jobs: TransportJob[], cutoff: Date): number {
     return jobs
-      .filter(job => {
-        if (!job.completedAt) return false; // skip if undefined
-        const completed = new Date(job.completedAt);
-        return completed.getTime() >= cutoffDate.getTime();
-      })
-      .reduce((sum, job) => sum + (job.payout || 0), 0);
+      .filter(job => new Date(job.completedAt!).getTime() >= cutoff.getTime())
+      .reduce((sum, job) => sum + (job.payout ?? 0), 0);
   }
+  refreshJobs() {
+    this.jobService.getAcceptedJobs().subscribe(jobs => {
+      this.acceptedJobs.set(jobs);
+    });
+
+    this.jobService.getAvailableJobsForDriver().subscribe(jobs => {
+      this.allocatedJobs.set(jobs);
+    });
+
+    this.jobService.getCompletedJobs().subscribe(jobs => {
+      this.completedJobs.set(jobs);
+    });
+  }
+
+
 }
