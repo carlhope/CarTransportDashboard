@@ -22,7 +22,7 @@
     <div class="relative flex-1">
 
       <!-- Map fills the entire area -->
-      <app-job-map class="w-full h-full rounded-lg overflow-hidden"></app-job-map>
+      <app-job-map [polyline]="selectedJob()?.polyline" class="w-full h-full rounded-lg overflow-hidden"></app-job-map>
 
       <!-- Floating job detail card, centred -->
       <div class="absolute inset-x-0 bottom-4 flex justify-center">

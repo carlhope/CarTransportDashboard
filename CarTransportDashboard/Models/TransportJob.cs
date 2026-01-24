@@ -26,9 +26,9 @@ namespace CarTransportDashboard.Models
         public DateTime? LastRouteEstimateTime { get; set; }
         public bool IsRouteSuspicious { get; set; } = false;
         // Pricing Constants
-        public static readonly decimal basePrice = 100m;
+        public static readonly decimal basePrice = 40m;
         public static readonly float includedMiles = 10.0F;
-        public static readonly decimal perMileRate = 0.75m;
+        public static readonly decimal perMileRate = 1.75m;
         public static readonly decimal undriveableSurcharge = 50m;
         public static readonly decimal driverFeePercentage = 0.75m;
 

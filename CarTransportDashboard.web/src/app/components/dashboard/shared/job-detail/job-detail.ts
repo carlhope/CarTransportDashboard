@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {DatePipe} from '@angular/common';
+import {DatePipe, DecimalPipe} from '@angular/common';
 import {DurationPipe} from '../../../../pipes/duration/duration-pipe';
 import {TransportJob} from '../../../../models/transport-job';
 import {JobStatus, JobStatusDisplay} from '../../../../models/job-status';
@@ -10,7 +10,8 @@ import {Button} from "../../../ui/button/button";
   imports: [
     DatePipe,
     Button,
-    DurationPipe
+    DurationPipe,
+    DecimalPipe
   ],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.scss'
