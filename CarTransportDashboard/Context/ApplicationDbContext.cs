@@ -30,6 +30,8 @@ namespace CarTransportDashboard.Context
                 .HasOne(j => j.AssignedVehicle)
                 .WithMany(v => v.AssignedJobs)
                 .HasForeignKey(j => j.AssignedVehicleId);
+            builder.Entity<TransportJob>()
+                .OwnsOne(j => j.Polyline);
 
 
         }

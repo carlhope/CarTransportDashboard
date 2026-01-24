@@ -16,6 +16,9 @@ namespace CarTransportDashboard.Mappers
                 DropoffLocation = job.DropoffLocation,
                 DistanceInMiles = job.DistanceInMiles,
                 EstimatedDuration = job.EstimatedDuration,
+                Polyline = job.Polyline!= null 
+                    ? new Polyline { EncodedPolyline = job.Polyline.EncodedPolyline }
+                    : null,
                 ScheduledDate = job.ScheduledDate,
                 Status = job.Status,
                 AssignedDriverId = job.AssignedDriverId,

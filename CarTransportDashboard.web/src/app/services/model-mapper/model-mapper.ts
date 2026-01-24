@@ -47,6 +47,7 @@ export class ModelMapperService {
       payout: data.driverPayment,
       estimatedTime: data.estimatedDuration,
       distanceInMiles: data.distanceInMiles,
+      polyline: data.polyline?.encodedPolyline ?? null,
     };
   }
 }

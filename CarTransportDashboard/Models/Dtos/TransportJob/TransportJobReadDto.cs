@@ -19,6 +19,7 @@ namespace CarTransportDashboard.Models.Dtos.TransportJob
         public DateTime? AcceptedAt { get; set; }
         public float DistanceInMiles { get; set; }
         public TimeSpan EstimatedDuration { get; set; }
+        public Polyline? Polyline { get; set; }
         public decimal? CustomerPrice { get; set; }
         public decimal? DriverPayment { get; set; }
 

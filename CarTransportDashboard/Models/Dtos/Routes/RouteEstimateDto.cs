@@ -5,6 +5,7 @@
         public float DistanceInMiles { get; set; }
         public TimeSpan EstimatedDuration { get; set; }
         public string RoutePreviewUrl { get; set; }
+        public Polyline Polyline { get; set; } = new();
 
     }
 }

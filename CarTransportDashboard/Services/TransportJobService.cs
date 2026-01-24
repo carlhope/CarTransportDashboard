@@ -1,3 +1,4 @@
+using CarTransportDashboard.Context;
 using CarTransportDashboard.Helpers;
 using CarTransportDashboard.Mappers;
 using CarTransportDashboard.Models;
@@ -5,6 +6,7 @@ using CarTransportDashboard.Models.Dtos.TransportJob;
 using CarTransportDashboard.Models.Dtos.Vehicle;
 using CarTransportDashboard.Repository.Interfaces;
 using CarTransportDashboard.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Shared.Models;
 using System.ComponentModel.DataAnnotations;
 namespace CarTransportDashboard.Services
@@ -18,6 +20,7 @@ namespace CarTransportDashboard.Services
         private readonly ILogger<TransportJobService> _logger;
         private readonly IRouteService _routeService;
         private readonly IEmailService _emailService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
 
         public TransportJobService(
@@ -27,7 +30,8 @@ namespace CarTransportDashboard.Services
             IDriverService driverService,
             ILogger<TransportJobService> logger,
             IRouteService routeService,
-            IEmailService emailService)
+            IEmailService emailService,
+            UserManager<ApplicationUser> userManager)
         {
             _jobRepo = jobRepo;
             _vehicleRepo = vehicleRepo;
@@ -36,6 +40,7 @@ namespace CarTransportDashboard.Services
             _logger = logger;
             _routeService = routeService;
             _emailService = emailService;
+            _userManager = userManager;
         }
 
         public async Task<TransportJobReadDto?> GetJobAsync(Guid id)
@@ -160,6 +165,14 @@ namespace CarTransportDashboard.Services
                 dto.AssignedVehicle = null; 
             }
             var job = TransportJobMapper.ToModel(dto);
+
+            // TEMP: auto-assign job to demo driver
+            var driver = await _userManager.FindByEmailAsync("driver@example.com");
+            if (driver != null)
+            {
+                job.AssignDriver(driver);
+            }
+            // END TEMP
             await UpdateRouteInfoAsync(job);
             if (IsSuspiciousRoute(job))
             {
@@ -276,6 +289,7 @@ namespace CarTransportDashboard.Services
             job.EstimatedDuration = route.EstimatedDuration;
             job.RoutePreviewUrl = route.RoutePreviewUrl;
             job.LastRouteEstimateTime = DateTime.UtcNow;
+            job.Polyline = route.Polyline;
         }
 
         private bool IsSuspiciousRoute(TransportJob job)

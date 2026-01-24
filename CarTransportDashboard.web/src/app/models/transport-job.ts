@@ -28,6 +28,7 @@ export interface TransportJob {
   //values calculated on backend and returned via API
   distanceInMiles?: number;
   estimatedTime?: string;
+  polyline?: string;
 }
 
 

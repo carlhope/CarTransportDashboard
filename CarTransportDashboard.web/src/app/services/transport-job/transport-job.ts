@@ -36,7 +36,13 @@ getJobs(): Observable<TransportJob[]> {
     );
   }
   create(payload:  TransportJob ): Observable<TransportJob> {
-    return this.http.post<TransportJob>(this.apiUrl, payload);
+    return this.http.post<TransportJob>(this.apiUrl, payload).pipe(
+      tap(job =>{
+        // Temporary: verify polyline is returned correctly
+        console.log('Created job: ', job);
+        console.log('Polyline: ', job.polyline);
+      })
+    );
   }
 
 

@@ -37,18 +37,15 @@ namespace CarTransportDashboard.Services
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
             _httpClient.DefaultRequestHeaders.Add("X-Goog-Api-Key", _apiKey);
-            //_httpClient.DefaultRequestHeaders.Add("X-Goog-FieldMask",
-            //    "routes.duration," +
-            //    "routes.distanceMeters," +
-            //    "routes.polyline.encodedPolyline," +
-            //    "routes.legs.startLocation.latLng.latitude," +
-            //    "routes.legs.startLocation.latLng.longitude,"+
-            //    "routes.legs.endLocation.latLng.latitude,"+
-            //    "routes.legs.endLocation.latLng.longitude"
+            _httpClient.DefaultRequestHeaders.Add("X-Goog-FieldMask",
+                "routes.duration," +
+                "routes.distanceMeters," +
+                "routes.polyline.encodedPolyline," +
+                "routes.legs.startLocation.latLng.latitude," +
+                "routes.legs.startLocation.latLng.longitude," +
+                "routes.legs.endLocation.latLng.latitude," +
+                "routes.legs.endLocation.latLng.longitude"
 
-            //    );
-                    _httpClient.DefaultRequestHeaders.Add("X-Goog-FieldMask",
-                    "routes.duration,routes.distanceMeters,routes.legs,routes.polyline"
                 );
 
             var json = JsonSerializer.Serialize(requestBody, jsonOptions);
@@ -60,7 +57,8 @@ namespace CarTransportDashboard.Services
                 "https://routes.googleapis.com/directions/v2:computeRoutes",
                 content
             );
-            //Console.WriteLine(response);
+            Console.WriteLine(response);
+            // Uncomment for debugging
             //var errorBody = await response.Content.ReadAsStringAsync();
             //Console.WriteLine("ERROR BODY:");
             //Console.WriteLine(errorBody);
@@ -77,7 +75,8 @@ namespace CarTransportDashboard.Services
             {
                 DistanceInMiles = MetersToMiles(route.DistanceMeters),
                 EstimatedDuration = TimeSpan.FromSeconds(durationSeconds),
-                RoutePreviewUrl = $"https://www.google.com/maps/dir/?api=1&origin={start.Latitude},{start.Longitude}&destination={end.Latitude},{end.Longitude}"
+                RoutePreviewUrl = $"https://www.google.com/maps/dir/?api=1&origin={start.Latitude},{start.Longitude}&destination={end.Latitude},{end.Longitude}",
+                Polyline = route.Polyline
             };
         }
 

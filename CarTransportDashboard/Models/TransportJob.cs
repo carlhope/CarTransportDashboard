@@ -22,6 +22,7 @@ namespace CarTransportDashboard.Models
         public bool isDriveable { get; set; } = true;
         public TimeSpan EstimatedDuration { get; set; }
         public string? RoutePreviewUrl { get; set; }
+        public Polyline? Polyline { get; set; }
         public DateTime? LastRouteEstimateTime { get; set; }
         public bool IsRouteSuspicious { get; set; } = false;
         // Pricing Constants
@@ -62,6 +63,10 @@ namespace CarTransportDashboard.Models
             UpdatedAt = DateTime.UtcNow;
             CalculatePricing();
         }
+
+
+        // Test-only constructor: allows creating a job in a specific status
+        // to support unit tests for state transitions and invariants.
         public TransportJob(string title, string description, Address pickupLocation, Address dropoffLocation, DateTime scheduledDate, Guid assignedVehicleId, Vehicle vehicle, JobStatus status)
         {
             Id = Guid.NewGuid();
