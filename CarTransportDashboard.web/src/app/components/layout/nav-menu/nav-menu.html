@@ -1,4 +1,5 @@
 <nav class="space-y-2">
+  <p class="text-xl text-center font-semibold mb-4">CTD</p>
   @for (item of visibleNavItems; track item.label) {
     <a [routerLink]="item.route" class="block p-2 hover:bg-gray-200 rounded">
       {{ item.label }}
