@@ -3,14 +3,15 @@ import {NavItem} from '../../../models/nav-items';
 import {UserStoreService} from '../../../services/auth/user-store-service';
 import {SessionAction} from '../../session-actions/session-action/session-action';
 import {AsyncPipe} from '@angular/common';
-import {RouterLink} from '@angular/router';
+import {RouterLink, RouterLinkActive} from '@angular/router';
 
 @Component({
   selector: 'app-nav-menu',
   imports: [
     SessionAction,
     AsyncPipe,
-    RouterLink
+    RouterLink,
+    RouterLinkActive
   ],
   templateUrl: './nav-menu.html',
   styleUrl: './nav-menu.scss'

@@ -1,14 +1,18 @@
-<nav class="space-y-2">
+<nav class="flex flex-col space-y-2 bg-white text-black h-full">
   <p class="text-xl text-center font-semibold mb-4">CTD</p>
   @for (item of visibleNavItems; track item.label) {
-    <a [routerLink]="item.route" class="block p-2 hover:bg-gray-200 rounded">
+    <a [routerLink]="item.route"
+       routerLinkActive = "text-green-600"
+       class="block p-2 hover:bg-gray-200 rounded">
       {{ item.label }}
     </a>
   }
+  <div class="mt-auto">
   <app-session-action
     [user]="userStore.user$ | async"
     (onLogout)="handleLogout()"
   ></app-session-action>
+  </div>
 
 
 </nav>

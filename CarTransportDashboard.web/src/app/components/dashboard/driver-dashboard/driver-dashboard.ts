@@ -41,6 +41,11 @@ export class DriverDashboard implements OnInit {
     }
   });
 
+  activeCount = computed(() => this.acceptedJobs().length);
+  allocatedCount = computed(() => this.allocatedJobs().length);
+  completedCount = computed(() => this.completedJobs().length);
+
+
   private readonly now = new Date();
 
   private readonly todayStart = new Date(

@@ -1,13 +1,13 @@
 <div class="flex flex-col gap-2 max-h-[500px] overflow-y-auto pr-1">
   @for (job of jobs; track job.id) {
     <div
-      class="p-3 rounded-md bg-white shadow-sm cursor-pointer hover:bg-gray-50 transition"
+      class="p-3 rounded-md bg-gray-100 shadow-sm cursor-pointer hover:bg-gray-300 transition"
       [class.border-l-4]="job === selectedJob"
       [class.border-blue-500]="job === selectedJob"
       (click)="selectJob(job)"
     >
       <!-- Route (Primary Line) -->
-      <div class="font-medium text-gray-800 flex items-center gap-1">
+      <div class="font-medium flex items-center gap-1">
         <span>{{ job.pickupLocation.locality }}</span>
         <span>→</span>
         <span>{{ job.dropoffLocation.locality }}</span>
@@ -15,10 +15,10 @@
 
 
       <!-- Extra info row -->
-      <div class="text-xs text-gray-400 flex items-center gap-3 mt-1">
+      <div class="text-xs flex items-center gap-3 mt-1">
         <span>{{job.estimatedTime | duration}}</span>
       </div>
-      <div class="text-xs text-gray-400 flex items-center gap-3 mt-1">
+      <div class="text-xs flex items-center gap-3 mt-1">
 
         <span>£{{ job.payout??0.00}}</span>
       </div>
