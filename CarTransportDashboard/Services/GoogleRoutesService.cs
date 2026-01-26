@@ -59,9 +59,9 @@ namespace CarTransportDashboard.Services
             );
             Console.WriteLine(response);
             // Uncomment for debugging
-            //var errorBody = await response.Content.ReadAsStringAsync();
-            //Console.WriteLine("ERROR BODY:");
-            //Console.WriteLine(errorBody);
+            var errorBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("ERROR BODY:");
+            Console.WriteLine(errorBody);
             response.EnsureSuccessStatusCode();
 
             var routeResponse = await response.Content.ReadFromJsonAsync<RouteResponse>();
