@@ -1,7 +1,7 @@
 # 🚗 Car Transport Dashboard
 A full‑stack transport‑operations dashboard built with Angular, .NET 9, RabbitMQ, and Google Maps / Routes APIs. It models the real workflow of a transport job — creation, routing, pricing, and notifications — with a modular, maintainable architecture.
 
-<img width="3024" height="1964" alt="Image 24-01-2026 at 23 05" src="https://github.com/user-attachments/assets/6101df5d-82b6-49dd-9b23-7215ac94da23" />
+<img width="3024" height="1964" alt="Image 26-01-2026 at 18 33" src="https://github.com/user-attachments/assets/c357a632-4f14-43f6-9dbf-7a1e96a114ec" />
 
 ## 🔧 Tech Stack
 Frontend: Angular 20+, TypeScript, Tailwind CSS
