@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import { localSecrets } from '../../../../localSecrets';
 
 @Component({
@@ -10,8 +10,11 @@ import { localSecrets } from '../../../../localSecrets';
 export class JobMap implements OnInit, OnChanges {
   @Input() polyline: string | null | undefined = null;
   private map: google.maps.Map | null = null;
+  @ViewChild('mapContainer', { static: true }) mapElement!: ElementRef<HTMLDivElement>;
   private scriptLoaded = false;
   private currentPolyline: google.maps.Polyline | null = null;
+  private readonly fallbackCenter = { lat: 53.0027, lng: -2.1794 };
+
 
   async ngOnInit() {
     await this.loadGoogleMapsScript();
@@ -41,14 +44,13 @@ export class JobMap implements OnInit, OnChanges {
   }
 
   private initMap() {
-    const mapElement = document.getElementById('map');
+    const mapElement = this.mapElement.nativeElement;
+
 
     if (!mapElement) return;
 
-    const fallbackCenter = { lat: 53.0027, lng: -2.1794 };
-
     this.map = new google.maps.Map(mapElement, {
-      center: fallbackCenter,
+      center: this.fallbackCenter,
       zoom: 10
     });
 
@@ -67,13 +69,21 @@ export class JobMap implements OnInit, OnChanges {
 
     // Fallback if no polyline provided
     if (!this.polyline) {
-      this.map.setCenter({ lat: 53.0027, lng: -2.1794 });
+      this.map.setCenter(this.fallbackCenter);
       this.map.setZoom(10);
       return;
     }
 
     // Decode encoded polyline string
-    const decoded = google.maps.geometry.encoding.decodePath(this.polyline);
+    let decoded;
+    try {
+      decoded = google.maps.geometry.encoding.decodePath(this.polyline);
+    } catch {
+      this.map.setCenter(this.fallbackCenter);
+      this.map.setZoom(10);
+      return;
+    }
+
 
     // Convert to plain objects
     const path = decoded.map(p => ({
