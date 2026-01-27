@@ -2,8 +2,9 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {DatePipe, DecimalPipe} from '@angular/common';
 import {DurationPipe} from '../../../../pipes/duration/duration-pipe';
 import {TransportJob} from '../../../../models/transport-job';
-import {JobStatus, JobStatusDisplay} from '../../../../models/job-status';
+import {JobStatus} from '../../../../models/job-status';
 import {Button} from "../../../ui/button/button";
+import {JobAction} from '../../../../models/shared/ui-actions';
 
 @Component({
   selector: 'app-job-detail',
@@ -22,7 +23,6 @@ export class JobDetail {
   @Output() decline = new EventEmitter<string>();
   @Output() complete = new EventEmitter<string>();
   @Output() cancel = new EventEmitter<string>();
-  statusDisplay = JobStatusDisplay;
   // Default tab
   activeTab: 'summary' |'vehicle' | 'pickup' | 'dropoff' = 'summary';
 
@@ -71,8 +71,4 @@ export class JobDetail {
   }
 
 }
-type JobAction = {
-  label: string;
-  variant: 'primary' | 'secondary' | 'danger';
-  action: string;
-};
+
