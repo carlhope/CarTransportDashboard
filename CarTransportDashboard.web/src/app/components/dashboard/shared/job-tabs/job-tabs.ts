@@ -8,11 +8,11 @@ import {JobStatus} from '../../../../models/job-status';
   styleUrl: './job-tabs.scss'
 })
 export class JobTabs {
-  @Input() activeTab: string = 'active';
+  @Input() activeTab: JobStatus = JobStatus.InProgress;
   @Input() activeCount = 0;
   @Input() allocatedCount = 0;
   @Input() completedCount = 0;
-  @Output() tabChange = new EventEmitter<JobStatus>();
+  @Output() readonly tabChange = new EventEmitter<JobStatus>();
 
   tabs = [
     { id: JobStatus.InProgress, label: 'Active' },
