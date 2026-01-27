@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TransportJob} from '../../../../models/transport-job';
-import {JobStatusDisplay} from '../../../../models/job-status';
 import {DurationPipe} from '../../../../pipes/duration/duration-pipe';
 
 @Component({
@@ -14,9 +13,8 @@ import {DurationPipe} from '../../../../pipes/duration/duration-pipe';
 export class JobList {
   @Input() jobs: TransportJob[] = [];
   @Input() selectedJob: TransportJob | null = null;
-  statusDisplay = JobStatusDisplay;
 
-  @Output() jobSelected = new EventEmitter<TransportJob>();
+  @Output() readonly jobSelected = new EventEmitter<TransportJob>();
 
   selectJob(job: TransportJob) {
     this.jobSelected.emit(job);
