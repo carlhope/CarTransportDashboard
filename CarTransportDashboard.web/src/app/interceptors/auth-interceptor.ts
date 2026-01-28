@@ -9,7 +9,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const userStore = inject(UserStoreService);
   const timestamp = Date.now().toString();
   const nonce = crypto.randomUUID();
-  const accessToken = userStore.currentUser?.accessToken;
+  const accessToken = userStore.user()?.accessToken;
   const csrfToken = userStore.csrfToken;
 
   let headers = req.headers;

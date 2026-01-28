@@ -9,7 +9,7 @@
   }
   <div class="mt-auto">
   <app-session-action
-    [user]="userStore.user$ | async"
+    [user]="userStore.user()"
     (onLogout)="handleLogout()"
   ></app-session-action>
   </div>

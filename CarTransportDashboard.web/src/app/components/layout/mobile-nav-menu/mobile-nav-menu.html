@@ -5,7 +5,7 @@
     </a>
   }
   <app-session-action
-    [user]="userStore.user$ | async"
+    [user]="userStore.user()"
     (onLogout)="handleLogout()"
   ></app-session-action>
 </nav>

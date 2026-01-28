@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { UserModel } from '../../models/user';
 
@@ -6,8 +6,8 @@ import { UserModel } from '../../models/user';
   providedIn: 'root'
 })
 export class UserStoreService {
-  private userSubject = new BehaviorSubject<UserModel | null>(null);
-  user$ = this.userSubject.asObservable();
+  private _user = signal<UserModel | null>(null);
+  user = this._user.asReadonly();
   public csrfToken: string | null = null;
 
   constructor() {
@@ -15,7 +15,7 @@ export class UserStoreService {
   }
 
   setUser(user: UserModel) {
-    this.userSubject.next(user);
+    this._user.set(user);
     if (user.csrfToken) {
       localStorage.setItem('csrfToken', user.csrfToken);
       const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
@@ -26,17 +26,13 @@ export class UserStoreService {
   }
 
   clearUser() {
-    this.userSubject.next(null);
+    this._user.set(null);
     localStorage.removeItem('csrfToken');
     localStorage.removeItem('refreshExpiry');
   }
 
-  get currentUser(): UserModel | null {
-    return this.userSubject.value;
-  }
-
   get roles(): string[] {
-    return this.currentUser?.roles ?? [];
+    return this.user()?.roles ?? [];
   }
 
   hasRole(role: string): boolean {
@@ -44,6 +40,6 @@ export class UserStoreService {
   }
 
   get isLoggedIn(): boolean {
-    return !!this.currentUser;
+    return !!this.user();
   }
 }

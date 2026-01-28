@@ -1,6 +1,6 @@
 
 @if(isDriver){
-  <app-driver-dashboard [driver]="this.user|async"/>
+  <app-driver-dashboard [driver]="this.user"/>
 }
 @else if(isAdmin){
   <app-admin-dashboard/>
