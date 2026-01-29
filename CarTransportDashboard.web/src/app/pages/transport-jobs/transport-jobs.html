@@ -1,25 +1,31 @@
-<div class="flex items-center justify-between mb-4">
-  <h2 class="text-2xl font-semibold">Transport Jobs</h2>
-  <button
-    routerLink="create"
-    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm"
-  >
-    Create Job
-  </button>
+<div class="p-6 max-w-4xl mx-auto">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-3xl font-semibold tracking-tight">Transport Jobs</h2>
+
+    <button
+      routerLink="create"
+      class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition"
+    >
+      Create Job
+    </button>
+  </div>
+
+  <!-- Job List -->
+  @if (jobs.length > 0) {
+    <mat-list class="bg-white rounded-lg">
+      @for (job of jobs; track job.id) {
+        <div class="py-2">
+        <app-transport-job-list-item [job]="job" />
+        </div>
+      }
+    </mat-list>
+  } @else {
+    <div class="text-center text-gray-500 py-12">
+      <p class="text-lg">No jobs available.</p>
+    </div>
+  }
 </div>
-
-<p>transport-jobs works!</p>
-
-@if (jobs.length > 0) {
-  <mat-list>
-    @for (job of jobs; track job.id) {
-      <app-transport-job-list-item [job]="job" />
-    }
-  </mat-list>
-} @else {
-  <p>No jobs available.</p>
-}
-<router-outlet></router-outlet>
 
 
 

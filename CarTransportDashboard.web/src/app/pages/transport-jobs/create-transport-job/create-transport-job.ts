@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import { TransportJobService } from '../../../services/transport-job/transport-job';
 import { TransportJob } from '../../../models/transport-job';
 import {CreateTransportJobForm} from '../../../components/create-transport-job-form/create-transport-job-form';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-create-transport-job',
   imports: [
-    CreateTransportJobForm
+    CreateTransportJobForm,
+    RouterLink
   ],
   templateUrl: './create-transport-job.html',
   styleUrl: './create-transport-job.scss'

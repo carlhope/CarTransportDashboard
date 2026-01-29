@@ -1,4 +1,22 @@
-<p>create-transport-job works!</p>
-<app-create-transport-job-form (submitJob)="handleSubmit($event)"></app-create-transport-job-form>
+<div class="p-6 max-w-3xl mx-auto">
+  <!-- Page Header -->
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-3xl font-semibold tracking-tight">Create Transport Job</h2>
+
+    <button
+      routerLink="/transport-jobs"
+      class="text-sm text-gray-600 hover:text-gray-800 transition"
+    >
+      Back to Jobs
+    </button>
+  </div>
+
+  <!-- Form Container -->
+  <div class="bg-white rounded-lg shadow-sm p-6">
+    <app-create-transport-job-form
+      (submitJob)="handleSubmit($event)"
+    ></app-create-transport-job-form>
+  </div>
+</div>
 
 

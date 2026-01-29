@@ -3,11 +3,11 @@ import { TransportJobService } from '../../services/transport-job/transport-job'
 import { TransportJob } from '../../models/transport-job';
 import {TransportJobListItem} from '../../components/transport-job-list-item/transport-job-list-item';
 import {MatList} from '@angular/material/list';
-import {RouterLink, RouterOutlet} from '@angular/router';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-transport-jobs',
-  imports: [TransportJobListItem, MatList, RouterOutlet, RouterLink],
+  imports: [TransportJobListItem, MatList, RouterLink],
   templateUrl: './transport-jobs.html',
   styleUrl: './transport-jobs.scss'
 })
