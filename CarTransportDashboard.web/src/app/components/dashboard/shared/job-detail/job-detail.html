@@ -37,7 +37,7 @@
       @switch (activeTab) {
 
         @case ('summary') {
-          <div class="tab-summary grid grid-cols-1 md:grid-cols-3 gap-2">
+          <div class="tab-summary grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
 
             <!-- Row 1: 3 columns -->
             <p><strong>Pickup:</strong> {{ job.pickupLocation.locality }}</p>
@@ -52,7 +52,7 @@
           </div>
         }
         @case ('vehicle') {
-          <div class="tab-vehicle grid grid-cols-1 md:grid-cols-[50%_1fr] gap-2">
+          <div class="tab-vehicle grid grid-cols-1 sm:grid-cols-2 gap-2">
 
             <!-- Row 1 -->
             <p><strong>Registration:</strong> {{ job.assignedVehicle?.registrationNumber }}</p>
@@ -66,7 +66,7 @@
         }
 
         @case ('pickup') {
-          <div class="tab-pickup grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div class="tab-pickup grid grid-cols-1 sm:grid-cols-2 gap-2">
 
             <p><strong>Address Line 1:</strong> {{ job.pickupLocation.addressLine1 }}</p>
             <p><strong>Address Line 2:</strong> {{ job.pickupLocation.addressLine2 }}</p>
@@ -78,7 +78,7 @@
         }
 
         @case ('dropoff') {
-          <div class="tab-dropoff grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div class="tab-dropoff grid grid-cols-1 sm:grid-cols-2 gap-2">
 
             <p><strong>Address Line 1:</strong> {{ job.dropoffLocation.addressLine1 }}</p>
             <p><strong>Address Line 2:</strong> {{ job.dropoffLocation.addressLine2 }}</p>
