@@ -2,7 +2,8 @@ import {Component, OnInit, signal, effect, Injector, runInInjectionContext} from
 import {RouterOutlet, Router} from '@angular/router';
 import { AuthService } from './services/auth/auth';
 import { UserStoreService } from './services/auth/user-store-service';
-import {NAV_ITEMS, NavItem} from './models/nav-items';
+import {NavItem} from './models/nav-items';
+import {NAV_ITEMS} from './config/navigation.config';
 import {Header} from './components/layout/header/header';
 import {MobileNavMenu} from './components/layout/mobile-nav-menu/mobile-nav-menu';
 import {NavMenu} from './components/layout/nav-menu/nav-menu';
