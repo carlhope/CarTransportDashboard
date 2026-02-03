@@ -9,7 +9,7 @@ export class DurationPipe implements PipeTransform {
     if (!value) return '';
 
     // Expecting format "HH:mm:ss"
-    const [hours, minutes, seconds] = value.split(':').map(Number);
+    const [hours, minutes, seconds]:number[] = value.split(':').map(Number);
 
     const parts: string[] = [];
     if (hours) parts.push(`${hours} hour${hours !== 1 ? 's' : ''}`);
