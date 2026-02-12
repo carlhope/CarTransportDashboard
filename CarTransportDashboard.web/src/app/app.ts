@@ -7,15 +7,14 @@ import {NAV_ITEMS} from './config/navigation.config';
 import {Header} from './components/layout/header/header';
 import {MobileNavMenu} from './components/layout/mobile-nav-menu/mobile-nav-menu';
 import {NavMenu} from './components/layout/nav-menu/nav-menu';
-import {Footer} from './components/layout/footer/footer';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, MobileNavMenu, NavMenu, Footer],
+  imports: [RouterOutlet, Header, MobileNavMenu, NavMenu],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App  {
+export class App implements OnInit {
   protected readonly title = signal('CarTransportDashboard.web');
   mobileMenuOpen = false;
   visibleNavItems = signal<NavItem[]>([]);
