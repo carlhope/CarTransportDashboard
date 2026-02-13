@@ -31,9 +31,20 @@ builder.Services.AddControllers()
      });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
- options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-// options.UseInMemoryDatabase("CarTransportDb")); // temporary fix to allow working on mac without SQL Server
+bool useInMemoryDatabase = builder.Configuration.GetValue<bool>("UseInMemory");
+// Using InMemory on macOS for cross-platform development.
+// SQL Server is used on Windows for full schema + migrations.
+
+if (useInMemoryDatabase)
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseInMemoryDatabase("CarTransportDb"));
+}
+else
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
