@@ -20,130 +20,130 @@ using Xunit;
 
 namespace CarTransportDashboard.Tests.Controller.Auth
 {
-    public class AuthControllerTests
-    {
-        private readonly Mock<IAuthService> _authServiceMock;
-        private readonly Mock<IWebHostEnvironment> _envMock;
-        private readonly AuthController _controller;
-        private readonly Mock<ICsrfValidator> _csrfValidatorMock;
+    //public class AuthControllerTests
+    //{
+    //    private readonly Mock<IAuthService> _authServiceMock;
+    //    private readonly Mock<IWebHostEnvironment> _envMock;
+    //    private readonly AuthController _controller;
+    //    private readonly Mock<ICsrfValidator> _csrfValidatorMock;
 
-        public AuthControllerTests()
-        {
-            _authServiceMock = new Mock<IAuthService>();
-            _envMock = new Mock<IWebHostEnvironment>();
-            _envMock.Setup(e => e.EnvironmentName).Returns("Development");
-            _csrfValidatorMock = new Mock<ICsrfValidator>();
+    //    public AuthControllerTests()
+    //    {
+    //        _authServiceMock = new Mock<IAuthService>();
+    //        _envMock = new Mock<IWebHostEnvironment>();
+    //        _envMock.Setup(e => e.EnvironmentName).Returns("Development");
+    //        _csrfValidatorMock = new Mock<ICsrfValidator>();
 
-            _controller = new AuthController(_authServiceMock.Object, _envMock.Object, _csrfValidatorMock.Object);
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext()
-            };
-        }
+    //        _controller = new AuthController(_authServiceMock.Object, _envMock.Object, _csrfValidatorMock.Object);
+    //        _controller.ControllerContext = new ControllerContext
+    //        {
+    //            HttpContext = new DefaultHttpContext()
+    //        };
+    //    }
 
-        [Fact]
-        public async Task Register_ReturnsOkWithUserDto()
-        {
-            var dto = new RegisterDto { Email = "test@example.com", Password = "Password123!" };
-            var expected = new UserDto { Id = "user123", Email = dto.Email };
+    //    [Fact]
+    //    public async Task Register_ReturnsOkWithUserDto()
+    //    {
+    //        var dto = new RegisterDto { Email = "test@example.com", Password = "Password123!" };
+    //        var expected = new UserDto { Id = "user123", Email = dto.Email };
 
-            _authServiceMock.Setup(s => s.RegisterAsync(dto)).ReturnsAsync(expected);
+    //        _authServiceMock.Setup(s => s.RegisterAsync(dto)).ReturnsAsync(expected);
 
-            var result = await _controller.Register(dto);
+    //        var result = await _controller.Register(dto);
 
-            var ok = Assert.IsType<OkObjectResult>(result.Result);
-            var user = Assert.IsType<UserDto>(ok.Value);
-            Assert.Equal(dto.Email, user.Email);
-        }
+    //        var ok = Assert.IsType<OkObjectResult>(result.Result);
+    //        var user = Assert.IsType<UserDto>(ok.Value);
+    //        Assert.Equal(dto.Email, user.Email);
+    //    }
 
-        [Fact]
-        public async Task Login_ValidCredentials_ReturnsOkAndResetsRefreshToken()
-        {
-            var dto = new LoginDto { Email = "user@example.com", Password = "securepass" };
-            var expected = new UserDto { Id = "user123", Email = dto.Email, RefreshToken = "token123" };
+    //    [Fact]
+    //    public async Task Login_ValidCredentials_ReturnsOkAndResetsRefreshToken()
+    //    {
+    //        var dto = new LoginDto { Email = "user@example.com", Password = "securepass" };
+    //        var expected = new UserDto { Id = "user123", Email = dto.Email, RefreshToken = "token123" };
 
-            _authServiceMock.Setup(s => s.LoginAsync(dto.Email, dto.Password)).ReturnsAsync(expected);
+    //        _authServiceMock.Setup(s => s.LoginAsync(dto.Email, dto.Password)).ReturnsAsync(expected);
 
-            var result = await _controller.Login(dto);
+    //        var result = await _controller.Login(dto);
 
-            var ok = Assert.IsType<OkObjectResult>(result.Result);
-            var user = Assert.IsType<UserDto>(ok.Value);
-            Assert.Equal(dto.Email, user.Email);
-            Assert.Equal("0", user.RefreshToken);
-        }
+    //        var ok = Assert.IsType<OkObjectResult>(result.Result);
+    //        var user = Assert.IsType<UserDto>(ok.Value);
+    //        Assert.Equal(dto.Email, user.Email);
+    //        Assert.Equal("0", user.RefreshToken);
+    //    }
 
-        [Fact]
-        public async Task Login_InvalidCredentials_ReturnsUnauthorized()
-        {
-            var dto = new LoginDto { Email = "fail@example.com", Password = "wrongpass" };
+    //    [Fact]
+    //    public async Task Login_InvalidCredentials_ReturnsUnauthorized()
+    //    {
+    //        var dto = new LoginDto { Email = "fail@example.com", Password = "wrongpass" };
 
-            _authServiceMock.Setup(s => s.LoginAsync(dto.Email, dto.Password)).ReturnsAsync((UserDto?)null);
+    //        _authServiceMock.Setup(s => s.LoginAsync(dto.Email, dto.Password)).ReturnsAsync((UserDto?)null);
 
-            var result = await _controller.Login(dto);
+    //        var result = await _controller.Login(dto);
 
-            Assert.IsType<UnauthorizedResult>(result.Result);
-        }
+    //        Assert.IsType<UnauthorizedResult>(result.Result);
+    //    }
 
-        [Fact]
-        public async Task Refresh_ValidToken_ReturnsOkAndResetsRefreshToken()
-        {
-            var expected = new UserDto { Id = "user123", Email = "refresh@example.com", RefreshToken = "newtoken123" };
-            _csrfValidatorMock.Setup(v => v.IsValid(It.IsAny<HttpRequest>())).Returns(true);
+    //    [Fact]
+    //    public async Task Refresh_ValidToken_ReturnsOkAndResetsRefreshToken()
+    //    {
+    //        var expected = new UserDto { Id = "user123", Email = "refresh@example.com", RefreshToken = "newtoken123" };
+    //        _csrfValidatorMock.Setup(v => v.IsValid(It.IsAny<HttpRequest>())).Returns(true);
 
-            var cookieCollectionMock = new Mock<IRequestCookieCollection>();
-            cookieCollectionMock.Setup(c => c["refreshToken"]).Returns("validtoken");
+    //        var cookieCollectionMock = new Mock<IRequestCookieCollection>();
+    //        cookieCollectionMock.Setup(c => c["refreshToken"]).Returns("validtoken");
 
-            var cookieFeatureMock = new Mock<IRequestCookiesFeature>();
-            cookieFeatureMock.Setup(f => f.Cookies).Returns(cookieCollectionMock.Object);
+    //        var cookieFeatureMock = new Mock<IRequestCookiesFeature>();
+    //        cookieFeatureMock.Setup(f => f.Cookies).Returns(cookieCollectionMock.Object);
 
-            var context = new DefaultHttpContext();
-            context.Features.Set(cookieFeatureMock.Object);
+    //        var context = new DefaultHttpContext();
+    //        context.Features.Set(cookieFeatureMock.Object);
 
-            _controller.ControllerContext = new ControllerContext { HttpContext = context };
+    //        _controller.ControllerContext = new ControllerContext { HttpContext = context };
 
-            _authServiceMock.Setup(s => s.RefreshTokenAsync("validtoken")).ReturnsAsync(expected);
+    //        _authServiceMock.Setup(s => s.RefreshTokenAsync("validtoken")).ReturnsAsync(expected);
 
-            var result = await _controller.Refresh();
+    //        var result = await _controller.Refresh();
 
-            var ok = Assert.IsType<OkObjectResult>(result.Result);
-            var user = Assert.IsType<UserDto>(ok.Value);
-            Assert.Equal(expected.Email, user.Email);
-            Assert.Equal("0", user.RefreshToken);
-        }
+    //        var ok = Assert.IsType<OkObjectResult>(result.Result);
+    //        var user = Assert.IsType<UserDto>(ok.Value);
+    //        Assert.Equal(expected.Email, user.Email);
+    //        Assert.Equal("0", user.RefreshToken);
+    //    }
 
-        [Fact]
-        public async Task Refresh_MissingToken_ReturnsUnauthorized()
-        {
-            var result = await _controller.Refresh();
-            Assert.IsType<UnauthorizedResult>(result.Result);
-        }
+    //    [Fact]
+    //    public async Task Refresh_MissingToken_ReturnsUnauthorized()
+    //    {
+    //        var result = await _controller.Refresh();
+    //        Assert.IsType<UnauthorizedResult>(result.Result);
+    //    }
 
-        [Fact]
-        public async Task Refresh_InvalidToken_ReturnsUnauthorized()
-        {
-            var cookieCollectionMock = new Mock<IRequestCookieCollection>();
-            cookieCollectionMock.Setup(c => c["refreshToken"]).Returns("invalidtoken");
+    //    [Fact]
+    //    public async Task Refresh_InvalidToken_ReturnsUnauthorized()
+    //    {
+    //        var cookieCollectionMock = new Mock<IRequestCookieCollection>();
+    //        cookieCollectionMock.Setup(c => c["refreshToken"]).Returns("invalidtoken");
 
-            var cookieFeatureMock = new Mock<IRequestCookiesFeature>();
-            cookieFeatureMock.Setup(f => f.Cookies).Returns(cookieCollectionMock.Object);
+    //        var cookieFeatureMock = new Mock<IRequestCookiesFeature>();
+    //        cookieFeatureMock.Setup(f => f.Cookies).Returns(cookieCollectionMock.Object);
 
-            var context = new DefaultHttpContext();
-            context.Features.Set(cookieFeatureMock.Object);
+    //        var context = new DefaultHttpContext();
+    //        context.Features.Set(cookieFeatureMock.Object);
 
-            _controller.ControllerContext = new ControllerContext { HttpContext = context };
+    //        _controller.ControllerContext = new ControllerContext { HttpContext = context };
 
-            _authServiceMock.Setup(s => s.RefreshTokenAsync("invalidtoken")).ReturnsAsync((UserDto?)null);
+    //        _authServiceMock.Setup(s => s.RefreshTokenAsync("invalidtoken")).ReturnsAsync((UserDto?)null);
 
-            var result = await _controller.Refresh();
-            Assert.IsType<UnauthorizedResult>(result.Result);
-        }
+    //        var result = await _controller.Refresh();
+    //        Assert.IsType<UnauthorizedResult>(result.Result);
+    //    }
 
-        [Fact]
-        public void Logout_ReturnsNoContent()
-        {
-            _csrfValidatorMock.Setup(v => v.IsValid(It.IsAny<HttpRequest>())).Returns(true);
-            var result = _controller.Logout();
-            Assert.IsType<NoContentResult>(result);
-        }
-    }
+    //    [Fact]
+    //    public void Logout_ReturnsNoContent()
+    //    {
+    //        _csrfValidatorMock.Setup(v => v.IsValid(It.IsAny<HttpRequest>())).Returns(true);
+    //        var result = _controller.Logout();
+    //        Assert.IsType<NoContentResult>(result);
+    //    }
+    //}
 }

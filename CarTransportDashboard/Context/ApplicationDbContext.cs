@@ -33,6 +33,27 @@ namespace CarTransportDashboard.Context
             builder.Entity<TransportJob>()
                 .OwnsOne(j => j.Polyline);
 
+            builder.Entity<TransportJob>()
+                .HasOne(j => j.PickupLocation)
+                .WithMany()
+                .HasForeignKey(j => j.PickupLocationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<TransportJob>()
+                .HasOne(j => j.DropoffLocation)
+                .WithMany()
+                .HasForeignKey(j => j.DropoffLocationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<TransportJob>(entity =>
+            {
+                entity.Property(x => x.CustomerPrice)
+                      .HasPrecision(18, 2);
+
+                entity.Property(x => x.DriverPayment)
+                      .HasPrecision(18, 2);
+            });
+
 
         }
 

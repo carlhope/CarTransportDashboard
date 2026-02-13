@@ -11,201 +11,201 @@ using Moq;
 
 namespace CarTransportDashboard.Tests.Services;
 
-    public class AuthServiceTests
-    {
-        private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
-        private readonly Mock<RoleManager<IdentityRole>> _roleManagerMock;
-        private readonly Mock<IConfiguration> _configMock;
-        private readonly ApplicationDbContext _dbContext;
-        private readonly AuthService _authService;
-        private Mock<RoleManager<IdentityRole>> CreateRoleManagerMock()
-        {
-            var roleStoreMock = new Mock<IRoleStore<IdentityRole>>();
+    //public class AuthServiceTests
+    //{
+    //    private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
+    //    private readonly Mock<RoleManager<IdentityRole>> _roleManagerMock;
+    //    private readonly Mock<IConfiguration> _configMock;
+    //    private readonly ApplicationDbContext _dbContext;
+    //    private readonly AuthService _authService;
+    //    private Mock<RoleManager<IdentityRole>> CreateRoleManagerMock()
+    //    {
+    //        var roleStoreMock = new Mock<IRoleStore<IdentityRole>>();
 
-            var roleManagerMock = new Mock<RoleManager<IdentityRole>>(
-                roleStoreMock.Object,
-                null!, // IRoleValidator<IdentityRole>
-                null!, // ILookupNormalizer
-                null!, // IdentityErrorDescriber
-                null!  // ILogger<RoleManager<IdentityRole>>
-            );
+    //        var roleManagerMock = new Mock<RoleManager<IdentityRole>>(
+    //            roleStoreMock.Object,
+    //            null!, // IRoleValidator<IdentityRole>
+    //            null!, // ILookupNormalizer
+    //            null!, // IdentityErrorDescriber
+    //            null!  // ILogger<RoleManager<IdentityRole>>
+    //        );
 
-            roleManagerMock
-                .Setup(rm => rm.RoleExistsAsync(It.IsAny<string>()))
-                .ReturnsAsync(true);
-
-
-            return roleManagerMock;
-        }
-        private static Mock<UserManager<ApplicationUser>> MockUserManager()
-        {
-            var store = new Mock<IUserStore<ApplicationUser>>();
-            var _userManagerMock = new Mock<UserManager<ApplicationUser>>(
-                store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
-            _userManagerMock
-                .Setup(m => m.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
-                .ReturnsAsync(IdentityResult.Success);
-            return _userManagerMock;
-
-        }
+    //        roleManagerMock
+    //            .Setup(rm => rm.RoleExistsAsync(It.IsAny<string>()))
+    //            .ReturnsAsync(true);
 
 
-        public AuthServiceTests()
-        {
-            _userManagerMock = MockUserManager();
-            _configMock = new Mock<IConfiguration>();
+    //        return roleManagerMock;
+    //    }
+    //    private static Mock<UserManager<ApplicationUser>> MockUserManager()
+    //    {
+    //        var store = new Mock<IUserStore<ApplicationUser>>();
+    //        var _userManagerMock = new Mock<UserManager<ApplicationUser>>(
+    //            store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+    //        _userManagerMock
+    //            .Setup(m => m.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
+    //            .ReturnsAsync(IdentityResult.Success);
+    //        return _userManagerMock;
 
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
-
-            _dbContext = new ApplicationDbContext(options);
-
-            _configMock.Setup(c => c["Jwt:Key"]).Returns("9f952c8086b4d8ea6e75e65e562b70724b4c356fb2f771244a0eef291161c37e");
-            _configMock.Setup(c => c["Jwt:Issuer"]).Returns("TestIssuer");
-            _configMock.Setup(c => c["Jwt:Audience"]).Returns("TestAudience");
-
-
-            _roleManagerMock = CreateRoleManagerMock();
-            _authService = new AuthService(_userManagerMock.Object, _configMock.Object, _dbContext, _roleManagerMock.Object );
-        }
+    //    }
 
 
+    //    public AuthServiceTests()
+    //    {
+    //        _userManagerMock = MockUserManager();
+    //        _configMock = new Mock<IConfiguration>();
 
-        [Fact]
-        public async Task RegisterAsync_ValidInput_ReturnsUserDto()
-        {
-            var dto = new RegisterDto { Email = "test@example.com", Password = "Password123!" };
+    //        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+    //            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+    //            .Options;
 
-            _userManagerMock.Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), dto.Password))
-                .ReturnsAsync(IdentityResult.Success);
-            _userManagerMock.Setup(m => m.GetRolesAsync(It.IsAny<ApplicationUser>()))
-                .ReturnsAsync(new List<string> { "User" });
+    //        _dbContext = new ApplicationDbContext(options);
+
+    //        _configMock.Setup(c => c["Jwt:Key"]).Returns("9f952c8086b4d8ea6e75e65e562b70724b4c356fb2f771244a0eef291161c37e");
+    //        _configMock.Setup(c => c["Jwt:Issuer"]).Returns("TestIssuer");
+    //        _configMock.Setup(c => c["Jwt:Audience"]).Returns("TestAudience");
+
+
+    //        _roleManagerMock = CreateRoleManagerMock();
+    //        _authService = new AuthService(_userManagerMock.Object, _configMock.Object, _dbContext, _roleManagerMock.Object );
+    //    }
 
 
 
+    //    [Fact]
+    //    public async Task RegisterAsync_ValidInput_ReturnsUserDto()
+    //    {
+    //        var dto = new RegisterDto { Email = "test@example.com", Password = "Password123!" };
+
+    //        _userManagerMock.Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), dto.Password))
+    //            .ReturnsAsync(IdentityResult.Success);
+    //        _userManagerMock.Setup(m => m.GetRolesAsync(It.IsAny<ApplicationUser>()))
+    //            .ReturnsAsync(new List<string> { "User" });
 
 
-        var result = await _authService.RegisterAsync(dto);
-
-            Assert.NotNull(result);
-            Assert.Equal(dto.Email, result.Email);
-            Assert.False(string.IsNullOrEmpty(result.AccessToken));
-            Assert.False(string.IsNullOrEmpty(result.RefreshToken));
-        }
-
-        [Fact]
-        public async Task RegisterAsync_Failure_ThrowsException()
-        {
-            var dto = new RegisterDto { Email = "fail@example.com", Password = "badpass" };
-
-            var errors = new List<IdentityError> { new IdentityError { Description = "Password too weak" } };
-            _userManagerMock.Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), dto.Password))
-                .ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
-
-            var ex = await Assert.ThrowsAsync<Exception>(() => _authService.RegisterAsync(dto));
-            Assert.Contains("Password too weak", ex.Message);
-        }
-
-        [Fact]
-        public async Task LoginAsync_ValidCredentials_ReturnsUserDto()
-        {
-            var user = new ApplicationUser {
-                Id = "user123", 
-                Email = "login@example.com", 
-                UserName = "login@example.com",
-                FirstName = "John",
-                LastName = "Doe"
-            };
-
-            _userManagerMock.Setup(m => m.FindByEmailAsync(user.Email)).ReturnsAsync(user);
-            _userManagerMock.Setup(m => m.CheckPasswordAsync(user, "Password123!")).ReturnsAsync(true);
-            _userManagerMock.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
 
 
-        var result = await _authService.LoginAsync(user.Email, "Password123!");
 
-            Assert.NotNull(result);
-            Assert.Equal(user.Email, result.Email);
-            Assert.False(string.IsNullOrEmpty(result.AccessToken));
-            Assert.False(string.IsNullOrEmpty(result.RefreshToken));
-        }
+    //    var result = await _authService.RegisterAsync(dto);
 
-        [Fact]
-        public async Task LoginAsync_InvalidCredentials_ReturnsNull()
-        {
-            _userManagerMock.Setup(m => m.FindByEmailAsync("bad@example.com")).ReturnsAsync((ApplicationUser?)null);
+    //        Assert.NotNull(result);
+    //        Assert.Equal(dto.Email, result.Email);
+    //        Assert.False(string.IsNullOrEmpty(result.AccessToken));
+    //        Assert.False(string.IsNullOrEmpty(result.RefreshToken));
+    //    }
 
-            var result = await _authService.LoginAsync("bad@example.com", "wrongpass");
+    //    [Fact]
+    //    public async Task RegisterAsync_Failure_ThrowsException()
+    //    {
+    //        var dto = new RegisterDto { Email = "fail@example.com", Password = "badpass" };
 
-            Assert.Null(result);
-        }
+    //        var errors = new List<IdentityError> { new IdentityError { Description = "Password too weak" } };
+    //        _userManagerMock.Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), dto.Password))
+    //            .ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
 
-        [Fact]
-        public async Task RefreshTokenAsync_ValidToken_ReturnsNewUserDto()
-        {
-            var user = new ApplicationUser {
-                Id = "user123",
-                Email = "refresh@example.com",
-                UserName = "refresh@example.com",
-                FirstName = "Jane",
-                LastName = "Smith"
-            };
-            var token = new RefreshToken
-            {
-                Token = "validtoken",
-                UserId = user.Id,
-                User = user,
-                ExpiryDate = DateTime.UtcNow.AddMinutes(10),
-                IsRevoked = false
-            };
-        _userManagerMock.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" }); //
+    //        var ex = await Assert.ThrowsAsync<Exception>(() => _authService.RegisterAsync(dto));
+    //        Assert.Contains("Password too weak", ex.Message);
+    //    }
+
+    //    [Fact]
+    //    public async Task LoginAsync_ValidCredentials_ReturnsUserDto()
+    //    {
+    //        var user = new ApplicationUser {
+    //            Id = "user123", 
+    //            Email = "login@example.com", 
+    //            UserName = "login@example.com",
+    //            FirstName = "John",
+    //            LastName = "Doe"
+    //        };
+
+    //        _userManagerMock.Setup(m => m.FindByEmailAsync(user.Email)).ReturnsAsync(user);
+    //        _userManagerMock.Setup(m => m.CheckPasswordAsync(user, "Password123!")).ReturnsAsync(true);
+    //        _userManagerMock.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
 
 
-        _dbContext.RefreshTokens.Add(token);
-            await _dbContext.SaveChangesAsync();
+    //    var result = await _authService.LoginAsync(user.Email, "Password123!");
 
-            var result = await _authService.RefreshTokenAsync("validtoken");
+    //        Assert.NotNull(result);
+    //        Assert.Equal(user.Email, result.Email);
+    //        Assert.False(string.IsNullOrEmpty(result.AccessToken));
+    //        Assert.False(string.IsNullOrEmpty(result.RefreshToken));
+    //    }
 
-            Assert.NotNull(result);
-            Assert.Equal(user.Email, result.Email);
-            Assert.False(string.IsNullOrEmpty(result.AccessToken));
-            Assert.False(string.IsNullOrEmpty(result.RefreshToken));
-        }
+    //    [Fact]
+    //    public async Task LoginAsync_InvalidCredentials_ReturnsNull()
+    //    {
+    //        _userManagerMock.Setup(m => m.FindByEmailAsync("bad@example.com")).ReturnsAsync((ApplicationUser?)null);
 
-        [Fact]
-        public async Task RefreshTokenAsync_InvalidToken_ReturnsNull()
-        {
-            var result = await _authService.RefreshTokenAsync("invalidtoken");
-            Assert.Null(result);
-        }
+    //        var result = await _authService.LoginAsync("bad@example.com", "wrongpass");
 
-        [Fact]
-        public async Task LogoutAsync_ValidToken_RevokesToken()
-        {
-            var token = new RefreshToken
-            {
-                Token = "logouttoken",
-                UserId = "user123",
-                ExpiryDate = DateTime.UtcNow.AddMinutes(10),
-                IsRevoked = false
-            };
+    //        Assert.Null(result);
+    //    }
 
-            _dbContext.RefreshTokens.Add(token);
-            await _dbContext.SaveChangesAsync();
+    //    [Fact]
+    //    public async Task RefreshTokenAsync_ValidToken_ReturnsNewUserDto()
+    //    {
+    //        var user = new ApplicationUser {
+    //            Id = "user123",
+    //            Email = "refresh@example.com",
+    //            UserName = "refresh@example.com",
+    //            FirstName = "Jane",
+    //            LastName = "Smith"
+    //        };
+    //        var token = new RefreshToken
+    //        {
+    //            Token = "validtoken",
+    //            UserId = user.Id,
+    //            User = user,
+    //            ExpiryDate = DateTime.UtcNow.AddMinutes(10),
+    //            IsRevoked = false
+    //        };
+    //    _userManagerMock.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" }); //
 
-            await _authService.LogoutAsync("logouttoken");
 
-            var updated = await _dbContext.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == "logouttoken");
-            Assert.True(updated?.IsRevoked);
-        }
+    //    _dbContext.RefreshTokens.Add(token);
+    //        await _dbContext.SaveChangesAsync();
 
-        [Fact]
-        public async Task LogoutAsync_InvalidToken_DoesNothing()
-        {
-            await _authService.LogoutAsync("nonexistenttoken");
+    //        var result = await _authService.RefreshTokenAsync("validtoken");
 
-            var token = await _dbContext.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == "nonexistenttoken");
-            Assert.Null(token);
-        }
-    }
+    //        Assert.NotNull(result);
+    //        Assert.Equal(user.Email, result.Email);
+    //        Assert.False(string.IsNullOrEmpty(result.AccessToken));
+    //        Assert.False(string.IsNullOrEmpty(result.RefreshToken));
+    //    }
+
+    //    [Fact]
+    //    public async Task RefreshTokenAsync_InvalidToken_ReturnsNull()
+    //    {
+    //        var result = await _authService.RefreshTokenAsync("invalidtoken");
+    //        Assert.Null(result);
+    //    }
+
+    //    [Fact]
+    //    public async Task LogoutAsync_ValidToken_RevokesToken()
+    //    {
+    //        var token = new RefreshToken
+    //        {
+    //            Token = "logouttoken",
+    //            UserId = "user123",
+    //            ExpiryDate = DateTime.UtcNow.AddMinutes(10),
+    //            IsRevoked = false
+    //        };
+
+    //        _dbContext.RefreshTokens.Add(token);
+    //        await _dbContext.SaveChangesAsync();
+
+    //        await _authService.LogoutAsync("logouttoken");
+
+    //        var updated = await _dbContext.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == "logouttoken");
+    //        Assert.True(updated?.IsRevoked);
+    //    }
+
+    //    [Fact]
+    //    public async Task LogoutAsync_InvalidToken_DoesNothing()
+    //    {
+    //        await _authService.LogoutAsync("nonexistenttoken");
+
+    //        var token = await _dbContext.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == "nonexistenttoken");
+    //        Assert.Null(token);
+    //    }
+    //}

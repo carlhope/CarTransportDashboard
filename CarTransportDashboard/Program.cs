@@ -32,8 +32,8 @@ builder.Services.AddControllers()
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-// options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-    options.UseInMemoryDatabase("CarTransportDb")); // temporary fix to allow working on mac without SQL Server
+ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// options.UseInMemoryDatabase("CarTransportDb")); // temporary fix to allow working on mac without SQL Server
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
@@ -50,7 +50,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-    .AddJwtBearer( options =>
+    .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -76,15 +76,16 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddHttpClient<IRouteService, GoogleRoutesService>();
 builder.Services.AddSingleton<ICsrfValidator, CsrfValidator>();
-builder.Services.AddSingleton<IEmailService>( Sp => {
-    return EmailService.CreateAsync().GetAwaiter().GetResult(); 
+builder.Services.AddSingleton<IEmailService>(Sp =>
+{
+    return EmailService.CreateAsync().GetAwaiter().GetResult();
 });
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularOrigins", builder =>
     {
         builder.WithOrigins("http://localhost:4200")
-               .AllowAnyHeader()    
+               .AllowAnyHeader()
                .AllowAnyMethod()
                .AllowCredentials();
     });
@@ -94,7 +95,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 app.UseCors("AllowAngularOrigins");
 
-// Configure the HTTP request pipeline.
+//Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
