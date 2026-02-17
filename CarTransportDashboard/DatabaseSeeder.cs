@@ -6,6 +6,7 @@ using CarTransportDashboard.Services.Interfaces;
 using CarTransportDashboard.Repository;
 using CarTransportDashboard.Services;
 using CarTransportDashboard.Models;
+using CarTransportDashboard.Models.Users;
 
 namespace CarTransportDashboard;
 
@@ -18,6 +19,12 @@ public static class DatabaseSeeder
             var context = services.GetRequiredService<ApplicationDbContext>();
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            var driverProfile = new DriverProfile()
+            {
+                UserId = "00000000-0000-0000-0000-000000000001",
+                LicenseNumber = "123456789",
+                
+            };
             Random random = new Random();
 
             // Ensure database is created
@@ -158,6 +165,20 @@ public static class DatabaseSeeder
                     {
                         await userManager.AddToRoleAsync(driverUser, "Driver");
                     }
+                    // Seed DriverProfile for the driver user
+                    driverProfile = new DriverProfile
+                    {
+                        UserId = driverUser.Id,
+                        LicenseNumber = "DRV-" + random.Next(1000, 9999),
+                        LicenseExpiry = DateTime.Today.AddYears(3),
+                        DispatcherId = null
+                    };
+                    if (!context.DriverProfiles.Any(dp => dp.UserId == driverUser.Id))
+                    {
+                        context.DriverProfiles.Add(driverProfile);
+                        await context.SaveChangesAsync();
+                    }
+
                 }
 
                 // Create vehicles dedicated for driver jobs (8 vehicles for 8 jobs)
@@ -201,7 +222,7 @@ public static class DatabaseSeeder
                         EstimatedDuration = TimeSpan.FromHours(random.Next(1,6))
 
                     };
-                    job.AssignDriver(driverUser);
+                    job.AssignDriver(driverProfile);
                     job.AcceptJob();
                     job.MarkAsCompleted();
                     jobs.Add(job);
@@ -227,7 +248,7 @@ public static class DatabaseSeeder
                         EstimatedDuration = TimeSpan.FromHours(random.Next(1,6))
 
                     };
-                    job.AssignDriver(driverUser);
+                    job.AssignDriver(driverProfile);
                     job.AcceptJob();
                     jobs.Add(job);
                 }
@@ -252,7 +273,7 @@ public static class DatabaseSeeder
                         EstimatedDuration = TimeSpan.FromHours(random.Next(1,6))
 
                     };
-                    job.AssignDriver(driverUser);
+                    job.AssignDriver(driverProfile);
                     jobs.Add(job);
                 }
 

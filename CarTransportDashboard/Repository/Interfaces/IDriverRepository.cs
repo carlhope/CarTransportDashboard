@@ -7,6 +7,7 @@ namespace CarTransportDashboard.Repository.Interfaces
     public interface IDriverRepository
     {
         Task<DriverProfile?> GetByIdAsync(string id);
+        Task<List<DriverProfile>> GetAllAsync();
         Task<IEnumerable<TransportJob>> GetAssignedJobsAsync(string driverId);
         Task<bool> IsInDriverRoleAsync(string id);
 

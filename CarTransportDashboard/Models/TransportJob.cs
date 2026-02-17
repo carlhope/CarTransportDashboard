@@ -37,7 +37,7 @@ namespace CarTransportDashboard.Models
         public Vehicle? AssignedVehicle { get; set; }
 
         public string? AssignedDriverId { get; private set; }
-        public ApplicationUser? AssignedDriver { get; private set; }
+        public DriverProfile? AssignedDriver { get; private set; }
         public Guid PickupLocationId { get; set; }
         public Address PickupLocation { get; set; }
         public Guid DropoffLocationId { get; set; }
@@ -94,13 +94,13 @@ namespace CarTransportDashboard.Models
             CompletedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
         }
-        public void AssignDriver(ApplicationUser driver)
+        public void AssignDriver(DriverProfile driver)
         {
             if (Status != JobStatus.Available)
                 throw new InvalidOperationException("Driver can only be assigned to available jobs.");
 
             AssignedDriver = driver;
-            AssignedDriverId = driver.Id;
+            AssignedDriverId = driver.UserId;
             Status = JobStatus.Allocated;
             AssignedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
@@ -165,7 +165,7 @@ namespace CarTransportDashboard.Models
                 throw new ValidationException("Pickup and dropoff locations cannot be the same.");
 
             if (DriverPayment < 25)
-                throw new ValidationException("Driver payment must be at least £25.");
+                throw new ValidationException("Driver payment must be at least ï¿½25.");
 
             if (CustomerPrice < DriverPayment)
                 throw new ValidationException("Customer price must be more than driver payment.");

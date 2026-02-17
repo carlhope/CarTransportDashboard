@@ -1,1 +1,27 @@
-<p>driver-list works!</p>
+<div class="flex flex-col gap-2 max-h-[500px] overflow-y-auto pr-1">
+  @for (d of drivers; track d.licenseNumber) {
+    <div
+      class="p-3 rounded-md bg-gray-100 shadow-sm cursor-pointer hover:bg-gray-300 transition"
+      [class.border-l-4]="d === selectedDriver"
+      [class.border-blue-500]="d === selectedDriver"
+      (click)="selectDriver(d)"
+    >
+      <!-- Route (Primary Line) -->
+      <div class="font-medium flex items-center gap-1">
+        <span>{{ d.firstName ?? "fname"}}</span>
+        <span>→</span>
+        <span>{{ d.lastName ?? "lname" }}</span>
+      </div>
+
+
+      <!-- Extra info row -->
+      <div class="text-xs flex items-center gap-3 mt-1">
+        <span>{{d.email ?? "email"}}</span>
+      </div>
+      <div class="text-xs flex items-center gap-3 mt-1">
+
+        <span>Hello, World!</span>
+      </div>
+    </div>
+  }
+</div>

@@ -168,9 +168,10 @@ namespace CarTransportDashboard.Services
 
             // TEMP: auto-assign job to demo driver
             var driver = await _userManager.FindByEmailAsync("driver@example.com");
-            if (driver != null)
+            var driverProfile = await _driverService.GetDriverUserByIdAsync(driver.Id);
+            if (driverProfile != null)
             {
-                job.AssignDriver(driver);
+                job.AssignDriver(driverProfile);
             }
             // END TEMP
             await UpdateRouteInfoAsync(job);

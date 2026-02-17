@@ -18,6 +18,17 @@ public class DriverService : IDriverService
         _userManager = userManager;
     }
 
+    public async Task<List<DriverDto>> GetAllDriversAsync()
+    {
+        var drivers = await _driverRepo.GetAllAsync();
+        var driverDtoList = new List<DriverDto>();
+        foreach (var driver in drivers)
+        {
+            driverDtoList.Add(UserMappers.MapFromDriverToDriverDto(driver));
+        }
+        return driverDtoList;
+    }
+
     public async Task<IEnumerable<TransportJobReadDto>> GetAssignedJobsAsync(string driverId)
     {
         var jobs = await _driverRepo.GetAssignedJobsAsync(driverId);
@@ -29,9 +40,10 @@ public class DriverService : IDriverService
         DriverProfile driver = await _driverRepo.GetByIdAsync(driverId);
         return UserMappers.MapFromDriverToDriverDto(driver);
     }
-    public async Task<ApplicationUser?> GetDriverUserByIdAsync(string driverId)
+    public async Task<DriverProfile?> GetDriverUserByIdAsync(string driverId)
     {
-        ApplicationUser driver = await _userManager.FindByIdAsync(driverId);
+        //ApplicationUser driver = await _userManager.FindByIdAsync(driverId);
+        DriverProfile driver = await _driverRepo.GetByIdAsync(driverId);
         return driver;
     }
 }

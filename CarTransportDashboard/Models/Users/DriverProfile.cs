@@ -14,6 +14,7 @@ namespace CarTransportDashboard.Models.Users
 
         public string? DispatcherId { get; set; }
         public DispatcherProfile? Dispatcher { get; set; }
+        public ApplicationUser User { get; set; }
 
         //called from DispatcherProfile.RemoveDriver to keep both sides in sync.
         //Should not be called directly outside that context

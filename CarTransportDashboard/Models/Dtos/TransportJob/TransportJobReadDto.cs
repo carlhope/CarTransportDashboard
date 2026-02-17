@@ -1,5 +1,6 @@
 using CarTransportDashboard.Context;
 using CarTransportDashboard.Models.Dtos.Vehicle;
+using CarTransportDashboard.Models.Users;
 
 namespace CarTransportDashboard.Models.Dtos.TransportJob
 {
@@ -28,6 +29,6 @@ namespace CarTransportDashboard.Models.Dtos.TransportJob
         public VehicleReadDto? AssignedVehicle { get; set; }
 
         public string? AssignedDriverId { get; set; }
-        public ApplicationUser? AssignedDriver { get; set; }
+        public DriverProfile? AssignedDriver { get; set; }
     }
 }

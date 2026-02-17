@@ -21,9 +21,19 @@ namespace CarTransportDashboard.Repository
         public async Task<DriverProfile?> GetByIdAsync(string id)
         {
             var driverProfile = await _db.DriverProfiles
+                .Include(p => p.User)
+                .ThenInclude(j=>j.AssignedJobs)
                 .FirstOrDefaultAsync(dp => dp.UserId == id);
 
             return driverProfile;
+        }
+
+        public async Task<List<DriverProfile>> GetAllAsync()
+        {
+            return await _db.DriverProfiles
+                .Include(p => p.User)
+                .ThenInclude(j=>j.AssignedJobs)
+                .ToListAsync();
         }
             
 

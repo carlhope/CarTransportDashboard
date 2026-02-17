@@ -1,3 +1,4 @@
+using CarTransportDashboard.Models.Dtos.TransportJob;
 using CarTransportDashboard.Models.Dtos.Users;
 
 public class UserDto
@@ -10,6 +11,8 @@ public class UserDto
     public string DisplayName { get; set; } = string.Empty;
     public string FullName { get; set; } = string.Empty;
     public List<string> Roles { get; set; } = [];
+    
+    public List<TransportJobReadDto> AssignedJobs { get; set; } = [];
     public string AccessToken { get; set; } = string.Empty;
     public string RefreshToken { get; set; } = string.Empty;
     public string CsrfToken { get; set; } = string.Empty;

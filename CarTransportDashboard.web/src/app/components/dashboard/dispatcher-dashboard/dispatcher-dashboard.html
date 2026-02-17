@@ -6,20 +6,42 @@
   <div class="flex flex-1 gap-4">
     <div class="w-1/3 min-w-[260px] bg-blue-500 p-3">
       <!-- Tabs -->
+      <h1>If seeing this without being logged in as dispatcher,
+        I removed access restrictions for ease of development
+      </h1>
       <div class="w-full">
-        <!--needs refactor as this dashboard has both transportJob and driverModel lists. placeholders in place to ensure builds.-->
-        <app-job-tabs
+        <app-dispatcher-tabs
           [activeTab]="selectedTab()"
+          [jobCount]="jobCount()"
+          [driverCount]="driverCount"
           (tabChange)="onTabChange($event)"
           class="w-full">
-        </app-job-tabs>
+        </app-dispatcher-tabs>
       </div>
 
       <div class="w-full">
-        <app-job-list
-          [jobs]="availableJobs()"
-          (jobSelected)="onSelectedJobChange(JobStatus.InProgress)">
-        </app-job-list>
+        @switch (selectedTab()){
+
+          @case ("Jobs"){
+            <app-job-list
+              [jobs]="availableJobs()"
+              (jobSelected)="onSelectedJobChange($event)">
+            </app-job-list>
+          }
+          @case ("Drivers"){
+            <app-driver-list
+              [drivers]="allocatedDrivers()"
+              (driverSelected)="onSelectedDriverChange($event)"
+            >
+
+            </app-driver-list>
+          }
+          @default {
+            <p>Something went wrong</p>
+          }
+
+        }
+
 
       </div>
     </div>

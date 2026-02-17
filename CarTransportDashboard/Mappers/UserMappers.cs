@@ -19,6 +19,7 @@ namespace CarTransportDashboard.Mappers
                 LastName = user.LastName,
                 DisplayName = user.PreferredName ?? $"{user.FirstName} {user.LastName}",
                 Email = user.Email!,
+                //AssignedJobs = TransportJobMapper.ToReadDtoList(user.AssignedJobs),
             };
             return target;
             }
@@ -28,9 +29,13 @@ namespace CarTransportDashboard.Mappers
             var dto = new DriverDto
             {
  
-                Id = driver.UserId,
+                UserId = driver.UserId,
                 LicenseNumber = driver.LicenseNumber,
                 LicenseExpiry = driver.LicenseExpiry,
+                FirstName = driver.User.FirstName,
+                LastName = driver.User.LastName,
+                DisplayName = driver.User.PreferredName ?? $"{driver.User.FirstName} {driver.User.LastName}",
+                Email = driver.User.Email!,
 
             };
 

@@ -33,4 +33,16 @@ public async Task<IActionResult> GetAssignedJobs()
     return Ok(jobs);
 }
 
+[HttpGet("all")]
+public async Task<IActionResult> GetAllDrivers()
+{
+    var drivers = await _driverService.GetAllDriversAsync();
+
+    if (drivers == null || !drivers.Any())
+        return NoContent();
+
+    return Ok(drivers);
+}
+
+
 }

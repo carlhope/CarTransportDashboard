@@ -31,9 +31,9 @@ namespace CarTransportDashboard.Models.Users
         public bool IsManagingDriver(string driverUserId) =>
             _managedDrivers.Any(d => d.UserId == driverUserId);
 
-        public void OfferJobToDriver(TransportJob job, ApplicationUser driver)
+        public void OfferJobToDriver(TransportJob job, DriverProfile driver)
         {
-            if (!IsManagingDriver(driver.Id))
+            if (!IsManagingDriver(driver.UserId))
                 throw new InvalidOperationException("Dispatcher does not manage this driver.");
 
             job.AssignDriver(driver);

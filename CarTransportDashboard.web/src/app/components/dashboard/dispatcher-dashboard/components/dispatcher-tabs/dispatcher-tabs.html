@@ -1,0 +1,13 @@
+<div class="flex gap-4 border-b border-gray-200">
+  @for (tab of tabs; track tab.id) {
+    <button
+      class="pb-2 text-sm font-medium hover:bg-gray-300"
+      [class.text-green-600]="tab.id === activeTab"
+      [class.border-b-2]="tab.id === activeTab"
+      [class.border-blue-600]="tab.id === activeTab"
+      (click)="selectTab(tab.id)"
+    >
+      {{ tab.label }} ({{getCount(tab.id)}})
+    </button>
+  }
+</div>

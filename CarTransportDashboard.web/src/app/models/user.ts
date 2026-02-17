@@ -14,22 +14,25 @@ export interface LoginModel {
 export interface UserModel {
   id: string;
   email: string;
-  //fullName: string;
-  firstName: string;
-  lastName: string;
   roles: string[];
   refreshToken?: string; // will be null after login
   accessToken?: string;
   csrfToken?: string;
 }
-export interface DriverModel extends UserModel {
-  licenseNumber: string;
-  currentJob?: TransportJob;
+export interface BaseUserRoleModel {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  roles: string[];
 }
-export interface DispatcherModel extends UserModel {
+export interface DriverModel extends BaseUserRoleModel {
+  licenseNumber: string;
+}
+export interface DispatcherModel extends BaseUserRoleModel {
 
 }
-export interface AdminModel extends UserModel {
+export interface AdminModel extends BaseUserRoleModel {
 
 }
 export interface JwtPayload {
