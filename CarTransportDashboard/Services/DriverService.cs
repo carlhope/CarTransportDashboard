@@ -42,7 +42,6 @@ public class DriverService : IDriverService
     }
     public async Task<DriverProfile?> GetDriverUserByIdAsync(string driverId)
     {
-        //ApplicationUser driver = await _userManager.FindByIdAsync(driverId);
         DriverProfile driver = await _driverRepo.GetByIdAsync(driverId);
         return driver;
     }

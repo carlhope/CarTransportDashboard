@@ -22,7 +22,7 @@ namespace CarTransportDashboard.Repository
         {
             var driverProfile = await _db.DriverProfiles
                 .Include(p => p.User)
-                .ThenInclude(j=>j.AssignedJobs)
+                .Include(j=>j.AssignedJobs)
                 .FirstOrDefaultAsync(dp => dp.UserId == id);
 
             return driverProfile;
@@ -32,7 +32,7 @@ namespace CarTransportDashboard.Repository
         {
             return await _db.DriverProfiles
                 .Include(p => p.User)
-                .ThenInclude(j=>j.AssignedJobs)
+                .Include(j=>j.AssignedJobs)
                 .ToListAsync();
         }
             

@@ -53,9 +53,14 @@ namespace CarTransportDashboard.Context
                 entity.Property(x => x.DriverPayment)
                       .HasPrecision(18, 2);
             });
+            builder.Entity<DriverProfile>()
+                .HasOne(dp => dp.User)
+                .WithMany() // no navigation on ApplicationUser
+                .HasForeignKey(dp => dp.UserId)
+                .IsRequired();
 
 
-        }
+          }
 
     }
 

@@ -13,11 +13,5 @@ namespace CarTransportDashboard.Context
         public required string LastName { get; set; }
         public string? PreferredName { get; set; }
 
-        // Navigation
-        public ICollection<TransportJob>? AssignedJobs { get; set; }
-        public DriverProfile? DriverProfile { get; set; }
-        public AdminProfile? AdminProfile { get; set; }
-        public DispatcherProfile? DispatcherProfile { get; set; }
-
     }
 }

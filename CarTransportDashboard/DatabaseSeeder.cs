@@ -165,10 +165,12 @@ public static class DatabaseSeeder
                     {
                         await userManager.AddToRoleAsync(driverUser, "Driver");
                     }
+                    await context.SaveChangesAsync(); // require the id of driverUser to create driverProfile. id isnt generated until run SaveChangesAsync()
                     // Seed DriverProfile for the driver user
+                    var driverId= context.Users.FirstOrDefault(d=>d.Email==driverUser.Email)?.Id;
                     driverProfile = new DriverProfile
                     {
-                        UserId = driverUser.Id,
+                        UserId = driverId,
                         LicenseNumber = "DRV-" + random.Next(1000, 9999),
                         LicenseExpiry = DateTime.Today.AddYears(3),
                         DispatcherId = null
