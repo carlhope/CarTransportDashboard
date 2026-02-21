@@ -37,14 +37,14 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<UserDto>> Register(RegisterDto dto)
+    public async Task<ActionResult<AuthUserDto>> Register(RegisterDto dto)
     {
-        var user = await _authService.RegisterAsync(dto);
+        var (csrfToken, user) = await _authService.RegisterAsync(dto);
         if (user == null) return BadRequest("Registration failed");
 
         // Set cookies
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
-        Response.Cookies.Append("X-CSRF-Token", user.CsrfToken, GetCsrfCookieOptions());
+        Response.Cookies.Append("X-CSRF-Token", csrfToken, GetCsrfCookieOptions());
 
 
         user.RefreshToken = "0";
@@ -53,13 +53,13 @@ public class AuthController : ControllerBase
 
 
     [HttpPost("login")]
-    public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto dto)
+    public async Task<ActionResult<AuthUserDto>> Login([FromBody] LoginDto dto)
     {
-        var user = await _authService.LoginAsync(dto.Email, dto.Password);
+        var (csrfToken, user) = await _authService.LoginAsync(dto.Email, dto.Password);
         if (user == null) return Unauthorized();
 
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
-        Response.Cookies.Append("X-CSRF-Token", user.CsrfToken, GetCsrfCookieOptions());
+        Response.Cookies.Append("X-CSRF-Token", csrfToken, GetCsrfCookieOptions());
 
 
         user.RefreshToken = "0"; // Don't send to frontend
@@ -67,7 +67,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("refresh")]
-    public async Task<ActionResult<UserDto>> Refresh()
+    public async Task<ActionResult<AuthUserDto>> Refresh()
     {
         #if !DEBUG
                         var origin = Request.Headers["Origin"].ToString();
@@ -83,7 +83,7 @@ public class AuthController : ControllerBase
         var refreshToken = Request.Cookies["refreshToken"];
         if (string.IsNullOrEmpty(refreshToken)) return Unauthorized();
 
-        var user = await _authService.RefreshTokenAsync(refreshToken);
+        var (csrfToken, user) = await _authService.RefreshTokenAsync(refreshToken);
         if (user == null) return Unauthorized();
 
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
@@ -121,11 +121,12 @@ public class AuthController : ControllerBase
         var payload = await GoogleJsonWebSignature.ValidateAsync(dto.IdToken);
         if (payload == null || !payload.EmailVerified)
             return Unauthorized("Invalid Google token");
+
+        var (csrfToken, user) = await _authService.FindOrCreateByEmailAsync(payload.Email, payload.GivenName, payload.FamilyName);
        
-            var user = await _authService.FindOrCreateByEmailAsync(payload.Email, payload.GivenName, payload.FamilyName);
 
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
-        Response.Cookies.Append("X-CSRF-Token", user.CsrfToken, GetCsrfCookieOptions());
+        Response.Cookies.Append("X-CSRF-Token", csrfToken, GetCsrfCookieOptions());
 
         user.RefreshToken = "0"; // don�t send to frontend
         return Ok(user);

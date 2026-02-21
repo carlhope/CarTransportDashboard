@@ -11,15 +11,10 @@ namespace CarTransportDashboard.Mappers
     public static class UserMappers
     {
         //intended for minimal user info (no roles, tokens, etc)
-        public static UserDto MapFromApplicationUser(ApplicationUser user)
+        public static AuthUserDto MapFromApplicationUser(ApplicationUser user)
             {
-            UserDto target = new UserDto() {
+            AuthUserDto target = new AuthUserDto() {
                 Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                DisplayName = user.PreferredName ?? $"{user.FirstName} {user.LastName}",
-                Email = user.Email!,
-                //AssignedJobs = TransportJobMapper.ToReadDtoList(user.AssignedJobs),
             };
             return target;
             }

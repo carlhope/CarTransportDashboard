@@ -45,14 +45,14 @@ namespace CarTransportDashboard.Tests.Controller.Auth
     //    public async Task Register_ReturnsOkWithUserDto()
     //    {
     //        var dto = new RegisterDto { Email = "test@example.com", Password = "Password123!" };
-    //        var expected = new UserDto { Id = "user123", Email = dto.Email };
+    //        var expected = new AuthUserDto { Id = "user123", Email = dto.Email };
 
     //        _authServiceMock.Setup(s => s.RegisterAsync(dto)).ReturnsAsync(expected);
 
     //        var result = await _controller.Register(dto);
 
     //        var ok = Assert.IsType<OkObjectResult>(result.Result);
-    //        var user = Assert.IsType<UserDto>(ok.Value);
+    //        var user = Assert.IsType<AuthUserDto>(ok.Value);
     //        Assert.Equal(dto.Email, user.Email);
     //    }
 
@@ -60,14 +60,14 @@ namespace CarTransportDashboard.Tests.Controller.Auth
     //    public async Task Login_ValidCredentials_ReturnsOkAndResetsRefreshToken()
     //    {
     //        var dto = new LoginDto { Email = "user@example.com", Password = "securepass" };
-    //        var expected = new UserDto { Id = "user123", Email = dto.Email, RefreshToken = "token123" };
+    //        var expected = new AuthUserDto { Id = "user123", Email = dto.Email, RefreshToken = "token123" };
 
     //        _authServiceMock.Setup(s => s.LoginAsync(dto.Email, dto.Password)).ReturnsAsync(expected);
 
     //        var result = await _controller.Login(dto);
 
     //        var ok = Assert.IsType<OkObjectResult>(result.Result);
-    //        var user = Assert.IsType<UserDto>(ok.Value);
+    //        var user = Assert.IsType<AuthUserDto>(ok.Value);
     //        Assert.Equal(dto.Email, user.Email);
     //        Assert.Equal("0", user.RefreshToken);
     //    }
@@ -77,7 +77,7 @@ namespace CarTransportDashboard.Tests.Controller.Auth
     //    {
     //        var dto = new LoginDto { Email = "fail@example.com", Password = "wrongpass" };
 
-    //        _authServiceMock.Setup(s => s.LoginAsync(dto.Email, dto.Password)).ReturnsAsync((UserDto?)null);
+    //        _authServiceMock.Setup(s => s.LoginAsync(dto.Email, dto.Password)).ReturnsAsync((AuthUserDto?)null);
 
     //        var result = await _controller.Login(dto);
 
@@ -87,7 +87,7 @@ namespace CarTransportDashboard.Tests.Controller.Auth
     //    [Fact]
     //    public async Task Refresh_ValidToken_ReturnsOkAndResetsRefreshToken()
     //    {
-    //        var expected = new UserDto { Id = "user123", Email = "refresh@example.com", RefreshToken = "newtoken123" };
+    //        var expected = new AuthUserDto { Id = "user123", Email = "refresh@example.com", RefreshToken = "newtoken123" };
     //        _csrfValidatorMock.Setup(v => v.IsValid(It.IsAny<HttpRequest>())).Returns(true);
 
     //        var cookieCollectionMock = new Mock<IRequestCookieCollection>();
@@ -106,7 +106,7 @@ namespace CarTransportDashboard.Tests.Controller.Auth
     //        var result = await _controller.Refresh();
 
     //        var ok = Assert.IsType<OkObjectResult>(result.Result);
-    //        var user = Assert.IsType<UserDto>(ok.Value);
+    //        var user = Assert.IsType<AuthUserDto>(ok.Value);
     //        Assert.Equal(expected.Email, user.Email);
     //        Assert.Equal("0", user.RefreshToken);
     //    }
@@ -132,7 +132,7 @@ namespace CarTransportDashboard.Tests.Controller.Auth
 
     //        _controller.ControllerContext = new ControllerContext { HttpContext = context };
 
-    //        _authServiceMock.Setup(s => s.RefreshTokenAsync("invalidtoken")).ReturnsAsync((UserDto?)null);
+    //        _authServiceMock.Setup(s => s.RefreshTokenAsync("invalidtoken")).ReturnsAsync((AuthUserDto?)null);
 
     //        var result = await _controller.Refresh();
     //        Assert.IsType<UnauthorizedResult>(result.Result);
