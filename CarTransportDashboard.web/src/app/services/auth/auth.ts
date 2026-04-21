@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RegisterModel, LoginModel, UserModel } from '../../models/user';
-import { Observable, tap } from 'rxjs';
+import {Observable, Observer, tap} from 'rxjs';
 import { UserStoreService } from './user-store-service';
 
 @Injectable({
@@ -11,6 +11,7 @@ export class AuthService {
   private readonly baseUrl = 'https://localhost:7286/api/auth';
 
   constructor(private http: HttpClient, private userStore: UserStoreService) {}
+  private isLoggingIn:boolean=false;
 
   register(dto: RegisterModel): Observable<UserModel> {
     return this.http.post<UserModel>(`${this.baseUrl}/register`, dto)

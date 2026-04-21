@@ -116,19 +116,19 @@ public class AuthController : ControllerBase
 
     [HttpPost("google")]
     [AllowAnonymous]
-    public async Task<IActionResult> GoogleLogin([FromBody] IdTokenDto dto)
+    public async Task<IActionResult> GoogleLogin([FromBody] IdTokenDto dto, CancellationToken ct)
     {
         var payload = await GoogleJsonWebSignature.ValidateAsync(dto.IdToken);
         if (payload == null || !payload.EmailVerified)
             return Unauthorized("Invalid Google token");
 
-        var (csrfToken, user) = await _authService.FindOrCreateByEmailAsync(payload.Email, payload.GivenName, payload.FamilyName);
+        var (csrfToken, user) = await _authService.FindOrCreateByEmailAsync(payload.Email, payload.GivenName, payload.FamilyName, ct);
        
 
         Response.Cookies.Append("refreshToken", user.RefreshToken, GetRefreshCookieOptions());
         Response.Cookies.Append("X-CSRF-Token", csrfToken, GetCsrfCookieOptions());
 
-        user.RefreshToken = "0"; // don�t send to frontend
+        user.RefreshToken = "0"; // dont send to frontend
         return Ok(user);
     }
 

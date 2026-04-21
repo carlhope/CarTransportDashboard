@@ -53,13 +53,14 @@
     <button
       type="submit"
       class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+      [class.disabled]="isLoggingIn"
     >
       Login
     </button>
   </form>
     <div id="external-logins" class="text-center text-gray-500 text-sm">Or continue with</div>
     <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md space-y-6 text-center">
-      <div id="googleBtn" class="w-full"></div>
+      <div id="googleBtn" class="w-full" [class.disabled]="isLoggingIn"></div>
       <div class="w-full">TODO:Apple Login</div>
       <div class="w-full">TODO:Facebook Login</div>
     </div>

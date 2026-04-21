@@ -15,6 +15,7 @@ import { RegisterModel } from '../../../models/user';
 
 export class Register implements OnInit {
   form!: FormGroup;
+  isRegistering: boolean = false;
 
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router)
@@ -31,17 +32,20 @@ export class Register implements OnInit {
     }
 
   onSubmit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid || this.isRegistering) return;
+    this.isRegistering = true;
 
     const dto: RegisterModel = this.form.value;
     this.auth.register(dto).subscribe({
       next: user => {
         // Handle success (e.g. redirect or show message)
+        this.isRegistering = false;
         console.log('Registered:', user);
         this.router.navigate(['/dashboard']);
       },
       error: err => {
         // Handle error
+        this.isRegistering = false;
         console.error('Registration failed:', err);
       }
     });

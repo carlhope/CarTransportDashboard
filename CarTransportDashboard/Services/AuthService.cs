@@ -64,11 +64,13 @@ namespace CarTransportDashboard.Services
             return (csrfToken, MapToUserDto(user, accessToken, refreshToken, roles));
         }
 
-        public async Task<(string,AuthUserDto?)> LoginAsync(string email, string password)
+        public async Task<(string,AuthUserDto?)> LoginAsync(string email, string password, CancellationToken ct = default)
         {
             var user = await _userManager.FindByEmailAsync(email);
+            ct.ThrowIfCancellationRequested();
             if (user == null || !await _userManager.CheckPasswordAsync(user, password))
                 return (string.Empty, null);
+            ct.ThrowIfCancellationRequested();
             return await IssueTokensForUserAsync(user);
         }
 
@@ -155,9 +157,11 @@ namespace CarTransportDashboard.Services
             };
         }
         // Lookup or create (for Google login)
-        public async Task<(string, AuthUserDto)> FindOrCreateByEmailAsync(string email, string? firstName = null, string? lastName = null)
+        public async Task<(string, AuthUserDto)> FindOrCreateByEmailAsync(string email, string? firstName = null, string? lastName = null, CancellationToken ct = default)
         {
+            ct.ThrowIfCancellationRequested();
             var userEntity = await _userManager.FindByEmailAsync(email);
+            ct.ThrowIfCancellationRequested();
             if (userEntity == null)
             {
                 userEntity = new ApplicationUser
@@ -172,9 +176,10 @@ namespace CarTransportDashboard.Services
                 var result = await _userManager.CreateAsync(userEntity);
                 if (!result.Succeeded)
                     throw new InvalidOperationException("Failed to create user from Google login");
+                ct.ThrowIfCancellationRequested();
                 await _userManager.AddToRoleAsync(userEntity, RoleConstants.Driver);
             }
-
+            ct.ThrowIfCancellationRequested();
             return await IssueTokensForUserAsync(userEntity);
         }
 

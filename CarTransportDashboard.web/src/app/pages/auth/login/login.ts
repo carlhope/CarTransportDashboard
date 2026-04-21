@@ -15,6 +15,7 @@ declare const google: any;
 })
 export class Login implements OnInit {
   form!: FormGroup;
+  isLoggingIn:boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -48,29 +49,38 @@ export class Login implements OnInit {
   }
 
   onSubmit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid || this.isLoggingIn) return;
+    this.isLoggingIn = true;
 
     const dto: LoginModel = this.form.value;
     this.auth.login(dto).subscribe({
       next: user => {
+        this.isLoggingIn = false;
         console.log('Logged in:', user);
         this.router.navigate(['/dashboard']);
       },
       error: err => {
+        this.isLoggingIn = false;
         console.error('Login failed:', err);
       }
     });
   }
 
   handleGoogleResponse(response: any) {
+    if(this.isLoggingIn) return;
+    this.isLoggingIn = true;
     const idToken = response.credential;
 
     this.auth.googleLogin(idToken).subscribe({
       next: user => {
+        this.isLoggingIn = false;
         console.log('Logged in via Google:', user);
         this.router.navigate(['/dashboard']);
       },
-      error: err => console.error('Google login failed:', err)
+      error: err => {
+        this.isLoggingIn = false;
+        console.error('Google login failed:', err)
+      }
     });
   }
 }
